@@ -1,0 +1,113 @@
+# CerbaSeal — Enforcement Review Repository
+
+## What this repository is
+
+This repository is a **security-review-grade enforcement proof surface** for CerbaSeal.
+
+It is not the full CerbaSeal system.
+
+It exists to prove that CerbaSeal is a real, inspectable, bounded enforcement layer assembled from existing Lamont Labs enforcement primitives, not a concept deck or policy narrative.
+
+This repository demonstrates:
+
+- fail-closed runtime gating
+- structural authority separation
+- immutable governed decision artifacts
+- append-only audit chain behavior
+- evidence bundle generation
+- export manifest generation
+- replayable governed outcomes
+- explicit invariants and failure responses
+
+## What CerbaSeal is
+
+CerbaSeal is a **structural enforcement layer** that sits inside consequential AI-assisted workflows and determines whether a proposed action:
+
+- may proceed
+- must be held for accountable human review
+- must be rejected outright
+
+CerbaSeal does not exist to describe governance after the fact.
+
+CerbaSeal exists to make governance constraints operational at runtime.
+
+## What CerbaSeal is not
+
+CerbaSeal is not:
+
+- a policy platform
+- a dashboard
+- a general-purpose AI governance suite
+- a legal certification engine
+- a replacement for organizational governance responsibilities
+- a standalone full customer implementation in this repository
+
+## Current review boundary
+
+This repository is intended to support:
+
+- technical credibility review
+- security architecture review
+- pilot-readiness discussion
+- LineAxia / Lamont Labs scoping discussion
+
+This repository is **not** intended to represent:
+
+- a production deployment
+- a client-specific workflow binding
+- a complete integration package
+- a generalized product surface
+
+## What is implemented in this repository now
+
+Current proof surface:
+
+- execution gate
+- invariant enforcement
+- approval boundary enforcement
+- blocked-action semantics
+- release authorization semantics
+- append-only log chain
+- evidence bundle generation
+- export manifest generation
+- replay consistency checks
+
+## What still waits for paid pilot scope
+
+The following are explicitly out of scope for the current review package:
+
+- client-specific workflow logic
+- real customer policy packs
+- integrations into client systems
+- multi-workflow productization
+- production infrastructure mapping
+- full deployment hardening
+
+## Review path
+
+A reviewer should begin here:
+
+1. `docs/00-reviewer-start-here.md`
+2. `docs/01-system-definition.md`
+3. `docs/06-runtime-layer-stack.md`
+4. `docs/07-invariant-model.md`
+5. `architecture/invariants/invariant-registry.yaml`
+
+Then inspect code:
+
+- `src/services/execution/execution-gate-service.ts`
+- `src/services/audit/append-only-log-service.ts`
+- `src/services/evidence/evidence-bundle-service.ts`
+- `src/services/export/export-manifest-service.ts`
+- `src/services/replay/replay-service.ts`
+
+Then inspect tests:
+
+- `test/execution-gate-service.test.ts`
+- `test/audit-evidence-export.test.ts`
+
+## Core guarantee
+
+The central claim of this repository is simple:
+
+**CerbaSeal does not claim governance. It proves that governance became runtime behavior.**
