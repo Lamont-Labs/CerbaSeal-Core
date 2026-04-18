@@ -39,6 +39,12 @@ If any invariant fails:
 - the decision is recorded
 - no release is issued
 
+## System Flow
+
+Request → Execution Gate → Decision → Audit → Evidence → Export / Replay
+
+There is no valid execution path outside this flow.
+
 ## Key Guarantees
 
 - No policy → no execution
@@ -47,6 +53,26 @@ If any invariant fails:
 - AI cannot authorize
 - Stale controls block sensitive actions
 - Invalid trust state blocks execution
+
+## Failure Behavior
+
+CerbaSeal is designed to fail closed under all invalid or incomplete conditions.
+
+Examples:
+
+- Missing approval → HOLD, no release issued
+- Missing provenance → REJECT, no execution allowed
+- Invalid trust state → execution blocked
+- Prohibited use → immediate rejection
+- Logging unavailable → execution blocked
+
+All failure states still produce governed artifacts:
+
+- decision envelope
+- blocked action record
+- audit log entries
+
+No failure condition degrades into silent execution.
 
 ---
 
