@@ -1,0 +1,171 @@
+version: 1.0.0
+
+invariants:
+  - id: INV-01
+    name: no_policy_pack_no_execution
+    statement: No governed execution may proceed without a resolved policy pack reference.
+    severity: critical
+    layer: execution
+    enforcement_points:
+      - execution_gate_service
+    failure_response:
+      - reject
+      - no_release_authorization
+      - blocked_action_record
+    linked_reason_codes:
+      - NO_POLICY_PACK
+
+  - id: INV-02
+    name: no_provenance_no_action
+    statement: No governed action may proceed without complete provenance reference.
+    severity: critical
+    layer: execution
+    enforcement_points:
+      - execution_gate_service
+    failure_response:
+      - reject
+      - no_release_authorization
+      - blocked_action_record
+    linked_reason_codes:
+      - NO_PROVENANCE
+
+  - id: INV-03
+    name: no_required_approval_no_release
+    statement: Required human approval must exist and be valid before release.
+    severity: critical
+    layer: execution
+    enforcement_points:
+      - execution_gate_service
+    failure_response:
+      - hold_or_reject
+      - no_release_authorization
+      - blocked_action_record
+    linked_reason_codes:
+      - REQUIRED_APPROVAL_MISSING
+      - INVALID_APPROVAL_AUTHORITY
+      - PRIVILEGED_AUTH_NOT_SATISFIED
+      - APPROVAL_SIGNATURE_MISSING
+
+  - id: INV-04
+    name: no_logging_no_execution
+    statement: Consequential execution must not proceed if logging preconditions fail.
+    severity: critical
+    layer: audit
+    enforcement_points:
+      - execution_gate_service
+    failure_response:
+      - reject
+      - no_release_authorization
+      - blocked_action_record
+    linked_reason_codes:
+      - LOGGING_NOT_READY
+
+  - id: INV-05
+    name: ai_non_authoritative
+    statement: AI may propose but may not authorize or bypass authority-bearing transitions.
+    severity: critical
+    layer: decision
+    enforcement_points:
+      - execution_gate_service
+    failure_response:
+      - reject
+      - no_release_authorization
+      - blocked_action_record
+    linked_reason_codes:
+      - AI_CANNOT_AUTHORIZE
+
+  - id: INV-06
+    name: no_bypass_of_execution_gate
+    statement: Consequential actions must route through the governed execution gate.
+    severity: critical
+    layer: enforcement
+    enforcement_points:
+      - execution_gate_service
+      - review_documentation
+    failure_response:
+      - reject
+      - no_release_authorization
+    linked_reason_codes: []
+
+  - id: INV-07
+    name: immutable_decision_envelope
+    statement: Decision envelopes must be treated as immutable governed artifacts.
+    severity: critical
+    layer: audit
+    enforcement_points:
+      - execution_gate_service
+      - evidence_bundle_service
+    failure_response:
+      - invalidate_artifact_trust
+    linked_reason_codes: []
+
+  - id: INV-08
+    name: stale_controls_block_sensitive_release
+    statement: Critical stale or invalid controls block release for sensitive workflows.
+    severity: critical
+    layer: controls
+    enforcement_points:
+      - execution_gate_service
+    failure_response:
+      - reject
+      - no_release_authorization
+      - blocked_action_record
+    linked_reason_codes:
+      - CONTROL_STALE_OR_INVALID
+
+  - id: INV-09
+    name: trust_state_required
+    statement: Trust state must be valid before release is permitted.
+    severity: critical
+    layer: execution
+    enforcement_points:
+      - execution_gate_service
+    failure_response:
+      - reject
+      - no_release_authorization
+      - blocked_action_record
+    linked_reason_codes:
+      - TRUST_STATE_INVALID
+
+  - id: INV-10
+    name: prohibited_use_must_block
+    statement: Requests classified as prohibited must not proceed.
+    severity: critical
+    layer: enforcement
+    enforcement_points:
+      - execution_gate_service
+    failure_response:
+      - reject
+      - no_release_authorization
+      - blocked_action_record
+    linked_reason_codes:
+      - PROHIBITED_USE
+
+  - id: INV-11
+    name: request_schema_and_action_class_valid
+    statement: Malformed requests and unknown action classes must fail closed.
+    severity: critical
+    layer: input
+    enforcement_points:
+      - execution_gate_service
+    failure_response:
+      - reject
+      - no_release_authorization
+      - blocked_action_record
+    linked_reason_codes:
+      - MALFORMED_REQUEST
+      - UNKNOWN_ACTION_CLASS
+
+  - id: INV-12
+    name: proposal_and_request_action_must_match
+    statement: Proposal action and declared governed request action must match exactly.
+    severity: critical
+    layer: decision
+    enforcement_points:
+      - execution_gate_service
+    failure_response:
+      - reject
+      - no_release_authorization
+      - blocked_action_record
+    linked_reason_codes:
+      - INVALID_PROPOSAL
