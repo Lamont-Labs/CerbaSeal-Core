@@ -1,0 +1,26 @@
+{
+  "reportId": "cerbaseal-core-adversarial-integrity-2026-04-18",
+  "system": "CerbaSeal-Core",
+  "reportType": "adversarial_integrity",
+  "date": "2026-04-18",
+  "phasesCovered": ["baseline", "invariant_stress", "bypass_attempts", "audit_chain", "replay", "edge_cases", "findings"],
+  "baselineTests": 25,
+  "adversarialTests": 58,
+  "totalTests": 83,
+  "result": "ALL_PASS",
+  "incorrectAllowIssued": false,
+  "unauthorizedReleaseProduced": false,
+  "crashObserved": false,
+  "findings": [
+    {"id": "B-1", "severity": "low", "type": "structural"},
+    {"id": "B-2", "severity": "low", "type": "structural"},
+    {"id": "B-3", "severity": "low", "type": "structural"},
+    {"id": "E-1", "severity": "informational", "type": "edge_case"},
+    {"id": "E-2", "severity": "informational", "type": "edge_case"}
+  ],
+  "notes": [
+    "Internal adversarial testing artifact",
+    "Supports external security architecture review",
+    "No logic changes made during testing"
+  ]
+}

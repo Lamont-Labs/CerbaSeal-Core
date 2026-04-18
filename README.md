@@ -136,3 +136,10 @@ Then inspect the tests:
 ## Core guarantee
 
 **CerbaSeal does not claim governance. It proves that governance became runtime behavior.**
+
+---
+
+## Adversarial Integrity Reports
+
+- CerbaSeal-Core Adversarial Integrity Report (2026-04-18)
+  → docs/reports/adversarial/cerbaseal-core-adversarial-integrity-2026-04-18.md
