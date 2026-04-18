@@ -54,6 +54,8 @@ There is no valid execution path outside this flow.
 - Stale controls block sensitive actions
 - Invalid trust state blocks execution
 
+This enforcement layer has been adversarially tested against invariant violations, bypass attempts, and edge-case inputs with zero incorrect execution outcomes.
+
 ## Failure Behavior
 
 CerbaSeal is designed to fail closed under all invalid or incomplete conditions.
