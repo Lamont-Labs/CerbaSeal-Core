@@ -25,7 +25,7 @@ All real workflows, policies, and integrations are deferred to paid pilot scope.
 
 ---
 
-## Why this matters
+## Why This Matters
 
 CerbaSeal is being presented as a **bounded enforcement layer**, not a full product.
 

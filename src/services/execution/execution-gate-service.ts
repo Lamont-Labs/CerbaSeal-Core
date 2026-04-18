@@ -1,3 +1,11 @@
+/**
+ * CerbaSeal Enforcement Core
+ *
+ * This service is the single execution gate for all governed actions.
+ * All consequential requests must be evaluated here before any release
+ * authorization is issued. No valid execution path exists outside this layer.
+ */
+
 import { INVARIANTS, type InvariantCode } from "../../domain/constants/invariants.js";
 import { REASON_CODES, type ReasonCode } from "../../domain/constants/reason-codes.js";
 import type {

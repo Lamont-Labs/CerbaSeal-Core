@@ -1,3 +1,11 @@
+/**
+ * CerbaSeal Replay Core
+ *
+ * Re-evaluates a governed request from a stored evidence bundle and
+ * verifies that the outcome matches the original governed decision.
+ * Deterministic evaluation ensures replay consistency over time.
+ */
+
 import type { EvidenceBundle, ExportManifest, ReplayResult } from "../../domain/types/audit.js";
 import { ExecutionGateService } from "../execution/execution-gate-service.js";
 

@@ -1,6 +1,6 @@
 # Scope Boundary
 
-## What CerbaSeal is in this repository
+## What CerbaSeal Is in This Repository
 
 This repository presents CerbaSeal as a **reviewable enforcement proof surface**.
 

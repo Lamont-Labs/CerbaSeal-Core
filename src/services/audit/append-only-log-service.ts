@@ -1,3 +1,11 @@
+/**
+ * CerbaSeal Audit Core
+ *
+ * Append-only audit log with SHA-256 hash chaining.
+ * All governance events are recorded here. Entries cannot be modified
+ * or deleted via the public API. Chain integrity is verifiable at any time.
+ */
+
 import { createHash } from "node:crypto";
 import type {
   AuditEventPayload,

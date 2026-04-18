@@ -1,10 +1,12 @@
 # System Definition
 
-## CerbaSeal in one sentence
+## CerbaSeal in One Sentence
 
 CerbaSeal is a structural enforcement layer that sits inside consequential AI-assisted workflows and determines whether a proposed action may proceed, must be held for human review, or must be rejected outright.
 
-## Core framing
+---
+
+## Core Framing
 
 CerbaSeal should be understood as:
 
@@ -19,7 +21,9 @@ CerbaSeal should not be understood as:
 - dashboard-based oversight
 - post-hoc reporting only
 
-## Core operating principle
+---
+
+## Core Operating Principle
 
 CerbaSeal does not ask reviewers to trust claims like:
 
@@ -36,15 +40,15 @@ Instead, CerbaSeal is designed so that governed transitions leave behind evidenc
 - whether human authority was present
 - what final action was allowed, held, or rejected
 
-## Three non-negotiable enforcement requirements
+---
 
-CerbaSeal is built around three foundational requirements:
+## Three Non-Negotiable Enforcement Requirements
 
-### 1. Fail-closed default behavior
+### 1. Fail-Closed Default Behavior
 
 If a request is incomplete, unverifiable, malformed, unapproved, or operationally ambiguous, the system rejects or holds the action rather than allowing degraded execution.
 
-### 2. Structural authority separation
+### 2. Structural Authority Separation
 
 AI may classify, score, summarize, or propose.
 
@@ -57,9 +61,9 @@ AI may not:
 - override
 - bypass consequential execution paths
 
-### 3. Cryptographic decision provenance
+### 3. Cryptographic Decision Provenance
 
-Every governed transition should produce a tamper-evident record showing:
+Every governed transition produces a tamper-evident record showing:
 
 - what entered the system
 - what source logic or model reference applied
@@ -67,7 +71,9 @@ Every governed transition should produce a tamper-evident record showing:
 - what checks passed or failed
 - what final action was permitted or blocked
 
-## Current maturity position
+---
+
+## Current Maturity Position
 
 CerbaSeal is:
 

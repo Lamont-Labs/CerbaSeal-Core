@@ -1,3 +1,11 @@
+/**
+ * CerbaSeal Export Core
+ *
+ * Produces an authority package manifest referencing source evidence
+ * without mutating it. The manifest captures event hashes at point of
+ * export and appends an audit record of the export action.
+ */
+
 import type { EvidenceBundle, ExportManifest } from "../../domain/types/audit.js";
 import { AppendOnlyLogService } from "../audit/append-only-log-service.js";
 

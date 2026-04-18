@@ -1,3 +1,11 @@
+/**
+ * CerbaSeal Evidence Core
+ *
+ * Assembles a complete evidence bundle from a governed request and its
+ * gate result. Records audit events and produces an immutable snapshot
+ * of the full decision context for export and replay.
+ */
+
 import type { GateResult, GovernedRequest } from "../../domain/types/core.js";
 import type { EvidenceBundle } from "../../domain/types/audit.js";
 import { AppendOnlyLogService } from "../audit/append-only-log-service.js";

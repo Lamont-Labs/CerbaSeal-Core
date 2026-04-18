@@ -1,6 +1,6 @@
 # Reviewer Start Here
 
-## Purpose of this repository
+## Purpose
 
 This repository is the **minimum reviewable enforcement package** for CerbaSeal.
 
@@ -11,7 +11,9 @@ Its purpose is to let a technical reviewer answer four questions:
 3. What stops a consequential action from proceeding incorrectly?
 4. What evidence exists after an action is allowed, held, or rejected?
 
-## The shortest accurate description of CerbaSeal
+---
+
+## What CerbaSeal Is
 
 CerbaSeal is a **structural enforcement layer for consequential AI-assisted workflows**.
 
@@ -23,7 +25,9 @@ It decides whether a proposed action:
 
 Its value is in runtime control and preserved evidence, not governance language alone.
 
-## What to review first
+---
+
+## Recommended Review Order
 
 Read these in order:
 
@@ -48,7 +52,9 @@ Then inspect tests:
 - `test/execution-gate-service.test.ts`
 - `test/audit-evidence-export.test.ts`
 
-## What is in scope for this review package
+---
+
+## What Is In Scope
 
 This repository is intended to prove:
 
@@ -61,19 +67,19 @@ This repository is intended to prove:
 - evidence bundles are exportable
 - replay yields stable governed outcomes
 
-## What is intentionally not in scope
+---
 
-This repository does not attempt to prove:
+## What Is Intentionally Not In Scope
 
 - client-specific implementation completeness
 - integration readiness for a named customer
 - full production infrastructure
-- broad UI/product maturity
+- broad UI or product maturity
 - legal compliance by itself
 
-## Expected reviewer conclusion
+---
 
-The intended conclusion is:
+## Expected Reviewer Conclusion
 
 CerbaSeal is architecturally real, narrowly scoped, enforcement-oriented, and reviewable before client-specific pilot implementation exists.
 
