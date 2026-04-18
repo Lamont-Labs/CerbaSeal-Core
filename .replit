@@ -1,3 +1,4 @@
+modules = ["nodejs-22"]
 [[ports]]
 localPort = 5173
 externalPort = 5173
@@ -12,3 +13,26 @@ externalPort = 80
 
 [agent]
 expertMode = true
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Run Tests"
+
+[[workflows.workflow]]
+name = "Run Tests"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "pnpm test"
+
+[workflows.workflow.metadata]
+outputType = "console"
