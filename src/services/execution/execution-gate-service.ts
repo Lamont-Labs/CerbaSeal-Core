@@ -15,7 +15,8 @@ import type {
   GateResult,
   GovernedRequest,
   ReleaseAuthorization,
-  UnknownableActionClass
+  UnknownableActionClass,
+  WorkflowClass
 } from "../../domain/types/core.js";
 import { CerbaSealError } from "../../domain/errors/cerbaseal-error.js";
 
@@ -26,6 +27,27 @@ const ALLOWED_ACTION_CLASSES = new Set<ActionClass>([
   "escalate",
   "account_hold"
 ]);
+
+// Fix 2: Workflows that require human approval unconditionally.
+// The caller-supplied approvalRequired flag is treated as advisory for these classes.
+// Adding a workflowClass here means no caller can opt out of approval enforcement.
+const WORKFLOWS_REQUIRING_APPROVAL = new Set<WorkflowClass>(["fraud_triage"]);
+
+// Fix 3: Module-private registry of gate-issued GateResult objects.
+// Only results returned by ExecutionGateService.evaluate() are registered.
+// EvidenceBundleService rejects any GateResult not present in this set.
+const _gateIssuedResults = new WeakSet<object>();
+
+export function assertIsGateIssued(result: GateResult): void {
+  if (!_gateIssuedResults.has(result)) {
+    throw new CerbaSealError({
+      message: "GateResult was not produced by ExecutionGateService.evaluate()",
+      invariant: INVARIANTS.NO_BYPASS_OF_EXECUTION_GATE,
+      reasonCode: REASON_CODES.MALFORMED_REQUEST,
+      finalState: "REJECT"
+    });
+  }
+}
 
 function nowIso(): string {
   return new Date().toISOString();
@@ -65,7 +87,9 @@ function assertRequestShape(
 ): void {
   invariantChecks.push(INVARIANTS.REQUEST_SCHEMA_AND_ACTION_CLASS_VALID);
 
+  // Fix 7: requestId validated as non-empty alongside the existing shape checks.
   if (
+    request.requestId.trim().length === 0 ||
     request.jurisdiction.trim().length === 0 ||
     request.createdAt.trim().length === 0 ||
     request.proposal.reasonCodes.length === 0
@@ -155,10 +179,13 @@ function assertProposalBoundary(
     });
   }
 
+  // Fix 4: An AI actor making an AI-sourced proposal can never produce ALLOW.
+  // The previous condition included `request.approvalRequired`, which allowed
+  // an AI actor to bypass this block by setting approvalRequired: false.
+  // The approval flag is irrelevant to whether AI has execution authority.
   if (
     request.proposal.proposalSourceKind === "ai" &&
-    request.actorAuthorityClass === "ai" &&
-    request.approvalRequired
+    request.actorAuthorityClass === "ai"
   ) {
     throw new CerbaSealError({
       message: "AI-originated authority path is not permitted",
@@ -223,7 +250,13 @@ function assertApprovalState(
 ): void {
   invariantChecks.push(INVARIANTS.NO_REQUIRED_APPROVAL_NO_RELEASE);
 
-  if (!request.approvalRequired) {
+  // Fix 2: Compute effective approval requirement. Certain workflow classes
+  // always require human approval regardless of the caller-supplied flag.
+  // The caller cannot opt out of approval enforcement for these workflows.
+  const effectiveApprovalRequired =
+    request.approvalRequired || WORKFLOWS_REQUIRING_APPROVAL.has(request.workflowClass);
+
+  if (!effectiveApprovalRequired) {
     return;
   }
 
@@ -233,6 +266,17 @@ function assertApprovalState(
       invariant: INVARIANTS.NO_REQUIRED_APPROVAL_NO_RELEASE,
       reasonCode: REASON_CODES.REQUIRED_APPROVAL_MISSING,
       finalState: "HOLD"
+    });
+  }
+
+  // Fix 1: Verify the approval artifact was issued for this specific request.
+  // Prevents reuse of a valid approval artifact across different requests.
+  if (request.approvalArtifact.forRequestId !== request.requestId) {
+    throw new CerbaSealError({
+      message: "Approval artifact was not issued for this request",
+      invariant: INVARIANTS.NO_REQUIRED_APPROVAL_NO_RELEASE,
+      reasonCode: REASON_CODES.INVALID_APPROVAL_AUTHORITY,
+      finalState: "REJECT"
     });
   }
 
@@ -371,14 +415,50 @@ export class ExecutionGateService {
         request.proposedActionClass
       );
 
-      return {
+      const result: GateResult = {
         decisionEnvelope,
         releaseAuthorization,
         blockedActionRecord: null
       };
+      _gateIssuedResults.add(result);
+      return result;
+
     } catch (error) {
+      // Fix 6: All exceptions produce a controlled decision artifact.
+      // Unexpected non-CerbaSealError errors are converted to a REJECT result.
+      // If the fallback itself fails (request is too broken to read), the
+      // original error is re-thrown as a last resort — still fail-closed at
+      // the caller boundary.
       if (!(error instanceof CerbaSealError)) {
-        throw error;
+        try {
+          checkedInvariants.push(INVARIANTS.REQUEST_SCHEMA_AND_ACTION_CLASS_VALID);
+          const fallbackReasonCodes: ReasonCode[] = [
+            REASON_CODES.MALFORMED_REQUEST,
+            REASON_CODES.DECISION_REJECTED
+          ];
+          const decisionEnvelope = buildDecisionEnvelope({
+            request,
+            finalState: "REJECT",
+            reasonCodes: fallbackReasonCodes,
+            checkedInvariants,
+            permittedActionClass: null
+          });
+          const blockedActionRecord = buildBlockedActionRecord({
+            request,
+            finalState: "REJECT",
+            reasonCodes: fallbackReasonCodes,
+            checkedInvariants
+          });
+          const result: GateResult = {
+            decisionEnvelope,
+            releaseAuthorization: null,
+            blockedActionRecord
+          };
+          _gateIssuedResults.add(result);
+          return result;
+        } catch {
+          throw error;
+        }
       }
 
       checkedInvariants.push(INVARIANTS.IMMUTABLE_DECISION_ENVELOPE);
@@ -405,11 +485,13 @@ export class ExecutionGateService {
         checkedInvariants
       });
 
-      return {
+      const result: GateResult = {
         decisionEnvelope,
         releaseAuthorization: null,
         blockedActionRecord
       };
+      _gateIssuedResults.add(result);
+      return result;
     }
   }
 }

@@ -47,6 +47,7 @@ export interface ProvenanceRef {
 export interface ApprovalArtifact {
   approvalId: string;
   approverId: string;
+  forRequestId: string;
   approverAuthorityClass: HumanAuthorityClass;
   privilegedAuthSatisfied: boolean;
   immutableSignature: string;

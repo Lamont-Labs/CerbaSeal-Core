@@ -39,11 +39,24 @@ export class ReplayService {
     bundle: EvidenceBundle,
     manifest: ExportManifest
   ): boolean {
+    // Fix 5: Compare actual hash values, not just array length.
+    // The previous implementation returned true for a manifest with the correct
+    // event count but completely different hash content, making the verification
+    // meaningless. Each hash in the manifest must match the corresponding entry
+    // in the bundle's event chain at the same index.
+    if (manifest.sourceEventHashes.length !== bundle.eventChain.length) {
+      return false;
+    }
+
+    const hashesMatch = manifest.sourceEventHashes.every(
+      (hash, index) => hash === bundle.eventChain[index]?.entryHash
+    );
+
     return (
       manifest.evidenceBundleId === bundle.evidenceBundleId &&
       manifest.envelopeId === bundle.decisionEnvelope.envelopeId &&
       manifest.sourceEvidenceImmutable === true &&
-      manifest.sourceEventHashes.length === bundle.eventChain.length
+      hashesMatch
     );
   }
 }

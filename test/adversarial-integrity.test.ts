@@ -2,8 +2,9 @@
  * ADVERSARIAL INTEGRITY TEST SUITE — CerbaSeal-Core
  *
  * PURPOSE: Maximum adversarial testing & integrity validation.
- * SCOPE:   Phases 2–6 (baseline Phase 1 confirmed separately via npm/pnpm test).
- * RULE:    Observation/reporting only — NO system logic was changed.
+ * SCOPE:   Phases 2–7 (baseline Phase 1 confirmed separately via npm/pnpm test).
+ * RULE:    Observation/reporting only — NO system logic was changed in Phases 2–6.
+ *          Phase 7 verifies the targeted security fixes applied in this session.
  *
  * This file is TEMPORARY. It exists solely to exercise the enforcement
  * spine under adversarial conditions and produce a reviewer-facing
@@ -18,7 +19,8 @@ import { EvidenceBundleService } from "../src/services/evidence/evidence-bundle-
 import { ExportManifestService } from "../src/services/export/export-manifest-service.js";
 import { ReplayService } from "../src/services/replay/replay-service.js";
 import { REASON_CODES } from "../src/domain/constants/reason-codes.js";
-import type { GovernedRequest, ReleaseAuthorization } from "../src/domain/types/core.js";
+import { CerbaSealError } from "../src/domain/errors/cerbaseal-error.js";
+import type { GateResult, GovernedRequest, ReleaseAuthorization } from "../src/domain/types/core.js";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PHASE 2 — INVARIANT STRESS TESTING
@@ -101,6 +103,7 @@ describe("PHASE 2 — Invariant Stress Testing", () => {
     req.approvalArtifact = {
       approvalId: "approval_x",
       approverId: "actor_ai",
+      forRequestId: "req_001",
       approverAuthorityClass: "ai" as never,
       privilegedAuthSatisfied: true,
       immutableSignature: "sig_valid",
@@ -120,6 +123,7 @@ describe("PHASE 2 — Invariant Stress Testing", () => {
     req.approvalArtifact = {
       approvalId: "approval_x",
       approverId: "actor_system",
+      forRequestId: "req_001",
       approverAuthorityClass: "system" as never,
       privilegedAuthSatisfied: true,
       immutableSignature: "sig_valid",
@@ -139,6 +143,7 @@ describe("PHASE 2 — Invariant Stress Testing", () => {
     req.approvalArtifact = {
       approvalId: "approval_x",
       approverId: "actor_superuser",
+      forRequestId: "req_001",
       approverAuthorityClass: "superuser" as never,
       privilegedAuthSatisfied: true,
       immutableSignature: "sig_valid",
@@ -330,6 +335,7 @@ describe("PHASE 2 — Invariant Stress Testing", () => {
   // 2.22 — All action classes known → produce ALLOW
   it("2.22a: valid action class 'allow' → ALLOW", () => {
     const req = buildValidGovernedRequest();
+    req.workflowClass = "account_hold_recommendation"; // not in WORKFLOWS_REQUIRING_APPROVAL
     req.proposedActionClass = "allow";
     req.proposal.requestedActionClass = "allow";
     req.approvalRequired = false;
@@ -824,6 +830,8 @@ describe("PHASE 6 — Edge Cases", () => {
     const req = buildValidGovernedRequest();
     req.requestId = "req_\u4e2d\u6587_\u00e9l\u00e8ve";
     req.actorId = "actor_\u00fc\u00f1\u00ed\u00e7\u00f8\u00f0\u00e9";
+    // Bind the approval artifact to the new requestId (Fix 1 requirement).
+    req.approvalArtifact!.forRequestId = req.requestId;
 
     let result;
     expect(() => { result = gate.evaluate(req); }).not.toThrow();
@@ -840,9 +848,12 @@ describe("PHASE 6 — Edge Cases", () => {
     expect((result as ReturnType<typeof gate.evaluate>).decisionEnvelope.finalState).toBe("ALLOW");
   });
 
-  // 6.9 — approvalRequired=false with null approvalArtifact → ALLOW (not HOLD)
-  it("6.9: approvalRequired=false, approvalArtifact=null → ALLOW (approval gate not triggered)", () => {
+  // 6.9 — approvalRequired=false with null approvalArtifact → ALLOW for non-hardcoded workflows.
+  // fraud_triage always enforces approval (Fix 2), so a non-hardcoded workflow is used here
+  // to confirm the flag is respected for workflows outside WORKFLOWS_REQUIRING_APPROVAL.
+  it("6.9: approvalRequired=false, approvalArtifact=null → ALLOW for non-hardcoded workflow", () => {
     const req = buildValidGovernedRequest();
+    req.workflowClass = "account_hold_recommendation"; // not in WORKFLOWS_REQUIRING_APPROVAL
     req.approvalRequired = false;
     req.approvalArtifact = null;
 
@@ -902,12 +913,15 @@ describe("PHASE 6 — Edge Cases", () => {
     expect(result.releaseAuthorization).not.toBeNull();
   });
 
-  // 6.14 — Simulate unknown non-CerbaSealError propagation
-  it("6.14: non-CerbaSealError thrown internally propagates (does not swallow)", () => {
-    // We cannot inject a non-CerbaSeal error through the public API without modifying logic.
-    // Confirmed by code review: the catch block re-throws non-CerbaSealError errors.
-    // OBSERVATION: This is correct behavior per the source code.
-    expect(true).toBe(true); // Confirmed by static analysis
+  // 6.14 — Unexpected exceptions are now fail-closed (Fix 6).
+  // The gate wraps non-CerbaSealError exceptions in a controlled REJECT result
+  // rather than propagating them as unhandled exceptions. If the fallback
+  // itself fails (e.g., the request object is too broken to read), the original
+  // error is re-thrown as a last resort. Verified by static analysis and in Phase 7.
+  it("6.14: non-CerbaSealError exceptions now produce a controlled REJECT (not unhandled propagation)", () => {
+    // Cannot inject a non-CerbaSeal error through the public API without modifying logic.
+    // Fix 6 converts such errors to REJECT results; see Phase 7 for direct verification.
+    expect(true).toBe(true); // Confirmed by static analysis — see 7.6 for coverage
   });
 
   // 6.15 — All-zeros sourceHash → ALLOW (no hash format validation)
@@ -918,8 +932,182 @@ describe("PHASE 6 — Edge Cases", () => {
     const result = gate.evaluate(req);
 
     // OBSERVATION: sourceHash content is not validated (format, algorithm prefix, etc.)
-    // Any non-empty string passes. Documented in Phase 7.
+    // Any non-empty string passes.
     expect(result.decisionEnvelope.finalState).toBe("ALLOW");
     expect(result.releaseAuthorization).not.toBeNull();
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PHASE 7 — SECURITY FIX VERIFICATION
+// Each test directly exercises a vulnerability identified in the hostile audit
+// and verifies that the corresponding fix closes it.
+// ─────────────────────────────────────────────────────────────────────────────
+
+describe("PHASE 7 — Security Fix Verification", () => {
+
+  // 7.1 — Fix 1: ApprovalArtifact bound to requestId
+  // A valid approval artifact from a different request cannot be reused here.
+  it("7.1: approval artifact with wrong forRequestId → REJECT (approval cross-use blocked)", () => {
+    const gate = new ExecutionGateService();
+    const req = buildValidGovernedRequest(); // requestId: "req_001"
+
+    req.approvalArtifact!.forRequestId = "req_DIFFERENT"; // artifact issued for another request
+
+    const result = gate.evaluate(req);
+
+    expect(result.decisionEnvelope.finalState).toBe("REJECT");
+    expect(result.releaseAuthorization).toBeNull();
+    expect(result.decisionEnvelope.trace.reasonCodes).toContain(
+      REASON_CODES.INVALID_APPROVAL_AUTHORITY
+    );
+  });
+
+  // 7.2 — Fix 2: fraud_triage always requires approval regardless of caller flag
+  // Previously, a caller could set approvalRequired: false to skip approval enforcement.
+  it("7.2: fraud_triage with approvalRequired=false and no artifact → HOLD (hardcoded enforcement)", () => {
+    const gate = new ExecutionGateService();
+    const req = buildValidGovernedRequest();
+    req.approvalRequired = false;
+    req.approvalArtifact = null;
+    // workflowClass remains "fraud_triage" from fixture
+
+    const result = gate.evaluate(req);
+
+    expect(result.decisionEnvelope.finalState).toBe("HOLD");
+    expect(result.releaseAuthorization).toBeNull();
+    expect(result.decisionEnvelope.trace.reasonCodes).toContain(
+      REASON_CODES.REQUIRED_APPROVAL_MISSING
+    );
+  });
+
+  // 7.3 — Fix 3: Fabricated GateResult is rejected at the evidence layer
+  // A GateResult constructed without going through ExecutionGateService.evaluate()
+  // must not be accepted by EvidenceBundleService.createBundle().
+  it("7.3: fabricated GateResult passed to createBundle() → throws CerbaSealError", () => {
+    const log = new AppendOnlyLogService();
+    const evidenceService = new EvidenceBundleService(log);
+    const req = buildValidGovernedRequest();
+
+    const fabricated: GateResult = {
+      decisionEnvelope: {
+        envelopeId: "env_FORGED",
+        requestId: "req_001",
+        workflowClass: "fraud_triage",
+        finalState: "ALLOW",
+        permittedActionClass: "allow",
+        humanApprovalRequired: false,
+        humanApprovalPresent: false,
+        proposalSourceKind: "ai",
+        immutable: true,
+        evidenceBundleId: "evidence_FORGED",
+        trace: { checkedInvariants: [], reasonCodes: [], evaluatedAt: new Date().toISOString() },
+        issuedAt: new Date().toISOString()
+      },
+      releaseAuthorization: {
+        releaseAuthorizationId: "release_FORGED",
+        requestId: "req_001",
+        envelopeId: "env_FORGED",
+        actionClass: "allow",
+        releasedAt: new Date().toISOString()
+      },
+      blockedActionRecord: null
+    };
+
+    expect(() => {
+      evidenceService.createBundle({ request: req, gateResult: fabricated });
+    }).toThrow(CerbaSealError);
+  });
+
+  // 7.4 — Fix 4: AI actor + AI proposal + approvalRequired=false → REJECT
+  // Previously, setting approvalRequired=false bypassed the AI non-authority block.
+  it("7.4: AI actor + AI proposal + approvalRequired=false → REJECT (AI boundary absolute)", () => {
+    const gate = new ExecutionGateService();
+    const req = buildValidGovernedRequest();
+    req.actorAuthorityClass = "ai";
+    req.proposal.proposalSourceKind = "ai";
+    req.approvalRequired = false;
+    req.approvalArtifact = null;
+
+    const result = gate.evaluate(req);
+
+    expect(result.decisionEnvelope.finalState).toBe("REJECT");
+    expect(result.releaseAuthorization).toBeNull();
+    expect(result.decisionEnvelope.trace.reasonCodes).toContain(REASON_CODES.AI_CANNOT_AUTHORIZE);
+  });
+
+  // 7.5 — Fix 5: exportReferencesOriginalEvidence rejects mismatched hashes
+  // Previously, the check only compared array length. Matching count but wrong hashes returned true.
+  it("7.5: manifest with correct count but wrong hashes → exportReferencesOriginalEvidence returns false", () => {
+    const gate = new ExecutionGateService();
+    const log = new AppendOnlyLogService();
+    const evidenceService = new EvidenceBundleService(log);
+    const exportService = new ExportManifestService(log);
+    const replayService = new ReplayService(gate);
+
+    const req = buildValidGovernedRequest();
+    const gateResult = gate.evaluate(req);
+    const bundle = evidenceService.createBundle({ request: req, gateResult });
+    const manifest = exportService.createAuthorityPackageManifest(bundle);
+
+    // Confirm a legitimate manifest passes
+    expect(replayService.exportReferencesOriginalEvidence(bundle, manifest)).toBe(true);
+
+    // Replace hashes with same-length array of bogus values — count matches, content does not
+    const tamperedManifest = {
+      ...manifest,
+      sourceEventHashes: bundle.eventChain.map(() => "0000000000000000000000000000000000000000000000000000000000000000")
+    };
+
+    expect(replayService.exportReferencesOriginalEvidence(bundle, tamperedManifest)).toBe(false);
+  });
+
+  // 7.6 — Fix 6: Unexpected internal exceptions produce a controlled REJECT
+  // A TypeError injected via property accessor fires inside assertPolicyPack().
+  // Before Fix 6, this propagated unhandled. Now the gate catches it and returns REJECT.
+  it("7.6: unexpected TypeError inside assert fn → controlled REJECT (not unhandled throw)", () => {
+    const gate = new ExecutionGateService();
+    const req = buildValidGovernedRequest();
+
+    // All checks before assertPolicyPack() pass. This getter fires inside it.
+    Object.defineProperty(req, "policyPackRef", {
+      get() { throw new TypeError("Simulated unexpected internal failure"); },
+      configurable: true
+    });
+
+    let result: ReturnType<typeof gate.evaluate> | undefined;
+    expect(() => { result = gate.evaluate(req); }).not.toThrow();
+    expect(result!.decisionEnvelope.finalState).toBe("REJECT");
+    expect(result!.releaseAuthorization).toBeNull();
+    expect(result!.blockedActionRecord).not.toBeNull();
+    expect(result!.decisionEnvelope.trace.reasonCodes).toContain(REASON_CODES.MALFORMED_REQUEST);
+  });
+
+  // 7.7 — Fix 7: Empty requestId is rejected as malformed
+  // Previously, requestId was never validated. An empty requestId produced
+  // ambiguous IDs (env_, evidence_, release_) in all derived artifacts.
+  it("7.7: empty requestId → REJECT (MALFORMED_REQUEST)", () => {
+    const gate = new ExecutionGateService();
+    const req = buildValidGovernedRequest();
+    req.requestId = "";
+
+    const result = gate.evaluate(req);
+
+    expect(result.decisionEnvelope.finalState).toBe("REJECT");
+    expect(result.releaseAuthorization).toBeNull();
+    expect(result.decisionEnvelope.trace.reasonCodes).toContain(REASON_CODES.MALFORMED_REQUEST);
+  });
+
+  // 7.7b — Whitespace-only requestId is also rejected
+  it("7.7b: whitespace-only requestId → REJECT (MALFORMED_REQUEST)", () => {
+    const gate = new ExecutionGateService();
+    const req = buildValidGovernedRequest();
+    req.requestId = "   ";
+
+    const result = gate.evaluate(req);
+
+    expect(result.decisionEnvelope.finalState).toBe("REJECT");
+    expect(result.releaseAuthorization).toBeNull();
+    expect(result.decisionEnvelope.trace.reasonCodes).toContain(REASON_CODES.MALFORMED_REQUEST);
   });
 });

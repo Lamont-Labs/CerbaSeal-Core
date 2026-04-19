@@ -9,6 +9,7 @@
 import type { GateResult, GovernedRequest } from "../../domain/types/core.js";
 import type { EvidenceBundle } from "../../domain/types/audit.js";
 import { AppendOnlyLogService } from "../audit/append-only-log-service.js";
+import { assertIsGateIssued } from "../execution/execution-gate-service.js";
 
 function nowIso(): string {
   return new Date().toISOString();
@@ -26,6 +27,11 @@ export class EvidenceBundleService {
     gateResult: GateResult;
   }): EvidenceBundle {
     const { request, gateResult } = args;
+
+    // Fix 3: Reject GateResult objects that were not produced by ExecutionGateService.evaluate().
+    // This closes the path where a caller self-constructs a GateResult and feeds it directly
+    // into the evidence layer, bypassing all invariant checks.
+    assertIsGateIssued(gateResult);
 
     this.logService.append({
       requestId: request.requestId,

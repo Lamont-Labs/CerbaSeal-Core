@@ -31,6 +31,7 @@ export function buildValidGovernedRequest(): GovernedRequest {
     approvalArtifact: {
       approvalId: "approval_001",
       approverId: "reviewer_001",
+      forRequestId: "req_001",
       approverAuthorityClass: "reviewer",
       privilegedAuthSatisfied: true,
       immutableSignature: "sig_immutable_001",
