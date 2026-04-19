@@ -31,6 +31,31 @@ CerbaSeal does not describe governance after the fact. It makes governance const
 
 ---
 
+## What Enforcement Claim This Proves
+
+CerbaSeal proves the following claim:
+
+> All consequential actions evaluated through the gate are subject to a complete invariant check set. Invalid, incomplete, or unauthorized requests cannot produce a release authorization. Outcomes are deterministic, auditable, and replayable.
+
+This claim is inspectable. Every part of it is backed by runnable code and passing tests.
+
+---
+
+## Start Here for Reviewers
+
+| Document | Purpose |
+|---|---|
+| `docs/trust_boundaries.md` | What is trusted, untrusted, and conditionally trusted |
+| `docs/execution_boundary.md` | The single gate: what must be true before release |
+| `docs/control_matrix.md` | Control → enforcement point → failure behavior → evidence |
+| `specs/approval_artifact.md` | What counts as a valid approval in the proof slice |
+| `docs/system_boundary.md` | What CerbaSeal does and does not do |
+| `docs/current_maturity.md` | Honest assessment of maturity and known gaps |
+| `docs/reconstructability.md` | How to inspect or reconstruct a governed decision |
+| `docs/runtime_context.md` | Language, dependencies, and what is intentionally omitted |
+
+---
+
 ## System Flow
 
 ```
@@ -41,15 +66,13 @@ There is no valid execution path outside this flow.
 
 ---
 
-## Core Concept
+## The Single Proof Path
 
-All actions must pass through a single execution gate.
+```
+src/services/execution/execution-gate-service.ts
+```
 
-If any invariant fails:
-
-- execution is blocked
-- the decision is recorded
-- no release is issued
+`ExecutionGateService.evaluate()` is the sole decision point. All invariant checks occur here. `ReleaseAuthorization` is issued only on full success. Every other outcome routes to a blocked decision record.
 
 ---
 
@@ -62,7 +85,7 @@ If any invariant fails:
 - Stale controls block sensitive actions
 - Invalid trust state blocks execution
 
-This enforcement layer has been adversarially tested against invariant violations, bypass attempts, and edge-case inputs with zero incorrect execution outcomes.
+Adversarially tested. 88 / 88 tests pass. No invariant violations. No incorrect execution outcomes.
 
 ---
 
@@ -78,83 +101,76 @@ CerbaSeal is designed to fail closed under all invalid or incomplete conditions.
 | Prohibited use | REJECT — immediate rejection |
 | Logging unavailable | REJECT — execution blocked |
 
-All failure states still produce governed artifacts:
-
-- decision envelope
-- blocked action record
-- audit log entries
-
-No failure condition degrades into silent execution.
+All failure states produce governed artifacts: decision envelope, blocked action record, audit log entries. No failure condition degrades into silent execution.
 
 ---
 
-## Review Path
+## Trust Boundaries
 
-**Start with the documentation:**
+Trust boundary definitions live in `docs/trust_boundaries.md`.
+
+In brief:
+- Inbound requests are untrusted until validated by the gate
+- AI proposals are structurally untrusted and cannot satisfy approval requirements
+- Approval artifacts are conditionally trusted only after passing all authority checks
+- The audit log is trusted once entries are committed
+- Evidence bundles are authoritative from the point of creation
+
+Known structural limitations — including the inability to prove gate invocation, and the absence of cryptographic chain anchoring — are documented explicitly in `docs/09-trust-boundary-and-limitations.md` and `docs/current_maturity.md`.
+
+---
+
+## Implementation Inspection Path
+
+**Documentation:**
 
 1. `docs/00-reviewer-start-here.md`
-2. `docs/01-system-definition.md`
-3. `docs/06-runtime-layer-stack.md`
-4. `docs/07-invariant-model.md`
-5. `docs/13-non-bypassability-model.md`
+2. `docs/trust_boundaries.md`
+3. `docs/execution_boundary.md`
+4. `docs/control_matrix.md`
+5. `docs/07-invariant-model.md`
 6. `architecture/invariants/invariant-registry.yaml`
 
-**Then inspect the implementation:**
+**Core implementation:**
 
 - `src/services/execution/execution-gate-service.ts` — single enforcement gate
 - `src/services/audit/append-only-log-service.ts` — hash-chained audit log
 - `src/services/evidence/evidence-bundle-service.ts` — evidence assembly
 - `src/services/export/export-manifest-service.ts` — export manifest
 - `src/services/replay/replay-service.ts` — replay consistency
+- `src/services/diagnostics/diagnostic-report-service.ts` — diagnostic reports
 
-**Then inspect the tests:**
+**Tests:**
 
 - `test/execution-gate-service.test.ts`
 - `test/audit-evidence-export.test.ts`
 - `test/adversarial-integrity.test.ts`
+- `test/diagnostic-report-service.test.ts`
 
 ---
 
-## Scope Boundary
+## What Remains Outside Scope Until Pilot
 
-### What is implemented
-
-- execution gate with full invariant enforcement
-- approval boundary enforcement
-- blocked-action and release-authorization semantics
-- append-only audit log chain with hash verification
-- evidence bundle generation
-- export manifest generation
-- replay consistency checks
-
-### What is out of scope for this review package
-
-- client-specific workflow logic
-- real customer policy packs
+- client-specific workflow logic and request construction
+- real customer policy packs and policy resolution
 - integrations into client systems
-- multi-workflow productization
-- production infrastructure mapping
-- full deployment hardening
+- persistent storage layer
+- identity provider integration
+- production infrastructure and deployment hardening
+- cryptographic signing of decision artifacts
 
----
-
-## Adversarial Validation
-
-This enforcement layer has been independently tested under adversarial conditions covering invariant violations, bypass attempts, audit-chain integrity, replay consistency, and edge-case inputs.
-
-- `docs/06-adversarial-validation-summary.md` — summary of testing scope and findings
-- `docs/reports/adversarial/cerbaseal-core-adversarial-integrity-2026-04-18.md` — full report
-
-**Result:** 83 / 83 tests passed. No invariant violations. No incorrect execution outcomes.
+These are not omitted by accident. They require client-specific implementation and are the subject of a paid pilot engagement.
 
 ---
 
 ## Running the Repository
 
 ```bash
-npm install
-npm test
+pnpm install
+pnpm test
 ```
+
+No network access. No environment setup. No external services required.
 
 ---
 

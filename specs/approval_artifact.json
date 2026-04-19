@@ -1,0 +1,6 @@
+{
+  "$comment": "Example of a valid approval artifact in the CerbaSeal proof slice. See specs/approval_artifact.md for field requirements.",
+  "approverAuthorityClass": "compliance_officer",
+  "privilegedAuthSatisfied": true,
+  "immutableSignature": "sha256:a3f1c9e82b4d07f5e6c91b3a4d8f0e2c7b5a1d9f3e8c6b4a2d0f9e7c5b3a1d8"
+}
