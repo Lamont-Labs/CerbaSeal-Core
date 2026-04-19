@@ -127,4 +127,34 @@ describe("DiagnosticReportService", () => {
     expect(provenanceInvariant?.status).toBe("FAIL");
     expect(provenanceInvariant?.explanation).toContain("provenanceRef is null");
   });
+
+  it("escalates immediately when replay mismatch is detected on an allowed request", () => {
+    const request = buildValidGovernedRequest();
+    const gate = new ExecutionGateService();
+    const log = new AppendOnlyLogService();
+    const evidenceService = new EvidenceBundleService(log);
+    const diagnosticService = new DiagnosticReportService();
+
+    const gateResult = gate.evaluate(request);
+    const evidenceBundle = evidenceService.createBundle({ request, gateResult });
+
+    const report = diagnosticService.createReport({
+      request,
+      gateResult,
+      evidenceBundle,
+      replayResult: {
+        originalRequestId: request.requestId,
+        originalEnvelopeId: gateResult.decisionEnvelope.envelopeId,
+        replayedFinalState: "REJECT",
+        replayedPermittedActionClass: null,
+        matchedOriginalOutcome: false,
+        replayedAt: new Date().toISOString()
+      },
+      chainVerified: true
+    });
+
+    expect(report.summary.severity).toBe("CRITICAL");
+    expect(report.summary.replayMatchedOriginalOutcome).toBe(false);
+    expect(report.recommendedNextAction.action).toContain("Escalate immediately");
+  });
 });

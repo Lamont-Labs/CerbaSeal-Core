@@ -131,7 +131,11 @@ function buildInvariantChecks(
       explanation:
         request.provenanceRef === null
           ? "provenanceRef is null"
-          : "provenanceRef present and non-empty"
+          : request.provenanceRef.modelVersion.trim().length === 0 ||
+            request.provenanceRef.ruleSetVersion.trim().length === 0 ||
+            request.provenanceRef.sourceHash.trim().length === 0
+            ? "provenanceRef present but one or more required fields are empty or invalid"
+            : "provenanceRef present and non-empty"
     },
     {
       invariantId: "INV-03",
@@ -276,7 +280,14 @@ function buildDecisionPath(
   } as const;
 }
 
-function buildRecommendedAction(gateResult: GateResult) {
+function buildRecommendedAction(gateResult: GateResult, replayResult: ReplayResult) {
+  if (!replayResult.matchedOriginalOutcome) {
+    return {
+      action: "Escalate immediately — replay mismatch detected. Do not trust this outcome.",
+      rationale: "The decision produced by the execution gate does not match replay. This indicates a potential inconsistency in policy evaluation or state."
+    };
+  }
+
   const primaryReason = detectPrimaryReason(gateResult);
 
   if (gateResult.decisionEnvelope.finalState === "ALLOW") {
@@ -380,7 +391,7 @@ export class DiagnosticReportService {
         lastEventHash: evidenceBundle.eventChain[evidenceBundle.eventChain.length - 1]?.entryHash ?? null,
         chainVerified
       },
-      recommendedNextAction: buildRecommendedAction(gateResult),
+      recommendedNextAction: buildRecommendedAction(gateResult, replayResult),
       rawArtifacts: {
         request,
         gateResult,
