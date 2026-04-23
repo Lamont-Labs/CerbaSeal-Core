@@ -1,5 +1,15 @@
 # Reviewer Start Here
 
+## Start Here (Recommended)
+
+If you are new to CerbaSeal, begin with:
+
+→ `docs/demo/enforcement-loop.md`
+
+This document shows the system's full enforcement loop (REJECT / HOLD / ALLOW) in a single, real-world scenario.
+
+---
+
 ## Purpose
 
 This repository is the **minimum reviewable enforcement package** for CerbaSeal.
