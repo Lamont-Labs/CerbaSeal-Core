@@ -1,6 +1,9 @@
 # High-Risk Transaction Escalation — Workflow
 
-This is the simplified walkthrough of the Aurelion Bank enforcement workflow. For the full canonical definition, see [client-workflow-canonical.md](./client-workflow-canonical.md).
+This workflow is a reference example demonstrating CerbaSeal behavior in a high-risk environment.  
+It is not limited to fraud systems and can be mapped to any domain involving controlled actions.
+
+This is the simplified walkthrough of the reference enforcement workflow. For the full canonical definition, see [client-workflow-canonical.md](./client-workflow-canonical.md).
 
 ---
 

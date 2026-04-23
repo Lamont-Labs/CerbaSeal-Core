@@ -10,4 +10,5 @@ Then:
 → [workflow-trace-mapping.md](./workflow-trace-mapping.md)  
 → [workflow-diagram.md](./workflow-diagram.md)  
 
-All documents derive from a single canonical workflow definition.
+All documents represent a reference workflow used to demonstrate CerbaSeal's enforcement model.  
+This example is not domain-specific.

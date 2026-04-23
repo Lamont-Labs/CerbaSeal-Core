@@ -1,12 +1,15 @@
-# Aurelion Bank — Client Context
+# Reference Context — Example EU Fintech System
 
 ## Overview
 
-Aurelion Bank is an EU-based fintech that processes cross-border transactions. It uses AI models to detect fraud patterns and assist human analysts in reviewing flagged activity.
+An example EU fintech system processes cross-border transactions. It uses AI models to detect fraud patterns and assist human analysts in reviewing flagged activity.
+
+This context represents a typical high-risk decision environment.  
+CerbaSeal is not specific to financial systems and can apply to any domain requiring controlled execution.
 
 ## Regulatory Context
 
-Aurelion Bank operates under regulatory requirements that prohibit executing any high-risk action — such as account restriction or transaction escalation — without:
+This system operates under regulatory requirements that prohibit executing any high-risk action — such as account restriction or transaction escalation — without:
 
 - Verified human authority
 - A complete audit trace

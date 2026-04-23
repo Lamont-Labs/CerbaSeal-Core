@@ -18,6 +18,9 @@ CerbaSeal sits between AI systems and execution layers and determines whether an
 - HELD (missing required conditions)
 - ALLOWED (fully authorized)
 
+CerbaSeal is domain-agnostic.  
+The included demo uses a fintech-style workflow as a reference example, but the enforcement model applies to any high-risk action system.
+
 ## Why It Matters
 
 Most AI systems rely on policy.

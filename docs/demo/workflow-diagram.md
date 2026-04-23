@@ -1,6 +1,6 @@
 # Workflow Diagram
 
-## Aurelion Bank — High-Risk Transaction Escalation
+## High-Risk Action Enforcement — Reference Workflow
 
 ```
 AI Detection

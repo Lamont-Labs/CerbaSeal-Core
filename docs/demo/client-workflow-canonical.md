@@ -1,8 +1,12 @@
-# Aurelion Bank — High-Risk Transaction Enforcement Workflow
+# Reference Workflow — High-Risk Action Enforcement (EU Fintech Example)
+
+> This document describes a reference workflow used to demonstrate CerbaSeal behavior.  
+> It is not tied to a specific institution or deployment.  
+> The same enforcement pattern applies across domains where high-risk actions require controlled authorization.
 
 ## Context
 
-Aurelion Bank is an EU-based fintech processing cross-border transactions.  
+An EU-based fintech processes cross-border transactions.  
 It uses AI models to detect fraud patterns and assist analysts.
 
 Due to regulatory requirements, no high-risk action (e.g., account restriction, escalation) may be executed without:

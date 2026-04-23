@@ -1,6 +1,9 @@
 # Workflow Trace Mapping
 
-This document maps each enforcement trace in the demo to its corresponding step in the Aurelion Bank High-Risk Transaction Escalation workflow. See [client-workflow-canonical.md](./client-workflow-canonical.md) for the full workflow definition.
+The following mappings show how real execution traces align with a reference workflow.  
+These traces demonstrate enforcement behavior independent of domain.
+
+This document maps each enforcement trace in the demo to its corresponding step in the reference High-Risk Action Enforcement workflow. See [client-workflow-canonical.md](./client-workflow-canonical.md) for the full workflow definition.
 
 ---
 
