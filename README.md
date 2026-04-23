@@ -32,11 +32,21 @@ It does not determine whether an action is the correct one to take.
 
 See: [docs/architecture/enforcement-boundary.md](docs/architecture/enforcement-boundary.md)
 
+## Integration
+
+See:
+- [docs/integration/integration-spec.md](docs/integration/integration-spec.md)
+- [docs/integration/system-flow.md](docs/integration/system-flow.md)
+- [docs/deployment/deployment-modes.md](docs/deployment/deployment-modes.md)
+
+CerbaSeal is designed to be embedded as a deterministic enforcement layer.
+
 ## Repo Structure
 
 /docs/ — documentation  
 /src/ — core system  
 /test/ — validation  
+/examples/ — non-binding integration examples  
 
 ## Status
 
