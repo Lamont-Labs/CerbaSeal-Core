@@ -23,6 +23,21 @@ The same analyst resubmits after a compliance officer reviews and formally appro
 
 ---
 
+## Real-World Workflow Context
+
+This scenario is derived from the Aurelion Bank High-Risk Transaction Escalation workflow, in which an EU-based fintech must enforce verified human authority over all high-risk account actions.
+
+- The AI Detection System identifies suspicious transactions and generates proposals, but holds no execution authority
+- The Fraud Analyst reviews flagged cases and proposes actions, but cannot self-approve sensitive operations
+- The Compliance Officer issues approvals bound to specific requests and holds the sole execution authority for sensitive actions
+- CerbaSeal sits between all decision-making systems and the execution layer — no action reaches execution without passing through the enforcement gate
+- The three traces in this document (REJECT, HOLD, ALLOW) map directly to Steps 2, 4, and 6 of that workflow
+
+Full workflow definition: [client-workflow-canonical.md](./client-workflow-canonical.md)  
+Simplified walkthrough: [fraud-workflow.md](./fraud-workflow.md)
+
+---
+
 ## 3. The Enforcement Loop
 
 Every request goes through the same four steps:
