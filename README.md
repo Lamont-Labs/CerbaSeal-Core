@@ -27,6 +27,9 @@ Most AI systems rely on policy.
 
 CerbaSeal enforces it.
 
+CerbaSeal ensures that only properly authorized actions execute.  
+It does not determine whether an action is the correct one to take.
+
 ## Repo Structure
 
 /docs/ — documentation  

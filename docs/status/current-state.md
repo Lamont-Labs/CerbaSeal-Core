@@ -78,6 +78,24 @@ The following are documented, intentionally accepted limitations for this proof 
 
 ---
 
+## Enforcement Boundary
+
+CerbaSeal enforces structural validity and authorization requirements.
+
+It does NOT evaluate:
+- correctness of the action
+- quality of reasoning
+- intent or outcome suitability
+
+Contextual correctness must be enforced by:
+- upstream decision systems
+- human reviewers
+- domain-specific policy engines
+
+This boundary is tested explicitly in `test/security/contextual-boundary.test.ts`.
+
+---
+
 ## Not Production-Hardened
 
 This system does not include:
