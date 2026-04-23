@@ -8,7 +8,7 @@ CerbaSeal is a decision gate that sits between an AI-assisted system and any con
 
 ## 2. The Scenario
 
-A European financial institution uses CerbaSeal to govern fraud triage decisions. An account has triggered two risk signals: a sanctions list match and a dormant account reactivation. The system must decide whether to place an account hold.
+Aurelion Bank uses CerbaSeal to govern fraud triage decisions. An account has triggered two risk signals: a sanctions list match and a dormant account reactivation. The system must decide whether to place an account hold.
 
 Three attempts are made on this scenario, each with different actors and conditions.
 
