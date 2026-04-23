@@ -39,6 +39,16 @@ Simplified walkthrough: [fraud-workflow.md](./fraud-workflow.md)
 
 ---
 
+## Enforcement Boundary
+
+This example demonstrates how CerbaSeal enforces authorization.
+
+It does not evaluate whether the action itself is correct.
+
+See: [../architecture/enforcement-boundary.md](../architecture/enforcement-boundary.md)
+
+---
+
 ## 3. The Enforcement Loop
 
 Every request goes through the same four steps:

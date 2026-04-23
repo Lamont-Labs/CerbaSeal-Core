@@ -30,6 +30,8 @@ CerbaSeal enforces it.
 CerbaSeal ensures that only properly authorized actions execute.  
 It does not determine whether an action is the correct one to take.
 
+See: [docs/architecture/enforcement-boundary.md](docs/architecture/enforcement-boundary.md)
+
 ## Repo Structure
 
 /docs/ — documentation  

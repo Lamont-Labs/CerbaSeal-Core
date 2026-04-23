@@ -1,5 +1,13 @@
 # Reviewer Start Here
 
+Before reviewing the system:
+
+→ Read: [docs/architecture/enforcement-boundary.md](architecture/enforcement-boundary.md)
+
+This defines what the system does and does not do.
+
+---
+
 ## Start Here (Recommended)
 
 If you are new to CerbaSeal, begin with:

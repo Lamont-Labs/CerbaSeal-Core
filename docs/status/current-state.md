@@ -56,6 +56,8 @@ Seven targeted security fixes were applied following a hostile audit:
 
 The following are documented, intentionally accepted limitations for this proof slice. They are not implementation oversights.
 
+- Contextual correctness is not evaluated by design.
+
 **Not validated at runtime:**
 - `approvedAt` — no expiry check, no timestamp format validation
 - `immutableSignature` content — any non-empty string passes; no cryptographic verification
