@@ -15,10 +15,10 @@ This trace represents the moment the AI Detection System attempts to escalate a 
 
 ## trace_hold_001 → Step 4 (Missing Approval — Paused)
 
-This trace represents the Fraud Analyst's review of the same case. The actor is human, the action is `account_hold`, and the request is otherwise valid. However, the workflow requires explicit compliance approval for sensitive actions, and no approval artifact is attached. CerbaSeal evaluates this and finds the required approval missing. The result is HOLD. A DecisionEnvelope and EvidenceBundle are produced. The action is paused until approval is supplied.
+This trace represents the Analyst's review of the same case. The actor is human, the action is `account_hold`, and the request is otherwise valid. However, the workflow requires explicit compliance approval for sensitive actions, and no approval artifact is attached. CerbaSeal evaluates this and finds the required approval missing. The result is HOLD. A DecisionEnvelope and EvidenceBundle are produced. The action is paused until approval is supplied.
 
 ---
 
 ## trace_allow_001 → Step 6 (Authorized Execution)
 
-This trace represents the re-submission of the analyst's request after the Compliance Officer has issued approval. The approval artifact is bound to the specific requestId, includes a signature, and carries the compliance officer's authority classification. CerbaSeal evaluates all invariants and finds them satisfied. The result is ALLOW. A DecisionEnvelope, ReleaseAuthorization, and EvidenceBundle are produced. The `account_hold` proceeds to execution.
+This trace represents the re-submission of the analyst's request after the Compliance Authority has issued approval. The approval artifact is bound to the specific requestId, includes a signature, and carries the compliance officer's authority classification. CerbaSeal evaluates all invariants and finds them satisfied. The result is ALLOW. A DecisionEnvelope, ReleaseAuthorization, and EvidenceBundle are produced. The `account_hold` proceeds to execution.

@@ -31,5 +31,5 @@ Execution + Audit
 | Step | Actor | Approval | Result |
 |---|---|---|---|
 | AI Attempt | AI Detection System | None (AI) | REJECT |
-| Analyst Action | Fraud Analyst | Missing | HOLD |
-| Approved Request | Fraud Analyst + Compliance Officer | Present and bound | ALLOW |
+| Analyst Action | Analyst | Missing | HOLD |
+| Approved Request | Analyst + Compliance Authority | Present and bound | ALLOW |

@@ -6,7 +6,7 @@
 
 ## Context
 
-An EU-based fintech processes cross-border transactions.  
+An domain-agnostic regulated system processes cross-border transactions.  
 It uses AI models to detect fraud patterns and assist analysts.
 
 Due to regulatory requirements, no high-risk action (e.g., account restriction, escalation) may be executed without:
@@ -27,11 +27,11 @@ CerbaSeal is placed between:
 - Identifies suspicious activity
 - Produces proposals (non-authoritative)
 
-### 2. Fraud Analyst
+### 2. Analyst
 - Reviews flagged cases
 - Proposes operational actions
 
-### 3. Compliance Officer
+### 3. Compliance Authority
 - Grants approval for sensitive actions
 - Holds execution authority
 

@@ -8,7 +8,7 @@ CerbaSeal is a decision gate that sits between an AI-assisted system and any con
 
 ## 2. The Scenario
 
-An EU-based fintech uses CerbaSeal to govern fraud triage decisions. An account has triggered two risk signals: a sanctions list match and a dormant account reactivation. The system must decide whether to place an account hold.
+An domain-agnostic regulated system uses CerbaSeal to govern fraud triage decisions. An account has triggered two risk signals: a sanctions list match and a dormant account reactivation. The system must decide whether to place an account hold.
 
 Three attempts are made on this scenario, each with different actors and conditions.
 
@@ -29,8 +29,8 @@ This example demonstrates how CerbaSeal operates within a representative high-ri
 The same enforcement model applies to any system where actions must be authorized before execution.
 
 - The AI Detection System identifies high-risk activity and generates proposals, but holds no execution authority
-- The Fraud Analyst reviews flagged cases and proposes actions, but cannot self-approve sensitive operations
-- The Compliance Officer issues approvals bound to specific requests and holds the sole execution authority for sensitive actions
+- The Analyst reviews flagged cases and proposes actions, but cannot self-approve sensitive operations
+- The Compliance Authority issues approvals bound to specific requests and holds the sole execution authority for sensitive actions
 - CerbaSeal sits between all decision-making systems and the execution layer — no action reaches execution without passing through the enforcement gate
 - The three traces in this document (REJECT, HOLD, ALLOW) map directly to Steps 2, 4, and 6 of the reference workflow
 
