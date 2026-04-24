@@ -12,6 +12,13 @@
     "demo": "tsx examples/run-demo.ts",
     "demo:web": "tsx examples/browser-demo/server.ts",
     "demo:web:validate": "tsx examples/browser-demo/validate-demo.ts",
+    "demo:consumer": "tsx examples/consumer-example/consumer.ts",
+    "demo:consumer:validate": "tsx examples/consumer-example/validate-consumer.ts",
+    "demo:agent": "tsx examples/agent-gate/run-agent-gate.ts",
+    "demo:agent:validate": "tsx examples/agent-gate/validate-agent-gate.ts",
+    "demo:audit": "tsx examples/auditor-view/run-auditor-view.ts",
+    "demo:audit:validate": "tsx examples/auditor-view/validate-auditor-view.ts",
+    "demo:all": "pnpm demo && pnpm demo:consumer && pnpm demo:agent && pnpm demo:audit",
     "report:hash": "ts-node scripts/hash-report.ts",
     "report:list": "cat docs/reports/adversarial/index.json"
   },

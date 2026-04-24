@@ -124,6 +124,21 @@ This repository is intended to prove:
 
 ---
 
+## External Signal Artifacts
+
+These artifacts show how CerbaSeal can move from internal proof to external workflow mapping.
+
+They do not claim production readiness or customer validation.
+
+- Consumer example: [examples/consumer-example/](../examples/consumer-example/)
+- Agent-gate demo: [examples/agent-gate/](../examples/agent-gate/)
+- Auditor view: [examples/auditor-view/](../examples/auditor-view/)
+- Pilot memo template: [docs/pilot/pilot-memo-template.md](../docs/pilot/pilot-memo-template.md)
+- Pilot intake checklist: [docs/pilot/pilot-intake-checklist.md](../docs/pilot/pilot-intake-checklist.md)
+- External positioning: [docs/positioning/external-positioning.md](../docs/positioning/external-positioning.md)
+
+---
+
 ## Expected Reviewer Conclusion
 
 CerbaSeal is architecturally real, narrowly scoped, enforcement-oriented, and reviewable before client-specific pilot implementation exists.

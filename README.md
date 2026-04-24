@@ -23,7 +23,7 @@ Start here:
 
 Current proof state:
 
-- 195 / 195 tests passing
+- 202 / 202 tests passing
 - REJECT / HOLD / ALLOW runtime demo
 - fail-closed behavior
 - non-forgery protection
@@ -34,6 +34,21 @@ Current proof state:
 CerbaSeal should be reviewed as a deterministic enforcement primitive.
 
 It is not a dashboard, policy platform, monitoring layer, or domain-specific application.
+
+---
+
+## External Review Artifacts
+
+These artifacts are designed to show how CerbaSeal can be reviewed, demonstrated, and mapped to external workflows without introducing client-specific assumptions.
+
+- One-page overview: [docs/one-page.md](docs/one-page.md)
+- External positioning: [docs/positioning/external-positioning.md](docs/positioning/external-positioning.md)
+- Pilot memo template: [docs/pilot/pilot-memo-template.md](docs/pilot/pilot-memo-template.md)
+- Pilot intake checklist: [docs/pilot/pilot-intake-checklist.md](docs/pilot/pilot-intake-checklist.md)
+- Consumer example: [examples/consumer-example/](examples/consumer-example/)
+- Agent-gate demo: [examples/agent-gate/](examples/agent-gate/)
+- Auditor view: [examples/auditor-view/](examples/auditor-view/)
+- Browser demo: [examples/browser-demo/](examples/browser-demo/)
 
 ---
 
@@ -49,7 +64,7 @@ CerbaSeal sits between AI systems and execution layers and determines whether an
 - ALLOWED (fully authorized)
 
 CerbaSeal is domain-agnostic.  
-The included demo uses a fintech-style workflow as a reference example, but the enforcement model applies to any high-risk action system.
+The included demo uses a regulated-system reference workflow as an example, but the enforcement model applies to any high-risk action system.
 
 ## Why It Matters
 
@@ -80,6 +95,6 @@ CerbaSeal is designed to be embedded as a deterministic enforcement layer.
 
 ## Status
 
-- 96 tests passing  
-- Adversarial audit complete  
-- Core enforcement loop validated  
+- 202 / 202 tests passing
+- Adversarial audit complete
+- Core enforcement loop validated
