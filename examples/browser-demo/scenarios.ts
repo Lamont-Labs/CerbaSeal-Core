@@ -2,9 +2,8 @@ import { ExecutionGateService } from "../../src/services/execution/execution-gat
 import { buildValidGovernedRequest } from "../../src/domain/builders/request-fixtures.js";
 import type { GateResult } from "../../src/domain/types/core.js";
 
-const gate = new ExecutionGateService();
-
 export function getRejectScenario(): GateResult {
+  const gate = new ExecutionGateService();
   const base = buildValidGovernedRequest();
   const request = {
     ...base,
@@ -20,6 +19,7 @@ export function getRejectScenario(): GateResult {
 }
 
 export function getHoldScenario(): GateResult {
+  const gate = new ExecutionGateService();
   const request = {
     ...buildValidGovernedRequest(),
     actorAuthorityClass: "analyst" as const,
@@ -30,5 +30,6 @@ export function getHoldScenario(): GateResult {
 }
 
 export function getAllowScenario(): GateResult {
+  const gate = new ExecutionGateService();
   return gate.evaluate(buildValidGovernedRequest());
 }

@@ -1,22 +1,27 @@
 (function () {
-  const btnReject = document.getElementById("btn-reject");
-  const btnHold   = document.getElementById("btn-hold");
-  const btnAllow  = document.getElementById("btn-allow");
-  const fieldsArea = document.getElementById("fields-area");
-  const jsonPanel  = document.getElementById("json-panel");
-  const jsonOutput = document.getElementById("json-output");
+  var btnReject  = document.getElementById("btn-reject");
+  var btnHold    = document.getElementById("btn-hold");
+  var btnAllow   = document.getElementById("btn-allow");
+  var fieldsArea = document.getElementById("fields-area");
+  var jsonPanel  = document.getElementById("json-panel");
+  var jsonOutput = document.getElementById("json-output");
+
+  var allButtons = [btnReject, btnHold, btnAllow];
 
   function setLoading(active) {
-    [btnReject, btnHold, btnAllow].forEach(function (b) { b.disabled = active; });
+    allButtons.forEach(function (b) { b.disabled = active; });
     if (active) {
       fieldsArea.innerHTML = '<p class="loading">Evaluating request...</p>';
       jsonPanel.style.display = "none";
+      jsonOutput.textContent = "";
     }
   }
 
   function renderResult(data) {
     var stateClass = "state-" + data.finalState;
-    var reasonStr  = Array.isArray(data.reasonCodes) ? data.reasonCodes.join(", ") : String(data.reasonCodes);
+    var reasonStr  = Array.isArray(data.reasonCodes)
+      ? data.reasonCodes.join(", ")
+      : String(data.reasonCodes);
 
     fieldsArea.innerHTML = [
       '<div class="fields">',
@@ -35,21 +40,41 @@
     jsonPanel.style.display = "block";
   }
 
-  function renderError(err) {
-    fieldsArea.innerHTML = '<p class="loading" style="color:#f87171">Error: ' + err + '</p>';
+  function renderError(err, rawText) {
+    fieldsArea.innerHTML =
+      '<p class="loading" style="color:#f87171">Request failed: ' + err + '</p>';
+    if (rawText) {
+      jsonOutput.textContent = rawText;
+      jsonPanel.style.display = "block";
+    } else {
+      jsonPanel.style.display = "none";
+    }
   }
 
   function runScenario(endpoint) {
     setLoading(true);
     fetch(endpoint)
-      .then(function (res) { return res.json(); })
-      .then(function (data) {
+      .then(function (res) {
+        return res.text().then(function (text) {
+          return { status: res.status, text: text };
+        });
+      })
+      .then(function (payload) {
         setLoading(false);
-        renderResult(data);
+        try {
+          var data = JSON.parse(payload.text);
+          if (payload.status >= 400 || data.error) {
+            renderError(data.error || ("HTTP " + payload.status), payload.text);
+          } else {
+            renderResult(data);
+          }
+        } catch (_) {
+          renderError("Could not parse server response", payload.text);
+        }
       })
       .catch(function (err) {
         setLoading(false);
-        renderError(err.message || String(err));
+        renderError(err.message || String(err), null);
       });
   }
 

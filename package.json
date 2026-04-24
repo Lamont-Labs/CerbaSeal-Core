@@ -11,6 +11,7 @@
     "test:watch": "vitest",
     "demo": "tsx examples/run-demo.ts",
     "demo:web": "tsx examples/browser-demo/server.ts",
+    "demo:web:validate": "tsx examples/browser-demo/validate-demo.ts",
     "report:hash": "ts-node scripts/hash-report.ts",
     "report:list": "cat docs/reports/adversarial/index.json"
   },
