@@ -13,8 +13,7 @@ It ensures:
 
 Live demo (Replit-hosted):
 
-> The browser demo runs as `pnpm demo:web` and is accessible via the Replit preview pane.
-> After publishing, a stable `.replit.app` URL is assigned by Replit.
+**https://cerbaseal.replit.app/**
 
 Fastest review path:
 

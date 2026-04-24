@@ -4,9 +4,7 @@
 
 The browser demo is hosted on Replit.
 
-It is accessible via the Replit preview pane when the `Start application` workflow is running.
-
-After publishing, a stable `.replit.app` URL is assigned by Replit.
+**https://cerbaseal.replit.app/**
 
 Run command: `pnpm demo:web`
 
