@@ -62,6 +62,28 @@ It is not a dashboard, policy platform, monitoring layer, or domain-specific app
 
 ---
 
+## Support Readiness
+
+CerbaSeal includes support-readiness utilities intended to reduce pilot support burden.
+
+They provide:
+
+- local health check
+- integrity verification
+- operator action reports
+- pilot-safe mode documentation
+
+Run:
+
+```
+pnpm demo:support
+pnpm demo:support:validate
+```
+
+These utilities do not provide production monitoring, SLA, managed hosting, or legal certification.
+
+---
+
 ## External Review Artifacts
 
 These artifacts are designed to show how CerbaSeal can be reviewed, demonstrated, and mapped to external workflows without introducing client-specific assumptions.

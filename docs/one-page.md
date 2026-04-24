@@ -147,6 +147,21 @@ CerbaSeal is built for that boundary.
 
 ---
 
+## Support Readiness
+
+CerbaSeal includes support-readiness utilities for controlled pilots:
+
+- health check
+- integrity verification
+- operator action reports
+- pilot-safe mode documentation
+
+These reduce routine support burden by making the system self-explaining and self-verifying.
+
+They do not replace production support, legal review, or deployment hardening.
+
+---
+
 ## Vision
 
 CerbaSeal can become a standard enforcement layer for high-risk AI-assisted actions across regulated, automated, and mission-critical systems.

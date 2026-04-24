@@ -139,6 +139,24 @@ They do not claim production readiness or customer validation.
 
 ---
 
+## Support Readiness Review
+
+To inspect how CerbaSeal reduces solo-operator pilot risk, review:
+
+- [docs/operations/solo-support-risk-reduction.md](operations/solo-support-risk-reduction.md)
+- [docs/operations/pilot-safe-mode.md](operations/pilot-safe-mode.md)
+
+Run:
+
+```
+pnpm demo:support
+pnpm demo:support:validate
+```
+
+The support-readiness layer is designed to make the system self-explaining, self-verifying, and safe-by-default during controlled pilots.
+
+---
+
 ## Expected Reviewer Conclusion
 
 CerbaSeal is architecturally real, narrowly scoped, enforcement-oriented, and reviewable before client-specific pilot implementation exists.
