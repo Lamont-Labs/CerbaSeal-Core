@@ -22,3 +22,23 @@ All workflows, actors, and scenarios in this directory are illustrative examples
 They do not represent any real institution, client, or engagement.
 
 CerbaSeal is a domain-agnostic enforcement layer and is not tied to any specific industry or deployment.
+
+---
+
+## Browser Demo
+
+Run:
+
+```
+pnpm demo:web
+```
+
+See: [docs/demo/browser-demo.md](./browser-demo.md)
+
+The browser demo provides a minimal visual surface for the REJECT / HOLD / ALLOW enforcement loop.
+
+It is a local demonstration wrapper only.
+
+It does not change enforcement logic.
+
+It does not represent production readiness.

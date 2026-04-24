@@ -1,5 +1,32 @@
 # Reviewer Start Here
 
+## Recommended Review Path
+
+Use this path for the fastest review:
+
+1. Read the one-page overview: [docs/one-page.md](../one-page.md)
+2. Run the live terminal demo: `pnpm demo`
+3. Review the enforcement boundary: [docs/architecture/enforcement-boundary.md](../architecture/enforcement-boundary.md)
+4. Review the browser demo: [docs/demo/browser-demo.md](demo/browser-demo.md)
+5. Review the integration model: [docs/integration/integration-spec.md](../integration/integration-spec.md)
+6. Run the full test suite: `pnpm test`
+
+CerbaSeal-Core should be reviewed as a deterministic enforcement primitive.
+
+It is not a dashboard.
+
+It is not a policy platform.
+
+It is not a monitoring layer.
+
+It is not a domain-specific application.
+
+The core question for review is:
+
+> Does the system reliably prevent unauthorized execution and produce evidence for every outcome?
+
+---
+
 Before reviewing the system:
 
 → Read: [docs/architecture/enforcement-boundary.md](architecture/enforcement-boundary.md)

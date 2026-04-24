@@ -7,6 +7,36 @@ It ensures:
 - Required approvals cannot be bypassed
 - Every decision produces verifiable evidence
 
+---
+
+## Quick Review
+
+Start here:
+
+- One-page overview: [docs/one-page.md](docs/one-page.md)
+- Enforcement boundary: [docs/architecture/enforcement-boundary.md](docs/architecture/enforcement-boundary.md)
+- Live terminal demo: `pnpm demo`
+- Browser demo: [docs/demo/browser-demo.md](docs/demo/browser-demo.md)
+- Full test suite: `pnpm test`
+- Integration spec: [docs/integration/integration-spec.md](docs/integration/integration-spec.md)
+- Deployment modes: [docs/deployment/deployment-modes.md](docs/deployment/deployment-modes.md)
+
+Current proof state:
+
+- 195 / 195 tests passing
+- REJECT / HOLD / ALLOW runtime demo
+- fail-closed behavior
+- non-forgery protection
+- contextual boundary tests
+- misuse scenario tests
+- domain-agnostic reference workflow
+
+CerbaSeal should be reviewed as a deterministic enforcement primitive.
+
+It is not a dashboard, policy platform, monitoring layer, or domain-specific application.
+
+---
+
 ## Start Here
 
 → [docs/demo/enforcement-loop.md](docs/demo/enforcement-loop.md)

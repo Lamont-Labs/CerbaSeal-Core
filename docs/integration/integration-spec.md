@@ -98,6 +98,33 @@ CerbaSeal guarantees:
 
 ---
 
+## Local Demonstration Surfaces
+
+CerbaSeal currently includes two local demonstration surfaces:
+
+- terminal demo: `pnpm demo`
+- browser demo: `pnpm demo:web`
+
+Both are demonstration wrappers around the same enforcement model.
+
+They are not production interfaces.
+
+They are not authentication layers.
+
+They are not persistence layers.
+
+They are not policy engines.
+
+Production integration should be implemented through an explicit client-controlled integration boundary.
+
+The purpose of the demos is to show the enforcement states:
+
+- REJECT
+- HOLD
+- ALLOW
+
+---
+
 ## Non-Responsibilities
 
 CerbaSeal does NOT:
