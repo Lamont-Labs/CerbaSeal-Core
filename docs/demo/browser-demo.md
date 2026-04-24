@@ -1,5 +1,19 @@
 # Browser Demo
 
+## Hosted Demo
+
+The browser demo is hosted on Replit.
+
+It is accessible via the Replit preview pane when the `Start application` workflow is running.
+
+After publishing, a stable `.replit.app` URL is assigned by Replit.
+
+Run command: `pnpm demo:web`
+
+This hosted demo runs the same browser demo as the local `pnpm demo:web` command.
+
+---
+
 The browser demo is the fastest way to understand CerbaSeal.
 
 It shows one enforcement loop:

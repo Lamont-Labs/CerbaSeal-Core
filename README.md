@@ -9,6 +9,27 @@ It ensures:
 
 ---
 
+## Hosted Demo
+
+Live demo (Replit-hosted):
+
+> The browser demo runs as `pnpm demo:web` and is accessible via the Replit preview pane.
+> After publishing, a stable `.replit.app` URL is assigned by Replit.
+
+Fastest review path:
+
+1. Open the hosted demo.
+2. Click "Run blocked AI action."
+3. Click "Run missing-approval action."
+4. Click "Run approved action."
+5. Open "View enforcement proof."
+
+The hosted demo is a demonstration surface only.
+
+It is not: a production API, an authentication layer, a persistence layer, a policy engine, customer validation, or a production deployment.
+
+---
+
 ## Quick Review
 
 Start here:
@@ -24,11 +45,11 @@ Start here:
 - Integration spec: [docs/integration/integration-spec.md](docs/integration/integration-spec.md)
 - Deployment modes: [docs/deployment/deployment-modes.md](docs/deployment/deployment-modes.md)
 
-For the fastest review, run the browser demo first: `pnpm demo:web`
+For the fastest review, open the hosted demo or run `pnpm demo:web` locally.
 
 Current proof state:
 
-- 202 / 202 tests passing
+- 239 / 239 tests passing
 - REJECT / HOLD / ALLOW runtime demo
 - fail-closed behavior
 - non-forgery protection
