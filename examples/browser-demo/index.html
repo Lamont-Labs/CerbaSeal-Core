@@ -7,167 +7,331 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    :root {
+      --bg:        #0f0f11;
+      --surface:   #18181b;
+      --surface2:  #09090b;
+      --border:    #27272a;
+      --border2:   #3f3f46;
+      --text:      #e4e4e7;
+      --muted:     #71717a;
+      --dim:       #52525b;
+      --red:       #f87171;
+      --red-bg:    #1c0a0a;
+      --red-border:#7f1d1d;
+      --yellow:    #facc15;
+      --yellow-bg: #1a1300;
+      --yellow-bdr:#78350f;
+      --green:     #4ade80;
+      --green-bg:  #0a1c0e;
+      --green-bdr: #14532d;
+    }
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace;
-      background: #0f0f11;
-      color: #e4e4e7;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
       min-height: 100vh;
-      padding: 2rem;
-    }
-
-    header {
-      max-width: 800px;
-      margin: 0 auto 2.5rem;
-      border-bottom: 1px solid #27272a;
-      padding-bottom: 1.5rem;
-    }
-
-    h1 {
-      font-size: 1.5rem;
-      font-weight: 600;
-      letter-spacing: -0.02em;
-      color: #fafafa;
-      margin-bottom: 0.4rem;
-    }
-
-    .subtitle {
-      font-size: 0.875rem;
-      color: #71717a;
-      margin-bottom: 1rem;
-    }
-
-    .intro {
-      font-size: 0.875rem;
-      color: #a1a1aa;
       line-height: 1.6;
-      max-width: 640px;
     }
 
-    main {
-      max-width: 800px;
-      margin: 0 auto;
+    /* ── Layout ── */
+    .page { max-width: 860px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+
+    /* ── Hero ── */
+    .hero { border-bottom: 1px solid var(--border); padding-bottom: 2rem; margin-bottom: 2.5rem; }
+    .hero h1 {
+      font-size: 1.6rem; font-weight: 700; letter-spacing: -0.03em;
+      color: #fafafa; line-height: 1.3; margin-bottom: 0.6rem;
+    }
+    .hero .subtitle {
+      font-size: 0.9rem; color: var(--muted); margin-bottom: 1rem;
+    }
+    .hero .explanation {
+      font-size: 0.875rem; color: #a1a1aa; max-width: 640px;
+      padding: 0.75rem 1rem; background: var(--surface);
+      border: 1px solid var(--border); border-radius: 6px;
     }
 
-    .controls {
-      display: flex;
-      gap: 0.75rem;
-      margin-bottom: 1.5rem;
-      flex-wrap: wrap;
+    /* ── Section heading ── */
+    .section-label {
+      font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.1em; color: var(--dim); margin-bottom: 1rem;
     }
 
-    button {
-      padding: 0.5rem 1.25rem;
-      font-size: 0.875rem;
-      font-weight: 500;
-      border: 1px solid #3f3f46;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: all 0.15s;
-      font-family: inherit;
-    }
-
-    #btn-reject { background: #1c0a0a; color: #f87171; border-color: #7f1d1d; }
-    #btn-reject:hover { background: #290f0f; border-color: #ef4444; }
-
-    #btn-hold { background: #1c1200; color: #facc15; border-color: #78350f; }
-    #btn-hold:hover { background: #291a00; border-color: #f59e0b; }
-
-    #btn-allow { background: #0a1c0e; color: #4ade80; border-color: #14532d; }
-    #btn-allow:hover { background: #0f2914; border-color: #22c55e; }
-
-    button:disabled { opacity: 0.4; cursor: not-allowed; }
-
-    .result-panel {
-      background: #18181b;
-      border: 1px solid #27272a;
-      border-radius: 8px;
-      padding: 1.25rem;
-      margin-bottom: 1rem;
-    }
-
-    .result-panel h2 {
-      font-size: 0.75rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: #52525b;
-      margin-bottom: 1rem;
-    }
-
-    .fields {
+    /* ── Scenario cards ── */
+    .scenario-grid {
       display: grid;
-      grid-template-columns: 180px 1fr;
-      gap: 0.5rem 1rem;
-      font-size: 0.875rem;
-      margin-bottom: 1.25rem;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+      margin-bottom: 2.5rem;
+    }
+    @media (max-width: 600px) { .scenario-grid { grid-template-columns: 1fr; } }
+
+    .scenario-card {
+      border: 1px solid var(--border2); border-radius: 10px;
+      padding: 1.1rem 1rem 1rem; background: var(--surface);
+      display: flex; flex-direction: column; gap: 0.5rem;
+    }
+    .scenario-card.card-reject { border-color: var(--red-border); background: var(--red-bg); }
+    .scenario-card.card-hold   { border-color: var(--yellow-bdr); background: var(--yellow-bg); }
+    .scenario-card.card-allow  { border-color: var(--green-bdr);  background: var(--green-bg); }
+
+    .card-title {
+      font-size: 0.8rem; font-weight: 600; color: var(--text); line-height: 1.3;
+    }
+    .card-desc { font-size: 0.75rem; color: var(--muted); flex: 1; }
+    .card-expected {
+      font-size: 0.7rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.06em; margin-top: 0.25rem;
+    }
+    .card-reject .card-expected { color: var(--red); }
+    .card-hold   .card-expected { color: var(--yellow); }
+    .card-allow  .card-expected { color: var(--green); }
+
+    /* ── Buttons ── */
+    .scenario-btn {
+      margin-top: 0.75rem; padding: 0.55rem 0.75rem;
+      font-size: 0.8rem; font-weight: 600; border-radius: 6px;
+      border: 1px solid; cursor: pointer; transition: opacity 0.15s;
+      font-family: inherit; text-align: center; width: 100%;
+    }
+    .btn-reject { background: transparent; color: var(--red);    border-color: var(--red-border); }
+    .btn-reject:hover:not(:disabled) { background: #2a0e0e; }
+    .btn-hold   { background: transparent; color: var(--yellow); border-color: var(--yellow-bdr); }
+    .btn-hold:hover:not(:disabled)   { background: #281900; }
+    .btn-allow  { background: transparent; color: var(--green);  border-color: var(--green-bdr); }
+    .btn-allow:hover:not(:disabled)  { background: #0d2012; }
+    .scenario-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+    /* ── Result panel ── */
+    #result-section { display: none; }
+
+    .result-wrap {
+      border: 1px solid var(--border); border-radius: 10px;
+      background: var(--surface); overflow: hidden; margin-bottom: 1rem;
     }
 
-    .field-label { color: #71717a; }
+    .result-header {
+      padding: 0.7rem 1.1rem; border-bottom: 1px solid var(--border);
+      font-size: 0.7rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.1em; color: var(--dim);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    #scenario-title-label { color: var(--muted); font-weight: 500; text-transform: none; letter-spacing: 0; }
 
-    .field-value { color: #e4e4e7; font-weight: 500; }
+    /* Layer 1 — big badge */
+    .state-badge-wrap {
+      padding: 1.5rem 1.1rem 1rem; text-align: center;
+      border-bottom: 1px solid var(--border);
+    }
+    .state-badge {
+      display: inline-block; font-size: 2.2rem; font-weight: 800;
+      letter-spacing: -0.04em; padding: 0.2rem 0.8rem; border-radius: 8px;
+      border: 2px solid;
+    }
+    .badge-BLOCKED { color: var(--red);    border-color: var(--red-border); background: var(--red-bg); }
+    .badge-PAUSED  { color: var(--yellow); border-color: var(--yellow-bdr); background: var(--yellow-bg); }
+    .badge-ALLOWED { color: var(--green);  border-color: var(--green-bdr);  background: var(--green-bg); }
 
-    .state-REJECT { color: #f87171; }
-    .state-HOLD   { color: #facc15; }
-    .state-ALLOW  { color: #4ade80; }
+    /* Layer 2 + 3 */
+    .consequence-wrap {
+      padding: 1rem 1.1rem; border-bottom: 1px solid var(--border);
+      display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem 1.5rem;
+    }
+    @media (max-width: 500px) { .consequence-wrap { grid-template-columns: 1fr; } }
+    .cq-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+                letter-spacing: 0.07em; color: var(--dim); margin-bottom: 0.2rem; }
+    .cq-value { font-size: 0.875rem; color: var(--text); }
 
-    .json-section h2 { margin-bottom: 0.75rem; }
+    /* Layer 4 — proof summary */
+    .proof-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr);
+      gap: 0; border-bottom: 1px solid var(--border);
+    }
+    .proof-cell {
+      padding: 0.8rem 1.1rem; border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .proof-cell:nth-child(even) { border-right: none; }
+    .proof-cell:nth-last-child(-n+2) { border-bottom: none; }
+    .proof-label { font-size: 0.7rem; color: var(--dim); text-transform: uppercase;
+                   letter-spacing: 0.06em; margin-bottom: 0.2rem; font-weight: 600; }
+    .proof-value { font-size: 0.82rem; color: var(--text); font-weight: 500; word-break: break-all; }
+    .pv-REJECT, .pv-BLOCKED, .pv-none, .pv-false { color: var(--red); }
+    .pv-HOLD,   .pv-PAUSED,  .pv-pending         { color: var(--yellow); }
+    .pv-ALLOW,  .pv-ALLOWED, .pv-present, .pv-true { color: var(--green); }
 
+    /* Expandable proof */
+    .proof-expand { padding: 0; }
+    details { padding: 0; }
+    summary {
+      padding: 0.75rem 1.1rem; font-size: 0.8rem; font-weight: 500;
+      color: var(--muted); cursor: pointer; list-style: none; user-select: none;
+      display: flex; align-items: center; gap: 0.4rem;
+    }
+    summary::-webkit-details-marker { display: none; }
+    summary::before { content: "▶"; font-size: 0.6rem; transition: transform 0.2s; }
+    details[open] summary::before { transform: rotate(90deg); }
+    summary:hover { color: var(--text); }
+    .proof-body {
+      padding: 0 1.1rem 1rem; border-top: 1px solid var(--border);
+    }
+    .proof-note {
+      font-size: 0.75rem; color: var(--muted); margin-bottom: 0.75rem; padding-top: 0.75rem;
+    }
     pre {
-      background: #09090b;
-      border: 1px solid #27272a;
-      border-radius: 6px;
-      padding: 1rem;
-      font-size: 0.8rem;
-      line-height: 1.5;
-      overflow: auto;
-      max-height: 400px;
-      color: #a1a1aa;
-      white-space: pre-wrap;
-      word-break: break-word;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 6px; padding: 0.9rem; font-size: 0.76rem; line-height: 1.55;
+      overflow: auto; max-height: 360px; color: #a1a1aa;
+      white-space: pre-wrap; word-break: break-word;
     }
 
-    .placeholder {
-      color: #3f3f46;
-      font-size: 0.875rem;
-      padding: 2rem 0;
-      text-align: center;
+    /* Placeholder and loading */
+    #placeholder {
+      padding: 3rem 0; text-align: center; font-size: 0.875rem; color: var(--dim);
+      border: 1px dashed var(--border); border-radius: 10px; margin-bottom: 1rem;
+    }
+    .loading-msg {
+      padding: 2rem; text-align: center; font-size: 0.875rem; color: var(--dim);
+    }
+    .error-msg {
+      padding: 1.25rem 1.1rem; font-size: 0.875rem; color: var(--red);
     }
 
-    .loading { color: #52525b; font-size: 0.875rem; }
+    /* Footer */
+    footer {
+      margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--border);
+      font-size: 0.8rem; color: var(--dim); line-height: 1.7;
+    }
+    footer strong { color: var(--muted); }
   </style>
 </head>
 <body>
-  <header>
-    <h1>CerbaSeal Enforcement Demo</h1>
-    <p class="subtitle">Runtime authorization enforcement for AI-assisted actions</p>
-    <p class="intro">
-      CerbaSeal evaluates governed requests before execution.
-      REJECT blocks invalid authority. HOLD pauses until required approval exists.
-      ALLOW releases only properly authorized actions.
-      CerbaSeal enforces authority — not judgment.
+<div class="page">
+
+  <!-- ── Hero ── -->
+  <header class="hero">
+    <h1>AI tries to act. CerbaSeal decides if it is allowed.</h1>
+    <p class="subtitle">A runtime enforcement gate for AI-assisted actions. Every attempted action becomes REJECT, HOLD, or ALLOW — with evidence.</p>
+    <p class="explanation">
+      CerbaSeal sits between decision systems and execution systems.
+      It does not decide whether an action is correct.
+      It decides whether the action is <strong>authorized to execute</strong>.
     </p>
   </header>
 
-  <main>
-    <div class="controls">
-      <button id="btn-reject">Run REJECT</button>
-      <button id="btn-hold">Run HOLD</button>
-      <button id="btn-allow">Run ALLOW</button>
-    </div>
+  <!-- ── Scenario cards ── -->
+  <section aria-label="Scenarios">
+    <p class="section-label">Try the enforcement loop</p>
+    <div class="scenario-grid">
 
-    <div class="result-panel" id="summary-panel">
-      <h2>Result</h2>
-      <div id="fields-area">
-        <p class="placeholder">Run a scenario to see the enforcement result.</p>
+      <div class="scenario-card card-reject">
+        <div class="card-title">AI tries to act without authority</div>
+        <div class="card-desc">An AI system attempts to authorize and execute its own action without human oversight.</div>
+        <div class="card-expected">Expected: REJECT</div>
+        <button class="scenario-btn btn-reject" id="btn-reject">Run blocked AI action</button>
       </div>
+
+      <div class="scenario-card card-hold">
+        <div class="card-title">Human submits action without approval</div>
+        <div class="card-desc">A human-originated action is submitted but the required approval artifact is missing.</div>
+        <div class="card-expected">Expected: HOLD</div>
+        <button class="scenario-btn btn-hold" id="btn-hold">Run missing-approval action</button>
+      </div>
+
+      <div class="scenario-card card-allow">
+        <div class="card-title">Approved action</div>
+        <div class="card-desc">A valid action is submitted with all required checks satisfied and approval in place.</div>
+        <div class="card-expected">Expected: ALLOW</div>
+        <button class="scenario-btn btn-allow" id="btn-allow">Run approved action</button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── Placeholder (shown before first click) ── -->
+  <div id="placeholder">Choose a scenario to run CerbaSeal enforcement.</div>
+
+  <!-- ── Result section (hidden until result) ── -->
+  <section id="result-section" aria-live="polite" aria-label="Enforcement result">
+
+    <div class="result-wrap" id="result-wrap">
+
+      <!-- Header row -->
+      <div class="result-header">
+        <span>Enforcement Result</span>
+        <span id="scenario-title-label"></span>
+      </div>
+
+      <!-- Layer 1: Big outcome badge -->
+      <div class="state-badge-wrap">
+        <div class="state-badge" id="display-state-badge"></div>
+      </div>
+
+      <!-- Layer 2 + 3: Consequence + Reason -->
+      <div class="consequence-wrap">
+        <div>
+          <div class="cq-label">Consequence</div>
+          <div class="cq-value" id="consequence-text"></div>
+        </div>
+        <div>
+          <div class="cq-label">Enforcement Reason</div>
+          <div class="cq-value" id="reason-text"></div>
+        </div>
+      </div>
+
+      <!-- Layer 4: Proof summary -->
+      <div class="proof-grid">
+        <div class="proof-cell">
+          <div class="proof-label">Final State</div>
+          <div class="proof-value" id="pv-final-state"></div>
+        </div>
+        <div class="proof-cell">
+          <div class="proof-label">Reason Codes</div>
+          <div class="proof-value" id="pv-reason-codes"></div>
+        </div>
+        <div class="proof-cell">
+          <div class="proof-label">Release Authorization</div>
+          <div class="proof-value" id="pv-release"></div>
+        </div>
+        <div class="proof-cell">
+          <div class="proof-label">Blocked Action Record</div>
+          <div class="proof-value" id="pv-blocked"></div>
+        </div>
+      </div>
+
+      <!-- Expandable proof -->
+      <div class="proof-expand">
+        <details id="proof-details">
+          <summary>View enforcement proof</summary>
+          <div class="proof-body">
+            <p class="proof-note">This proof is generated from the actual CerbaSeal evaluation result.</p>
+            <pre id="proof-output"></pre>
+          </div>
+        </details>
+      </div>
+
     </div>
 
-    <div class="result-panel json-section" id="json-panel" style="display:none">
-      <h2>Raw JSON</h2>
-      <pre id="json-output"></pre>
+    <!-- Error state -->
+    <div id="error-panel" style="display:none" class="result-wrap">
+      <div class="result-header"><span>Demo request failed</span></div>
+      <div class="error-msg" id="error-text"></div>
     </div>
-  </main>
 
-  <script src="/client.js"></script>
+  </section>
+
+  <!-- ── Footer ── -->
+  <footer>
+    <strong>CerbaSeal enforces authority — not judgment.</strong><br>
+    It does not determine whether an action is correct.<br>
+    It determines whether the action is authorized to execute.<br><br>
+    This is a local demonstration surface only.
+    It is not a production API, authentication layer, persistence layer, or policy engine.
+  </footer>
+
+</div>
+<script src="/client.js"></script>
 </body>
 </html>

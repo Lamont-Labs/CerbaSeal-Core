@@ -52,6 +52,24 @@ CerbaSeal guarantees that:
 
 ---
 
+## Fastest Review Path
+
+Run the browser demo:
+
+```
+pnpm demo:web
+```
+
+Then click:
+
+- AI tries to act without authority
+- Human submits action without approval
+- Approved action
+
+This shows the full enforcement loop visually in under one minute.
+
+---
+
 ## What The Demo Shows
 
 The live demo proves the full enforcement loop:

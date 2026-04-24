@@ -15,11 +15,16 @@ Start here:
 
 - One-page overview: [docs/one-page.md](docs/one-page.md)
 - Enforcement boundary: [docs/architecture/enforcement-boundary.md](docs/architecture/enforcement-boundary.md)
-- Live terminal demo: `pnpm demo`
-- Browser demo: [docs/demo/browser-demo.md](docs/demo/browser-demo.md)
+- Browser demo: `pnpm demo:web` → [docs/demo/browser-demo.md](docs/demo/browser-demo.md)
+- Terminal demo: `pnpm demo`
+- Consumer example: `pnpm demo:consumer`
+- Agent-gate demo: `pnpm demo:agent`
+- Auditor view: `pnpm demo:audit`
 - Full test suite: `pnpm test`
 - Integration spec: [docs/integration/integration-spec.md](docs/integration/integration-spec.md)
 - Deployment modes: [docs/deployment/deployment-modes.md](docs/deployment/deployment-modes.md)
+
+For the fastest review, run the browser demo first: `pnpm demo:web`
 
 Current proof state:
 

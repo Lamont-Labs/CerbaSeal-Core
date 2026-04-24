@@ -1,14 +1,10 @@
 # Browser Demo
 
-The browser demo provides a minimal visual interface for the CerbaSeal enforcement loop.
+The browser demo is the fastest way to understand CerbaSeal.
 
-It demonstrates the same three runtime states as the terminal demo:
+It shows one enforcement loop:
 
-- **REJECT** — AI self-authorization blocked
-- **HOLD** — missing approval paused
-- **ALLOW** — valid approved request released
-
----
+Attempted action → CerbaSeal evaluation → execution decision → evidence
 
 ## Run
 
@@ -16,54 +12,61 @@ It demonstrates the same three runtime states as the terminal demo:
 pnpm demo:web
 ```
 
-Then open the local URL printed by the server.
+Open the local URL printed by the server.
 
----
+## Scenarios
 
-## What It Shows
+The demo includes three scenarios:
 
-The demo has three buttons:
+1. **AI tries to act without authority**
+   - Expected outcome: REJECT
+   - Display state: BLOCKED
+   - Consequence: action never executed
 
-- Run REJECT
-- Run HOLD
-- Run ALLOW
+2. **Human submits action without approval**
+   - Expected outcome: HOLD
+   - Display state: PAUSED
+   - Consequence: execution paused until approval exists
 
-Each button triggers a real CerbaSeal evaluation.
+3. **Approved action**
+   - Expected outcome: ALLOW
+   - Display state: ALLOWED
+   - Consequence: action executed with release authorization
 
-The demo displays:
+## What The Demo Proves
 
-- final decision state
-- reason codes
-- whether a release authorization was issued
-- whether a blocked action record was created
-- full raw GateResult JSON
+The demo proves:
 
----
+- CerbaSeal blocks AI self-authorization
+- CerbaSeal pauses actions when approval is missing
+- CerbaSeal allows execution only when required checks pass
+- Every result includes enforcement proof
+
+Each result shows:
+
+- final decision state (BLOCKED / PAUSED / ALLOWED)
+- consequence of the decision
+- enforcement reason
+- reason codes from the evaluation
+- release authorization: present or none
+- blocked action record: present or none
+- expandable enforcement certificate
 
 ## Boundary
 
-The demo shows authorization enforcement.
+CerbaSeal enforces authority — not judgment.
 
-It does not show contextual correctness evaluation.
+It does not determine whether the action is correct.
 
-CerbaSeal determines whether an action is authorized to execute.
-
-It does not determine whether the action is the correct action to take.
-
----
+It determines whether the action is authorized to execute.
 
 ## Scope
 
 This is a local demonstration surface only.
 
 It is not a production API.
-
 It is not an authentication layer.
-
 It is not a persistence layer.
-
 It is not a policy engine.
-
-It is not a deployment surface.
-
-Production integration should use an explicit client-controlled integration boundary.
+It is not customer validation.
+It is not a production deployment.

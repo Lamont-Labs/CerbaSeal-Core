@@ -1,80 +1,162 @@
 (function () {
-  var btnReject  = document.getElementById("btn-reject");
-  var btnHold    = document.getElementById("btn-hold");
-  var btnAllow   = document.getElementById("btn-allow");
-  var fieldsArea = document.getElementById("fields-area");
-  var jsonPanel  = document.getElementById("json-panel");
-  var jsonOutput = document.getElementById("json-output");
+  var btnReject = document.getElementById("btn-reject");
+  var btnHold   = document.getElementById("btn-hold");
+  var btnAllow  = document.getElementById("btn-allow");
+  var allBtns   = [btnReject, btnHold, btnAllow];
 
-  var allButtons = [btnReject, btnHold, btnAllow];
+  var placeholder    = document.getElementById("placeholder");
+  var resultSection  = document.getElementById("result-section");
+  var resultWrap     = document.getElementById("result-wrap");
+  var errorPanel     = document.getElementById("error-panel");
+  var errorText      = document.getElementById("error-text");
 
-  function setLoading(active) {
-    allButtons.forEach(function (b) { b.disabled = active; });
-    if (active) {
-      fieldsArea.innerHTML = '<p class="loading">Evaluating request...</p>';
-      jsonPanel.style.display = "none";
-      jsonOutput.textContent = "";
+  var scenarieTitleLabel = document.getElementById("scenario-title-label");
+  var displayStateBadge  = document.getElementById("display-state-badge");
+  var consequenceText    = document.getElementById("consequence-text");
+  var reasonText         = document.getElementById("reason-text");
+  var pvFinalState       = document.getElementById("pv-final-state");
+  var pvReasonCodes      = document.getElementById("pv-reason-codes");
+  var pvRelease          = document.getElementById("pv-release");
+  var pvBlocked          = document.getElementById("pv-blocked");
+  var proofDetails       = document.getElementById("proof-details");
+  var proofOutput        = document.getElementById("proof-output");
+
+  function setLoading(on) {
+    allBtns.forEach(function (b) { b.disabled = on; });
+    if (on) {
+      placeholder.style.display    = "none";
+      resultSection.style.display  = "block";
+      resultWrap.style.display     = "none";
+      errorPanel.style.display     = "none";
+      resultSection.innerHTML = '<div class="loading-msg">Evaluating request\u2026</div>';
     }
   }
 
-  function renderResult(data) {
-    var stateClass = "state-" + data.finalState;
-    var reasonStr  = Array.isArray(data.reasonCodes)
-      ? data.reasonCodes.join(", ")
-      : String(data.reasonCodes);
+  function colorClass(value, type) {
+    if (type === "state") {
+      if (value === "REJECT") return "pv-REJECT";
+      if (value === "HOLD")   return "pv-HOLD";
+      if (value === "ALLOW")  return "pv-ALLOW";
+    }
+    if (type === "bool") {
+      return value ? "pv-present" : "pv-none";
+    }
+    return "";
+  }
 
-    fieldsArea.innerHTML = [
-      '<div class="fields">',
-      '  <span class="field-label">Decision</span>',
-      '  <span class="field-value ' + stateClass + '">' + data.finalState + '</span>',
-      '  <span class="field-label">Reason Codes</span>',
-      '  <span class="field-value">' + reasonStr + '</span>',
-      '  <span class="field-label">Release Authorization</span>',
-      '  <span class="field-value">' + (data.releaseAuthorizationExists ? "Yes" : "No") + '</span>',
-      '  <span class="field-label">Blocked Action Record</span>',
-      '  <span class="field-value">' + (data.blockedActionRecordExists ? "Yes" : "No") + '</span>',
+  function setText(el, value, cls) {
+    el.textContent = value;
+    el.className = "proof-value " + (cls || "");
+  }
+
+  function resetContent() {
+    resultSection.innerHTML = [
+      '<div class="result-wrap" id="result-wrap">',
+      '  <div class="result-header"><span>Enforcement Result</span><span id="scenario-title-label"></span></div>',
+      '  <div class="state-badge-wrap"><div class="state-badge" id="display-state-badge"></div></div>',
+      '  <div class="consequence-wrap">',
+      '    <div><div class="cq-label">Consequence</div><div class="cq-value" id="consequence-text"></div></div>',
+      '    <div><div class="cq-label">Enforcement Reason</div><div class="cq-value" id="reason-text"></div></div>',
+      '  </div>',
+      '  <div class="proof-grid">',
+      '    <div class="proof-cell"><div class="proof-label">Final State</div><div class="proof-value" id="pv-final-state"></div></div>',
+      '    <div class="proof-cell"><div class="proof-label">Reason Codes</div><div class="proof-value" id="pv-reason-codes"></div></div>',
+      '    <div class="proof-cell"><div class="proof-label">Release Authorization</div><div class="proof-value" id="pv-release"></div></div>',
+      '    <div class="proof-cell"><div class="proof-label">Blocked Action Record</div><div class="proof-value" id="pv-blocked"></div></div>',
+      '  </div>',
+      '  <div class="proof-expand"><details id="proof-details"><summary>View enforcement proof</summary>',
+      '    <div class="proof-body"><p class="proof-note">This proof is generated from the actual CerbaSeal evaluation result.</p>',
+      '    <pre id="proof-output"></pre></div></details></div>',
+      '</div>',
+      '<div id="error-panel" style="display:none" class="result-wrap">',
+      '  <div class="result-header"><span>Demo request failed</span></div>',
+      '  <div class="error-msg" id="error-text"></div>',
       '</div>'
     ].join("\n");
 
-    jsonOutput.textContent = JSON.stringify(data, null, 2);
-    jsonPanel.style.display = "block";
+    scenarieTitleLabel = document.getElementById("scenario-title-label");
+    displayStateBadge  = document.getElementById("display-state-badge");
+    consequenceText    = document.getElementById("consequence-text");
+    reasonText         = document.getElementById("reason-text");
+    pvFinalState       = document.getElementById("pv-final-state");
+    pvReasonCodes      = document.getElementById("pv-reason-codes");
+    pvRelease          = document.getElementById("pv-release");
+    pvBlocked          = document.getElementById("pv-blocked");
+    proofDetails       = document.getElementById("proof-details");
+    proofOutput        = document.getElementById("proof-output");
+    resultWrap         = document.getElementById("result-wrap");
+    errorPanel         = document.getElementById("error-panel");
+    errorText          = document.getElementById("error-text");
   }
 
-  function renderError(err, rawText) {
-    fieldsArea.innerHTML =
-      '<p class="loading" style="color:#f87171">Request failed: ' + err + '</p>';
-    if (rawText) {
-      jsonOutput.textContent = rawText;
-      jsonPanel.style.display = "block";
-    } else {
-      jsonPanel.style.display = "none";
-    }
+  function renderResult(data) {
+    resetContent();
+    resultWrap.style.display  = "block";
+    errorPanel.style.display  = "none";
+
+    var ds = data.outcome.displayState;
+
+    scenarieTitleLabel.textContent = data.scenario.title;
+    displayStateBadge.textContent  = ds;
+    displayStateBadge.className    = "state-badge badge-" + ds;
+
+    consequenceText.textContent = data.outcome.consequence;
+    reasonText.textContent      = data.outcome.reason;
+
+    setText(pvFinalState,  data.outcome.finalState, colorClass(data.outcome.finalState, "state"));
+
+    var codes = Array.isArray(data.outcome.reasonCodes)
+      ? data.outcome.reasonCodes.join(", ")
+      : String(data.outcome.reasonCodes);
+    pvReasonCodes.textContent = codes;
+    pvReasonCodes.className   = "proof-value";
+
+    var relLabel = data.proof.releaseAuthorizationExists ? "present" : "none";
+    setText(pvRelease, relLabel, colorClass(data.proof.releaseAuthorizationExists, "bool"));
+
+    var blkLabel = data.proof.blockedActionRecordExists ? "present" : "none";
+    setText(pvBlocked, blkLabel, colorClass(data.proof.blockedActionRecordExists, "bool"));
+
+    var proofContent = data.proof.certificate
+      ? data.proof.certificate
+      : JSON.stringify(data.raw.gateResult, null, 2);
+    proofOutput.textContent = proofContent;
+    proofDetails.open = false;
+  }
+
+  function renderError(status, rawText) {
+    resetContent();
+    resultWrap.style.display  = "none";
+    errorPanel.style.display  = "block";
+    var msg = "Request failed";
+    if (status) msg += " (HTTP " + status + ")";
+    if (rawText) msg += ":\n\n" + rawText;
+    errorText.textContent = msg;
   }
 
   function runScenario(endpoint) {
     setLoading(true);
     fetch(endpoint)
       .then(function (res) {
-        return res.text().then(function (text) {
-          return { status: res.status, text: text };
-        });
+        var status = res.status;
+        return res.text().then(function (text) { return { status: status, text: text }; });
       })
       .then(function (payload) {
-        setLoading(false);
+        allBtns.forEach(function (b) { b.disabled = false; });
         try {
           var data = JSON.parse(payload.text);
           if (payload.status >= 400 || data.error) {
-            renderError(data.error || ("HTTP " + payload.status), payload.text);
+            renderError(payload.status, data.error || payload.text);
           } else {
             renderResult(data);
           }
         } catch (_) {
-          renderError("Could not parse server response", payload.text);
+          renderError(payload.status, payload.text);
         }
       })
       .catch(function (err) {
-        setLoading(false);
-        renderError(err.message || String(err), null);
+        allBtns.forEach(function (b) { b.disabled = false; });
+        renderError(null, err.message || String(err));
       });
   }
 
