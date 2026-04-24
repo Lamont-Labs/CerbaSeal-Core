@@ -65,3 +65,6 @@ waitForPort = 3001
 
 [workflows.workflow.metadata]
 outputType = "webview"
+
+[deployment]
+deploymentTarget = "cloudrun"
