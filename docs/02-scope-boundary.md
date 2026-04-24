@@ -8,7 +8,7 @@ It is intended to prove that:
 
 - the architecture is real
 - the enforcement boundary is explicit
-- AI is not authority
+- AI cannot produce authority-bearing actions
 - consequential transitions are governed
 - evidence survives both allow and block outcomes
 

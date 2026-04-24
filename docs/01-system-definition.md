@@ -61,7 +61,7 @@ AI may not:
 - override
 - bypass consequential execution paths
 
-### 3. Cryptographic Decision Provenance
+### 3. Hash-Linked Decision Provenance
 
 Every governed transition produces a tamper-evident record showing:
 
