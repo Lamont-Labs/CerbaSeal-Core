@@ -1,0 +1,24 @@
+kind = "web"
+previewPath = "/"
+title = "CerbaSeal Demo"
+version = "1.0.0"
+id = "artifacts/cerbaseal-demo"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 22866
+
+[services.development]
+run = "pnpm --filter @workspace/cerbaseal-demo run dev"
+
+[services.production]
+run = "pnpm --filter @workspace/cerbaseal-demo run serve"
+
+[services.env]
+PORT = "22866"

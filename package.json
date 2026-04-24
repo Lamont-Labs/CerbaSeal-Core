@@ -22,9 +22,11 @@
     "report:hash": "ts-node scripts/hash-report.ts",
     "report:list": "cat docs/reports/adversarial/index.json"
   },
+  "dependencies": {
+    "tsx": "^4.21.0"
+  },
   "devDependencies": {
     "@types/node": "^22.10.2",
-    "tsx": "^4.21.0",
     "typescript": "^5.6.3",
     "vitest": "^2.1.8"
   }
