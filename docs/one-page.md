@@ -98,7 +98,7 @@ ALLOW — valid approved request released
 
 Current proof package:
 
-- 195 / 195 passing tests
+- 262 / 262 passing tests
 - adversarial integrity tests
 - misuse scenario tests
 - contextual boundary tests

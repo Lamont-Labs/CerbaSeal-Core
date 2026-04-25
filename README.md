@@ -48,7 +48,7 @@ For the fastest review, open the hosted demo or run `pnpm demo:web` locally.
 
 Current proof state:
 
-- 239 / 239 tests passing
+- 262 / 262 tests passing
 - REJECT / HOLD / ALLOW runtime demo
 - fail-closed behavior
 - non-forgery protection
@@ -142,6 +142,6 @@ CerbaSeal is designed to be embedded as a deterministic enforcement layer.
 
 ## Status
 
-- 202 / 202 tests passing
+- 262 / 262 tests passing
 - Adversarial audit complete
 - Core enforcement loop validated
