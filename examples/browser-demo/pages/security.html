@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CerbaSeal — Security Review</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0f0f11; --surface: #18181b; --surface2: #09090b;
+      --border: #27272a; --border2: #3f3f46;
+      --text: #e4e4e7; --muted: #71717a; --dim: #52525b;
+      --red: #f87171; --red-bg: #1c0a0a; --red-border: #7f1d1d;
+      --yellow: #facc15; --yellow-bg: #1a1300; --yellow-bdr: #78350f;
+      --green: #4ade80; --green-bg: #0a1c0e; --green-bdr: #14532d;
+      --blue: #60a5fa; --blue-bg: #0a1220; --blue-bdr: #1e3a5f;
+    }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+           background: var(--bg); color: var(--text); min-height: 100vh; line-height: 1.6; }
+    .page { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem 5rem; }
+    nav { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 2.5rem;
+          padding-bottom: 1.25rem; border-bottom: 1px solid var(--border); }
+    nav a { font-size: 0.8rem; font-weight: 600; color: var(--muted); text-decoration: none;
+             padding: 0.35rem 0.75rem; border-radius: 5px; border: 1px solid var(--border2); }
+    nav a:hover { color: var(--text); border-color: var(--muted); }
+    nav a.active { color: var(--text); border-color: var(--blue); background: var(--blue-bg); }
+    .hero { margin-bottom: 3rem; }
+    .hero h1 { font-size: 1.7rem; font-weight: 800; letter-spacing: -0.03em; color: #fafafa; margin-bottom: 0.75rem; }
+    .hero .tagline { font-size: 1rem; color: var(--muted); max-width: 680px; }
+    .section { margin-bottom: 3rem; }
+    .section-title { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em;
+                      color: var(--dim); margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); }
+    h2 { font-size: 1.05rem; font-weight: 700; color: #fafafa; margin-bottom: 0.5rem; }
+    p { font-size: 0.9rem; color: #a1a1aa; margin-bottom: 0.75rem; max-width: 720px; }
+    .posture-box { padding: 1rem 1.25rem; background: var(--surface); border: 1px solid var(--border2);
+                    border-left: 3px solid var(--blue); border-radius: 6px; font-size: 0.87rem; color: #a1a1aa; max-width: 720px; }
+    .control-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+    .control-table th { text-align: left; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.07em;
+                         color: var(--dim); padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--border); font-weight: 700; }
+    .control-table td { padding: 0.55rem 0.75rem; border-bottom: 1px solid var(--border); color: #a1a1aa; vertical-align: top; }
+    .control-table tr:last-child td { border-bottom: none; }
+    .inv-tag { display: inline-block; font-size: 0.67rem; font-weight: 700; padding: 0.12em 0.4em;
+                border-radius: 3px; color: var(--blue); background: var(--blue-bg); border: 1px solid var(--blue-bdr); }
+    .tested-yes { color: var(--green); font-weight: 600; font-size: 0.78rem; }
+    .tested-partial { color: var(--yellow); font-weight: 600; font-size: 0.78rem; }
+    .tag { display: inline-block; font-size: 0.68rem; font-weight: 700; padding: 0.15em 0.45em;
+            border-radius: 3px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .tag-code  { background: #0d2515; color: var(--green); border: 1px solid var(--green-bdr); }
+    .tag-tests { background: var(--blue-bg); color: var(--blue); border: 1px solid var(--blue-bdr); }
+    .tag-review { background: var(--yellow-bg); color: var(--yellow); border: 1px solid var(--yellow-bdr); }
+    .tag-future { background: var(--surface2); color: var(--dim); border: 1px solid var(--border2); }
+    ul.plain-list { list-style: none; display: flex; flex-direction: column; gap: 0.4rem; }
+    ul.plain-list li { font-size: 0.84rem; color: #a1a1aa; display: flex; gap: 0.5rem; padding: 0.3rem 0.5rem;
+                        background: var(--surface); border: 1px solid var(--border); border-radius: 4px; }
+    ul.plain-list li.limit::before { content: "!"; color: var(--red); flex-shrink: 0; }
+    ul.plain-list li.question::before { content: "?"; color: var(--yellow); flex-shrink: 0; }
+    .review-status { display: inline-block; padding: 0.4rem 0.9rem; border-radius: 5px;
+                      font-size: 0.8rem; font-weight: 700; margin-bottom: 1rem;
+                      background: var(--yellow-bg); border: 1px solid var(--yellow-bdr); color: var(--yellow); }
+    .limit-banner { margin-top: 3rem; padding: 0.9rem 1.25rem; background: var(--surface);
+                     border: 1px solid var(--border2); border-left: 3px solid var(--dim); border-radius: 6px;
+                     font-size: 0.83rem; color: var(--muted); }
+    .limit-banner strong { color: var(--text); }
+    footer { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--border);
+              font-size: 0.78rem; color: var(--dim); line-height: 1.7; }
+    footer strong { color: var(--muted); }
+    code { font-family: "SF Mono", "Fira Code", monospace; font-size: 0.82em;
+            background: var(--surface2); border: 1px solid var(--border); padding: 0.1em 0.35em; border-radius: 3px; }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <nav>
+    <a href="/">Demo</a>
+    <a href="/review">Review</a>
+    <a href="/pilot">Pilot</a>
+    <a href="/security" class="active">Security</a>
+    <a href="/deployment">Deployment</a>
+  </nav>
+
+  <header class="hero">
+    <h1>Security Review</h1>
+    <p class="tagline">Implemented controls, known limitations, and recommended reviewer questions.</p>
+  </header>
+
+  <!-- Posture -->
+  <section class="section">
+    <div class="section-title">Security posture summary</div>
+    <div class="review-status">Not yet third-party reviewed</div>
+    <div class="posture-box">
+      CerbaSeal is currently a deterministic enforcement library and demo with no external API calls,
+      no database, and no authentication layer. Security review should focus on enforcement integrity,
+      bypass resistance, evidence integrity, replay correctness, and deployment assumptions.
+      The in-memory audit log, caller-supplied fields, and absence of cryptographic signing are known
+      limitations documented below.
+    </div>
+  </section>
+
+  <!-- Implemented controls -->
+  <section class="section">
+    <div class="section-title">Implemented controls</div>
+    <table class="control-table">
+      <thead>
+        <tr>
+          <th>Control</th>
+          <th>Invariant / Fix</th>
+          <th>Tested</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>AI non-authority invariant — AI actor + AI proposal → always REJECT</td><td><span class="inv-tag">INV-05</span></td><td class="tested-yes">✓ yes</td></tr>
+        <tr><td>Approval artifact binding — forRequestId must match request.requestId exactly</td><td><span class="inv-tag">INV-03 / Fix 1</span></td><td class="tested-yes">✓ yes</td></tr>
+        <tr><td>Workflow-level approval enforcement — fraud_triage always requires approval</td><td><span class="inv-tag">Fix 2</span></td><td class="tested-yes">✓ yes</td></tr>
+        <tr><td>Gate issuance registry — WeakSet prevents forged GateResults entering evidence layer</td><td><span class="inv-tag">INV-06 / Fix 3</span></td><td class="tested-yes">✓ yes</td></tr>
+        <tr><td>Fail-closed catch-all — all unexpected exceptions produce controlled REJECT</td><td><span class="inv-tag">Fix 6</span></td><td class="tested-yes">✓ yes</td></tr>
+        <tr><td>Known action class validation — proposedActionClass must be a valid member</td><td><span class="inv-tag">INV-11</span></td><td class="tested-yes">✓ yes</td></tr>
+        <tr><td>Proposal/request action match — proposedActionClass must equal requestedActionClass</td><td><span class="inv-tag">INV-12</span></td><td class="tested-yes">✓ yes</td></tr>
+        <tr><td>Policy pack required — no execution without policyPackRef</td><td><span class="inv-tag">INV-01</span></td><td class="tested-yes">✓ yes</td></tr>
+        <tr><td>Provenance required — modelVersion, ruleSetVersion, sourceHash all non-empty</td><td><span class="inv-tag">INV-02</span></td><td class="tested-yes">✓ yes</td></tr>
+        <tr><td>Logging readiness required — loggingReady must be true</td><td><span class="inv-tag">INV-04</span></td><td class="tested-yes">✓ yes</td></tr>
+        <tr><td>Trust state required — trustState.trusted must be true</td><td><span class="inv-tag">INV-09</span></td><td class="tested-yes">✓ yes</td></tr>
+        <tr><td>Stale controls block sensitive release — criticalControlsValid + not stale</td><td><span class="inv-tag">INV-08</span></td><td class="tested-yes">✓ yes</td></tr>
+        <tr><td>Prohibited use immediate reject — prohibitedUse:true → REJECT before other checks</td><td><span class="inv-tag">INV-10</span></td><td class="tested-yes">✓ yes</td></tr>
+        <tr><td>Immutable decision envelope — immutable literal true on every code path</td><td><span class="inv-tag">INV-07</span></td><td class="tested-yes">✓ yes</td></tr>
+        <tr><td>Evidence bundle deep cloning — no shared mutable references in bundles</td><td><span class="inv-tag">EvidenceBundleService</span></td><td class="tested-yes">✓ yes</td></tr>
+        <tr><td>Append-only audit log with SHA-256 hash chaining (entryHash over previousHash)</td><td><span class="inv-tag">AppendOnlyLogService</span></td><td class="tested-yes">✓ yes</td></tr>
+        <tr><td>Export hash verification by index — not just count</td><td><span class="inv-tag">Fix 5</span></td><td class="tested-yes">✓ yes</td></tr>
+        <tr><td>requestId non-empty validation</td><td><span class="inv-tag">INV-11 / Fix 7</span></td><td class="tested-yes">✓ yes</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- Threats -->
+  <section class="section">
+    <div class="section-title">Threats covered</div>
+    <table class="control-table">
+      <thead>
+        <tr><th>Threat</th><th>Control</th><th>Tested</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>AI attempts to authorize its own action</td><td><span class="inv-tag">INV-05</span></td><td class="tested-yes">✓ yes</td></tr>
+        <tr><td>Caller bypasses gate by constructing GateResult directly</td><td><span class="inv-tag">INV-06 WeakSet</span></td><td class="tested-yes">✓ yes</td></tr>
+        <tr><td>Caller reuses approval artifact from another request</td><td><span class="inv-tag">INV-03 forRequestId binding</span></td><td class="tested-yes">✓ yes</td></tr>
+        <tr><td>Caller omits approvalRequired flag for gated workflow</td><td><span class="inv-tag">Fix 2</span></td><td class="tested-yes">✓ yes</td></tr>
+        <tr><td>Caller supplies forged GateResult to evidence layer</td><td><span class="inv-tag">assertIsGateIssued</span></td><td class="tested-yes">✓ yes</td></tr>
+        <tr><td>Caller mutates evidence bundle after creation</td><td><span class="inv-tag">deep clone</span></td><td class="tested-yes">✓ yes</td></tr>
+        <tr><td>Caller omits provenance</td><td><span class="inv-tag">INV-02</span></td><td class="tested-yes">✓ yes</td></tr>
+        <tr><td>Caller provides stale controls on sensitive request</td><td><span class="inv-tag">INV-08</span></td><td class="tested-yes">✓ yes</td></tr>
+        <tr><td>Caller provides malformed or unknown action class</td><td><span class="inv-tag">INV-11</span></td><td class="tested-yes">✓ yes</td></tr>
+        <tr><td>Caller mismatches proposed and requested action class</td><td><span class="inv-tag">INV-12</span></td><td class="tested-yes">✓ yes</td></tr>
+        <tr><td>Caller attempts prohibited use</td><td><span class="inv-tag">INV-10</span></td><td class="tested-yes">✓ yes</td></tr>
+        <tr><td>Unexpected exception produces silent ALLOW</td><td><span class="inv-tag">Fix 6</span></td><td class="tested-yes">✓ yes</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- Known limitations -->
+  <section class="section">
+    <div class="section-title">Known limitations — clearly stated</div>
+    <ul class="plain-list">
+      <li class="limit">Audit log is in-memory — not persisted across process restarts</li>
+      <li class="limit">No cryptographic signing — evidence is hash-linked, not key-signed or attested</li>
+      <li class="limit">No identity provider — actor identity is caller-supplied with no independent attestation</li>
+      <li class="limit">No persistent storage — all state exists per process instance</li>
+      <li class="limit">No production deployment hardening</li>
+      <li class="limit">No third-party security review completed yet</li>
+      <li class="limit">loggingReady is caller-declared — gate does not verify actual log system health</li>
+      <li class="limit">immutableSignature content is not cryptographically verified — any non-empty string passes</li>
+      <li class="limit">SHA-256 hash chain proves consistency, not origin — fabricated chain with recomputed hashes passes verifyChain()</li>
+    </ul>
+  </section>
+
+  <!-- Claim discipline -->
+  <section class="section">
+    <div class="section-title">Claim discipline</div>
+    <table class="control-table">
+      <thead>
+        <tr><th>Claim</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>AI cannot produce authority-bearing actions</td><td><span class="tag tag-code">Code</span> <span class="tag tag-tests">Tests</span></td></tr>
+        <tr><td>Approval artifacts are request-bound</td><td><span class="tag tag-code">Code</span> <span class="tag tag-tests">Tests</span></td></tr>
+        <tr><td>All errors fail closed</td><td><span class="tag tag-code">Code</span> <span class="tag tag-tests">Tests</span></td></tr>
+        <tr><td>Evidence bundles are immutable after creation</td><td><span class="tag tag-code">Code</span> <span class="tag tag-tests">Tests</span></td></tr>
+        <tr><td>Replay matches original outcomes</td><td><span class="tag tag-code">Code</span> <span class="tag tag-tests">Tests</span></td></tr>
+        <tr><td>Evidence is cryptographically signed</td><td><span class="tag tag-future">Not implemented</span></td></tr>
+        <tr><td>Identity of callers is independently verified</td><td><span class="tag tag-future">Not implemented</span></td></tr>
+        <tr><td>Third-party security review complete</td><td><span class="tag tag-review">Requires review</span></td></tr>
+        <tr><td>Production-ready for client deployment</td><td><span class="tag tag-future">Future deployment requirement</span></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- Review questions -->
+  <section class="section">
+    <div class="section-title">Recommended reviewer questions</div>
+    <ul class="plain-list">
+      <li class="question">Can any caller obtain ReleaseAuthorization without <code>ExecutionGateService.evaluate()</code>?</li>
+      <li class="question">Can evidence be accepted without a gate-issued GateResult?</li>
+      <li class="question">Can replay mismatch be hidden from the diagnostic layer?</li>
+      <li class="question">Can audit chain tampering be detected given SHA-256 without HMAC?</li>
+      <li class="question">Are all unexpected errors fail-closed under all import configurations?</li>
+      <li class="question">Are claims in docs consistent with code behavior?</li>
+      <li class="question">Are deployment assumptions clearly separated from implemented behavior?</li>
+      <li class="question">Is the WeakSet bypass prevention robust across module boundaries?</li>
+      <li class="question">What changes are required before client deployment?</li>
+      <li class="question">What is the trust model for caller-supplied fields (loggingReady, trustState, prohibitedUse)?</li>
+    </ul>
+  </section>
+
+  <div class="limit-banner">
+    <strong>Current limitation notice:</strong>
+    This is a review-ready core demo, not a production client deployment.
+    No third-party security review has been completed. The limitations listed above are accurate and documented.
+  </div>
+
+  <footer>
+    <strong>CerbaSeal enforces authority — not judgment.</strong><br>
+    Security claims on this page are backed by code and tests only. Nothing is overstated.
+  </footer>
+
+</div>
+</body>
+</html>

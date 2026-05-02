@@ -20,6 +20,8 @@
     "demo:audit:validate": "tsx examples/auditor-view/validate-auditor-view.ts",
     "demo:support": "tsx examples/support-readiness/run-support-readiness.ts",
     "demo:support:validate": "tsx examples/support-readiness/validate-support-readiness.ts",
+    "demo:review": "tsx examples/browser-demo/server.ts",
+    "review:validate": "tsx examples/browser-demo/validate-review-portal.ts",
     "demo:all": "pnpm demo && pnpm demo:consumer && pnpm demo:agent && pnpm demo:audit && pnpm demo:support",
     "report:hash": "ts-node scripts/hash-report.ts",
     "report:list": "cat docs/reports/adversarial/index.json"

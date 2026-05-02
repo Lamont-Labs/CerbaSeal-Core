@@ -4,7 +4,9 @@
 
 CerbaSeal-Core is a deterministic enforcement layer for AI-assisted workflows. It is architecturally complete for its defined scope: evaluating governed requests, producing structured decisions, and generating verifiable audit evidence.
 
-The enforcement loop is fully implemented, adversarially tested, and documented. The system is not production-hardened and is not intended for direct deployment without a client-specific implementation layer.
+The enforcement loop is fully implemented, adversarially tested, and documented. The system is review-ready and pilot-ready at the core level. It is not production-hardened and is not intended for direct deployment without a client-specific implementation layer.
+
+A browser-accessible Review & Pilot Readiness Portal is live at `/review`, `/pilot`, `/security`, and `/deployment`.
 
 ---
 
@@ -14,11 +16,21 @@ The enforcement loop is fully implemented, adversarially tested, and documented.
 |---|---|---|
 | adversarial-integrity.test.ts | 66 | Passing |
 | execution-gate-service.test.ts | 19 | Passing |
-| snapshots/enforcement-loop.snapshot.test.ts | 39 | Passing |
+| snapshots/enforcement-loop.snapshot.test.ts | 41 | Passing |
 | security/fail-closed.test.ts | 2 | Passing |
 | security/non-forgery.test.ts | 2 | Passing |
+| security/misuse-scenarios.test.ts | 27 | Passing |
+| security/contextual-boundary.test.ts | 25 | Passing |
 | audit-evidence-export.test.ts | 6 | Passing |
 | diagnostic-report-service.test.ts | 5 | Passing |
+| integration/browser-demo-routes.test.ts | 28 | Passing |
+| integration/review-portal-routes.test.ts | 61 | Passing |
+| integration/support-readiness.test.ts | 23 | Passing |
+| integration/external-signal-examples.test.ts | 16 | Passing |
+| integration/full-flow.test.ts | 1 | Passing |
+| integration/system-integration.test.ts | 1 | Passing |
+
+**Total: 323 passing. 0 failing. 15 test files.**
 
 All tests pass. No invariant violations. No incorrect execution outcomes.
 
@@ -49,6 +61,23 @@ Seven targeted security fixes were applied following a hostile audit:
 5. exportReferencesOriginalEvidence compares actual hashes — not just event count
 6. Unexpected exceptions produce controlled REJECT — fail-closed applies to all error types
 7. requestId validated as non-empty — prevents ambiguous audit artifacts
+
+---
+
+## Review & Pilot Readiness Portal
+
+The following portal pages are served by the browser demo server:
+
+| Route | Purpose |
+|---|---|
+| `/` | Live enforcement demo (REJECT / HOLD / ALLOW) |
+| `/review` | External reviewer portal |
+| `/pilot` | Pilot readiness and intake checklist |
+| `/security` | Security controls and reviewer questions |
+| `/deployment` | Deployment posture and options |
+| `/api/review-summary` | Machine-readable system state (JSON) |
+| `/api/pilot-readiness` | Machine-readable pilot checklist (JSON) |
+| `/api/security-summary` | Machine-readable security summary (JSON) |
 
 ---
 
@@ -105,9 +134,22 @@ This system does not include:
 - Cryptographic signing of decision artifacts
 - Identity verification or runtime attestation of callers
 - Persistent storage — all state is in-memory per instance
-- Network layer or API surface
+- Network layer or API surface (beyond the demo server)
 - Policy interpretation — `policyPackRef` is a reference only; policy content is not evaluated
 - Client-specific workflow configuration
 - Production infrastructure hardening
 
 These are addressed during pilot scoping and client-specific implementation. They are out of scope for this enforcement proof surface by design.
+
+---
+
+## What Remains Open
+
+- Third-party security review
+- Client-specific workflow binding
+- Working agreement with a pilot client
+- Client deployment environment selection and review
+- Persistent audit storage integration
+- Support terms definition
+- Legal review
+- Pilot pricing and commercial terms

@@ -25,6 +25,9 @@
       --green:     #4ade80;
       --green-bg:  #0a1c0e;
       --green-bdr: #14532d;
+      --blue:      #60a5fa;
+      --blue-bg:   #0a1220;
+      --blue-bdr:  #1e3a5f;
     }
 
     body {
@@ -36,7 +39,21 @@
     }
 
     /* ── Layout ── */
-    .page { max-width: 860px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+    .page { max-width: 860px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+    /* ── Nav ── */
+    nav {
+      display: flex; gap: 0.5rem; flex-wrap: wrap;
+      margin-bottom: 2.5rem; padding-bottom: 1.25rem;
+      border-bottom: 1px solid var(--border);
+    }
+    nav a {
+      font-size: 0.8rem; font-weight: 600; color: var(--muted);
+      text-decoration: none; padding: 0.35rem 0.75rem;
+      border-radius: 5px; border: 1px solid var(--border2);
+    }
+    nav a:hover { color: var(--text); border-color: var(--muted); }
+    nav a.active { color: var(--text); border-color: var(--blue); background: var(--blue-bg); }
 
     /* ── Hero ── */
     .hero { border-bottom: 1px solid var(--border); padding-bottom: 2rem; margin-bottom: 2.5rem; }
@@ -134,7 +151,7 @@
     .badge-PAUSED  { color: var(--yellow); border-color: var(--yellow-bdr); background: var(--yellow-bg); }
     .badge-ALLOWED { color: var(--green);  border-color: var(--green-bdr);  background: var(--green-bg); }
 
-    /* Layer 2 + 3 */
+    /* Layers 2 + 3 */
     .consequence-wrap {
       padding: 1rem 1.1rem; border-bottom: 1px solid var(--border);
       display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem 1.5rem;
@@ -143,6 +160,15 @@
     .cq-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
                 letter-spacing: 0.07em; color: var(--dim); margin-bottom: 0.2rem; }
     .cq-value { font-size: 0.875rem; color: var(--text); }
+
+    /* Plain English explanation */
+    .plain-english {
+      padding: 0.85rem 1.1rem; border-bottom: 1px solid var(--border);
+      background: var(--surface2);
+    }
+    .plain-english .pe-label { font-size: 0.65rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.09em; color: var(--dim); margin-bottom: 0.3rem; }
+    .plain-english .pe-text { font-size: 0.85rem; color: #a1a1aa; line-height: 1.5; }
 
     /* Layer 4 — proof summary */
     .proof-grid {
@@ -162,8 +188,8 @@
     .pv-HOLD,   .pv-PAUSED,  .pv-pending         { color: var(--yellow); }
     .pv-ALLOW,  .pv-ALLOWED, .pv-present, .pv-true { color: var(--green); }
 
-    /* Expandable proof */
-    .proof-expand { padding: 0; }
+    /* Technical trace */
+    .proof-expand { padding: 0; border-bottom: 1px solid var(--border); }
     details { padding: 0; }
     summary {
       padding: 0.75rem 1.1rem; font-size: 0.8rem; font-weight: 500;
@@ -187,6 +213,14 @@
       white-space: pre-wrap; word-break: break-word;
     }
 
+    /* Reviewer notes */
+    .reviewer-notes {
+      padding: 0.85rem 1.1rem;
+    }
+    .rn-label { font-size: 0.65rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.09em; color: var(--dim); margin-bottom: 0.3rem; }
+    .rn-text { font-size: 0.82rem; color: var(--muted); line-height: 1.5; }
+
     /* Placeholder and loading */
     #placeholder {
       padding: 3rem 0; text-align: center; font-size: 0.875rem; color: var(--dim);
@@ -199,6 +233,15 @@
       padding: 1.25rem 1.1rem; font-size: 0.875rem; color: var(--red);
     }
 
+    /* Limitation banner */
+    .limit-banner {
+      margin-top: 1.5rem; padding: 0.75rem 1rem;
+      background: var(--surface); border: 1px solid var(--border2);
+      border-left: 3px solid var(--dim); border-radius: 6px;
+      font-size: 0.8rem; color: var(--muted);
+    }
+    .limit-banner strong { color: var(--text); }
+
     /* Footer */
     footer {
       margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--border);
@@ -209,6 +252,15 @@
 </head>
 <body>
 <div class="page">
+
+  <!-- ── Nav ── -->
+  <nav>
+    <a href="/" class="active">Demo</a>
+    <a href="/review">Review</a>
+    <a href="/pilot">Pilot</a>
+    <a href="/security">Security</a>
+    <a href="/deployment">Deployment</a>
+  </nav>
 
   <!-- ── Hero ── -->
   <header class="hero">
@@ -281,6 +333,12 @@
         </div>
       </div>
 
+      <!-- Plain English explanation -->
+      <div class="plain-english">
+        <div class="pe-label">Plain English</div>
+        <div class="pe-text" id="plain-english-text"></div>
+      </div>
+
       <!-- Layer 4: Proof summary -->
       <div class="proof-grid">
         <div class="proof-cell">
@@ -299,17 +357,39 @@
           <div class="proof-label">Blocked Action Record</div>
           <div class="proof-value" id="pv-blocked"></div>
         </div>
+        <div class="proof-cell">
+          <div class="proof-label">Audit Events</div>
+          <div class="proof-value" id="pv-audit-events"></div>
+        </div>
+        <div class="proof-cell">
+          <div class="proof-label">Chain Verified</div>
+          <div class="proof-value" id="pv-chain-verified"></div>
+        </div>
+        <div class="proof-cell">
+          <div class="proof-label">Replay Matched</div>
+          <div class="proof-value" id="pv-replay-matched"></div>
+        </div>
+        <div class="proof-cell">
+          <div class="proof-label">Next Action</div>
+          <div class="proof-value" id="pv-next-action"></div>
+        </div>
       </div>
 
-      <!-- Expandable proof -->
+      <!-- Technical Trace -->
       <div class="proof-expand">
         <details id="proof-details">
-          <summary>View enforcement proof</summary>
+          <summary>Technical trace — enforcement proof</summary>
           <div class="proof-body">
-            <p class="proof-note">This proof is generated from the actual CerbaSeal evaluation result.</p>
+            <p class="proof-note">This proof is generated from the actual CerbaSeal evaluation result. It is deterministic — running the same scenario always produces the same output.</p>
             <pre id="proof-output"></pre>
           </div>
         </details>
+      </div>
+
+      <!-- Reviewer Notes -->
+      <div class="reviewer-notes">
+        <div class="rn-label">Reviewer Notes</div>
+        <div class="rn-text" id="reviewer-notes-text"></div>
       </div>
 
     </div>
@@ -322,13 +402,21 @@
 
   </section>
 
+  <!-- ── Limitation banner ── -->
+  <div class="limit-banner">
+    <strong>Current limitation notice:</strong>
+    This is a review-ready core demo, not a production client deployment.
+    It does not provide production monitoring, SLA, managed hosting, cryptographic signing, or persistent storage.
+    See <a href="/review" style="color:var(--blue)">the Review portal</a> for full maturity details.
+  </div>
+
   <!-- ── Footer ── -->
   <footer>
     <strong>CerbaSeal enforces authority — not judgment.</strong><br>
     It does not determine whether an action is correct.<br>
     It determines whether the action is authorized to execute.<br><br>
-    This is a local demonstration surface only.
-    It is not a production API, authentication layer, persistence layer, or policy engine.
+    This is a review-ready core demo only —
+    not a production API, authentication layer, persistence layer, or policy engine.
   </footer>
 
 </div>

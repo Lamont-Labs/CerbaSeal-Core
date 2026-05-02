@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CerbaSeal — External Reviewer Portal</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0f0f11; --surface: #18181b; --surface2: #09090b;
+      --border: #27272a; --border2: #3f3f46;
+      --text: #e4e4e7; --muted: #71717a; --dim: #52525b;
+      --red: #f87171; --red-bg: #1c0a0a; --red-border: #7f1d1d;
+      --yellow: #facc15; --yellow-bg: #1a1300; --yellow-bdr: #78350f;
+      --green: #4ade80; --green-bg: #0a1c0e; --green-bdr: #14532d;
+      --blue: #60a5fa; --blue-bg: #0a1220; --blue-bdr: #1e3a5f;
+    }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+           background: var(--bg); color: var(--text); min-height: 100vh; line-height: 1.6; }
+    .page { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem 5rem; }
+
+    /* Nav */
+    nav { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 2.5rem;
+          padding-bottom: 1.25rem; border-bottom: 1px solid var(--border); }
+    nav a { font-size: 0.8rem; font-weight: 600; color: var(--muted); text-decoration: none;
+             padding: 0.35rem 0.75rem; border-radius: 5px; border: 1px solid var(--border2); }
+    nav a:hover { color: var(--text); border-color: var(--muted); }
+    nav a.active { color: var(--text); border-color: var(--blue); background: var(--blue-bg); }
+
+    /* Hero */
+    .hero { margin-bottom: 3rem; }
+    .hero h1 { font-size: 1.7rem; font-weight: 800; letter-spacing: -0.03em;
+                color: #fafafa; line-height: 1.2; margin-bottom: 0.75rem; }
+    .hero .tagline { font-size: 1rem; color: var(--muted); max-width: 680px; margin-bottom: 1.25rem; }
+    .hero .definition {
+      padding: 1rem 1.25rem; background: var(--surface); border: 1px solid var(--border2);
+      border-left: 3px solid var(--blue); border-radius: 6px;
+      font-size: 0.9rem; color: #a1a1aa; max-width: 720px;
+    }
+
+    /* Section */
+    .section { margin-bottom: 3rem; }
+    .section-title {
+      font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em;
+      color: var(--dim); margin-bottom: 1rem; padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    h2 { font-size: 1.1rem; font-weight: 700; color: #fafafa; margin-bottom: 0.5rem; }
+    p { font-size: 0.9rem; color: #a1a1aa; margin-bottom: 0.75rem; max-width: 720px; }
+
+    /* Two-col */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media (max-width: 640px) { .two-col { grid-template-columns: 1fr; } }
+
+    /* Card */
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+             padding: 1.1rem 1.25rem; }
+    .card-title { font-size: 0.8rem; font-weight: 700; color: var(--text); margin-bottom: 0.5rem;
+                  text-transform: uppercase; letter-spacing: 0.06em; }
+    .card p { font-size: 0.83rem; color: var(--muted); margin-bottom: 0; }
+
+    /* Label list */
+    .label-list { list-style: none; display: flex; flex-direction: column; gap: 0.4rem; }
+    .label-list li { font-size: 0.85rem; color: #a1a1aa; display: flex; align-items: flex-start; gap: 0.5rem; }
+    .label-list li::before { content: "—"; color: var(--dim); flex-shrink: 0; }
+
+    /* Implemented / not-yet */
+    .status-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media (max-width: 640px) { .status-grid { grid-template-columns: 1fr; } }
+    .status-box { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1rem 1.25rem; }
+    .status-box.implemented { border-left: 3px solid var(--green); }
+    .status-box.pending { border-left: 3px solid var(--dim); }
+    .status-box-title { font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+                         letter-spacing: 0.08em; margin-bottom: 0.75rem; }
+    .status-box.implemented .status-box-title { color: var(--green); }
+    .status-box.pending .status-box-title { color: var(--dim); }
+    .status-box ul { list-style: none; display: flex; flex-direction: column; gap: 0.3rem; }
+    .status-box ul li { font-size: 0.82rem; color: #a1a1aa; display: flex; gap: 0.5rem; }
+    .status-box.implemented ul li::before { content: "✓"; color: var(--green); flex-shrink: 0; }
+    .status-box.pending ul li::before { content: "○"; color: var(--dim); flex-shrink: 0; }
+
+    /* Scenario cards */
+    .scenario-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-bottom: 1rem; }
+    @media (max-width: 640px) { .scenario-grid { grid-template-columns: 1fr; } }
+    .sc-card { border: 1px solid var(--border2); border-radius: 8px; padding: 1rem; background: var(--surface); }
+    .sc-card.sc-reject { border-color: var(--red-border); background: var(--red-bg); }
+    .sc-card.sc-hold   { border-color: var(--yellow-bdr); background: var(--yellow-bg); }
+    .sc-card.sc-allow  { border-color: var(--green-bdr);  background: var(--green-bg); }
+    .sc-verdict { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.4rem; }
+    .sc-reject .sc-verdict { color: var(--red); }
+    .sc-hold   .sc-verdict { color: var(--yellow); }
+    .sc-allow  .sc-verdict { color: var(--green); }
+    .sc-title { font-size: 0.82rem; font-weight: 600; color: var(--text); margin-bottom: 0.35rem; line-height: 1.3; }
+    .sc-plain { font-size: 0.78rem; color: var(--muted); margin-bottom: 0.5rem; }
+    .sc-meta { font-size: 0.72rem; color: var(--dim); margin-bottom: 0.25rem; }
+    .sc-meta strong { color: #71717a; }
+    .sc-btn {
+      margin-top: 0.75rem; padding: 0.45rem 0.75rem; font-size: 0.78rem; font-weight: 600;
+      border-radius: 5px; border: 1px solid; cursor: pointer; font-family: inherit;
+      width: 100%; background: transparent;
+    }
+    .sc-reject .sc-btn { color: var(--red);    border-color: var(--red-border); }
+    .sc-hold   .sc-btn { color: var(--yellow); border-color: var(--yellow-bdr); }
+    .sc-allow  .sc-btn { color: var(--green);  border-color: var(--green-bdr); }
+    .sc-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+    .sc-output { margin-top: 0.75rem; font-size: 0.75rem; display: none; }
+    .sc-output.visible { display: block; }
+    .sc-result-badge { font-weight: 700; font-size: 0.85rem; padding: 0.2rem 0.5rem;
+                        border-radius: 4px; display: inline-block; margin-bottom: 0.4rem; }
+    .badge-BLOCKED { color: var(--red);    background: var(--red-bg);    border: 1px solid var(--red-border); }
+    .badge-PAUSED  { color: var(--yellow); background: var(--yellow-bg); border: 1px solid var(--yellow-bdr); }
+    .badge-ALLOWED { color: var(--green);  background: var(--green-bg);  border: 1px solid var(--green-bdr); }
+    .sc-detail-row { display: flex; gap: 0.4rem; margin-top: 0.2rem; flex-wrap: wrap; }
+    .sc-detail-key { color: var(--dim); }
+    .sc-detail-val { color: #a1a1aa; }
+
+    /* Review path */
+    .review-path { counter-reset: step; list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+    .review-path li {
+      counter-increment: step; display: flex; align-items: flex-start; gap: 0.75rem;
+      font-size: 0.87rem; color: #a1a1aa; padding: 0.6rem 0.9rem;
+      background: var(--surface); border: 1px solid var(--border); border-radius: 6px;
+    }
+    .review-path li::before {
+      content: counter(step); background: var(--surface2); border: 1px solid var(--border2);
+      color: var(--muted); font-size: 0.72rem; font-weight: 700;
+      min-width: 1.5rem; height: 1.5rem; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    code { font-family: "SF Mono", "Fira Code", monospace; font-size: 0.82em;
+            background: var(--surface2); border: 1px solid var(--border); padding: 0.1em 0.35em; border-radius: 3px; }
+
+    /* Proof table */
+    .proof-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+    .proof-table th { text-align: left; font-size: 0.7rem; text-transform: uppercase;
+                       letter-spacing: 0.07em; color: var(--dim); padding: 0.5rem 0.75rem;
+                       border-bottom: 1px solid var(--border); font-weight: 700; }
+    .proof-table td { padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--border); color: #a1a1aa; vertical-align: top; }
+    .proof-table tr:last-child td { border-bottom: none; }
+    .tag { display: inline-block; font-size: 0.68rem; font-weight: 700; padding: 0.15em 0.45em;
+            border-radius: 3px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .tag-code  { background: #0d2515; color: var(--green); border: 1px solid var(--green-bdr); }
+    .tag-test  { background: var(--blue-bg); color: var(--blue); border: 1px solid var(--blue-bdr); }
+    .tag-demo  { background: #1a1300; color: var(--yellow); border: 1px solid var(--yellow-bdr); }
+
+    /* Limitation banner */
+    .limit-banner {
+      margin-top: 3rem; padding: 0.9rem 1.25rem;
+      background: var(--surface); border: 1px solid var(--border2);
+      border-left: 3px solid var(--dim); border-radius: 6px;
+      font-size: 0.83rem; color: var(--muted);
+    }
+    .limit-banner strong { color: var(--text); }
+
+    footer { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--border);
+              font-size: 0.78rem; color: var(--dim); line-height: 1.7; }
+    footer strong { color: var(--muted); }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <nav>
+    <a href="/">Demo</a>
+    <a href="/review" class="active">Review</a>
+    <a href="/pilot">Pilot</a>
+    <a href="/security">Security</a>
+    <a href="/deployment">Deployment</a>
+  </nav>
+
+  <!-- Hero -->
+  <header class="hero">
+    <h1>CerbaSeal — External Reviewer Portal</h1>
+    <p class="tagline">A structured review surface for technical evaluators, security reviewers, and pilot decision-makers.</p>
+    <div class="definition">
+      <strong>CerbaSeal</strong> is a deterministic execution enforcement spine for AI-assisted workflows.
+      It sits between a decision system and an execution system, returning ALLOW, HOLD, or REJECT
+      with a hash-linked evidence trail.
+    </div>
+  </header>
+
+  <!-- Section 1: Problem -->
+  <section class="section">
+    <div class="section-title">What problem it solves</div>
+    <h2>AI systems can propose consequential actions. They should not be able to authorize them.</h2>
+    <p>
+      As AI systems move from generating text to proposing actions — in workflows, transactions, accounts,
+      and operations — most governance tools observe and log after the fact. CerbaSeal enforces the
+      execution boundary <em>before</em> the action occurs.
+    </p>
+    <p>
+      Every proposed action passes through a deterministic gate. The gate checks policy reference,
+      provenance, logging readiness, authority class, approval requirements, control state, and trust state.
+      The result is a structured decision envelope — ALLOW, HOLD, or REJECT — with a hash-linked
+      evidence trail that can be replayed, exported, and audited.
+    </p>
+    <p>
+      CerbaSeal enforces authority. It does not determine whether an action is correct.
+      Contextual correctness remains the responsibility of upstream decision systems and human reviewers.
+    </p>
+  </section>
+
+  <!-- Section 2: What it is not -->
+  <section class="section">
+    <div class="section-title">What CerbaSeal is not</div>
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title">Not these things</div>
+        <ul class="label-list">
+          <li>a full AI governance platform</li>
+          <li>a model training or evaluation system</li>
+          <li>a legal compliance certification tool</li>
+          <li>a SaaS product</li>
+          <li>a replacement for security review</li>
+          <li>production-certified for client deployment</li>
+          <li>a substitute for legal or regulatory advice</li>
+          <li>a generic monitoring dashboard</li>
+          <li>a complete enterprise deployment package</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title">Accurately described as</div>
+        <ul class="label-list">
+          <li>a deterministic enforcement gate</li>
+          <li>a structural authority boundary layer</li>
+          <li>a proof-of-enforcement system</li>
+          <li>a self-explaining, self-verifying core</li>
+          <li>a pilot-ready enforcement primitive</li>
+          <li>domain-agnostic and workflow-agnostic</li>
+          <li>fail-closed by design</li>
+          <li>reviewable without founder involvement</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 3: Maturity -->
+  <section class="section">
+    <div class="section-title">Current maturity</div>
+    <div class="status-grid">
+      <div class="status-box implemented">
+        <div class="status-box-title">Currently implemented</div>
+        <ul>
+          <li>deterministic execution gate</li>
+          <li>ALLOW / HOLD / REJECT outcomes</li>
+          <li>12 named invariant checks</li>
+          <li>17 reason codes</li>
+          <li>evidence bundle service</li>
+          <li>append-only hash-linked audit log</li>
+          <li>replay service</li>
+          <li>export manifest</li>
+          <li>diagnostic report service</li>
+          <li>operator action reports</li>
+          <li>system health verification</li>
+          <li>browser demo (live)</li>
+          <li>262 passing tests</li>
+        </ul>
+      </div>
+      <div class="status-box pending">
+        <div class="status-box-title">Not yet implemented / requires pilot</div>
+        <ul>
+          <li>client-specific workflow binding</li>
+          <li>client infrastructure deployment</li>
+          <li>third-party security review</li>
+          <li>production monitoring</li>
+          <li>multi-client support model</li>
+          <li>formal SLA</li>
+          <li>external audit certification</li>
+          <li>persistent audit storage</li>
+          <li>cryptographic signing</li>
+          <li>identity provider integration</li>
+          <li>real client data integration</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 4: Demo scenarios -->
+  <section class="section">
+    <div class="section-title">Core enforcement scenarios — run live</div>
+    <div class="scenario-grid">
+
+      <div class="sc-card sc-reject">
+        <div class="sc-verdict">→ REJECT</div>
+        <div class="sc-title">AI tries to act without authority</div>
+        <div class="sc-plain">An AI actor with an AI-sourced proposal attempts to authorize execution. CerbaSeal blocks unconditionally.</div>
+        <div class="sc-meta"><strong>Invariant:</strong> INV-05 AI_NON_AUTHORITATIVE</div>
+        <div class="sc-meta"><strong>Reason code:</strong> AI_CANNOT_AUTHORIZE</div>
+        <button class="sc-btn" onclick="runScenario('reject', this)">Run blocked AI action</button>
+        <div class="sc-output" id="out-reject"></div>
+      </div>
+
+      <div class="sc-card sc-hold">
+        <div class="sc-verdict">→ HOLD</div>
+        <div class="sc-title">Human submits action without required approval</div>
+        <div class="sc-plain">The request is structurally valid but required approval is absent. Execution pauses, not rejected.</div>
+        <div class="sc-meta"><strong>Invariant:</strong> INV-03 NO_REQUIRED_APPROVAL_NO_RELEASE</div>
+        <div class="sc-meta"><strong>Reason code:</strong> REQUIRED_APPROVAL_MISSING</div>
+        <button class="sc-btn" onclick="runScenario('hold', this)">Run missing-approval action</button>
+        <div class="sc-output" id="out-hold"></div>
+      </div>
+
+      <div class="sc-card sc-allow">
+        <div class="sc-verdict">→ ALLOW</div>
+        <div class="sc-title">Approved action with valid provenance and approval</div>
+        <div class="sc-plain">All 12 invariants pass. A release authorization is issued. This is the only path to execution.</div>
+        <div class="sc-meta"><strong>Invariant:</strong> all 12 pass</div>
+        <div class="sc-meta"><strong>Reason code:</strong> DECISION_ALLOWED</div>
+        <button class="sc-btn" onclick="runScenario('allow', this)">Run approved action</button>
+        <div class="sc-output" id="out-allow"></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Section 5: Why it matters -->
+  <section class="section">
+    <div class="section-title">Why this matters</div>
+    <div class="two-col">
+      <div class="card"><div class="card-title">Decision control</div><p>Every proposed action must pass a complete invariant check before execution. There is no path around the gate.</p></div>
+      <div class="card"><div class="card-title">Auditability</div><p>Every outcome — including REJECT and HOLD — produces a hash-linked evidence bundle. Nothing is silently discarded.</p></div>
+      <div class="card"><div class="card-title">Replayability</div><p>Stored evidence can be replayed through the gate. Replay must match the original outcome deterministically.</p></div>
+      <div class="card"><div class="card-title">Non-bypassability</div><p>Gate results are registered in a module-private WeakSet. Externally constructed results are rejected by the evidence layer.</p></div>
+      <div class="card"><div class="card-title">Human authority preservation</div><p>AI actors cannot authorize their own AI-sourced proposals under any condition. Human approval is a structural requirement, not a configuration flag.</p></div>
+      <div class="card"><div class="card-title">External reviewability</div><p>Every claim is backed by code, tests, or visible demo output. Nothing in this portal is aspirational without a label.</p></div>
+    </div>
+  </section>
+
+  <!-- Section 6: Proof -->
+  <section class="section">
+    <div class="section-title">Current proof — claims and backing</div>
+    <table class="proof-table">
+      <thead>
+        <tr>
+          <th>Claim</th>
+          <th>Backed by</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>AI cannot produce authority-bearing actions</td>
+          <td><span class="tag tag-code">Code</span> <span class="tag tag-test">Tests</span> <span class="tag tag-demo">Demo</span></td>
+        </tr>
+        <tr>
+          <td>Required human approval cannot be bypassed</td>
+          <td><span class="tag tag-code">Code</span> <span class="tag tag-test">Tests</span> <span class="tag tag-demo">Demo</span></td>
+        </tr>
+        <tr>
+          <td>Approval artifacts must be bound to the specific request</td>
+          <td><span class="tag tag-code">Code</span> <span class="tag tag-test">Tests</span></td>
+        </tr>
+        <tr>
+          <td>Forged gate results cannot enter the evidence layer</td>
+          <td><span class="tag tag-code">Code</span> <span class="tag tag-test">Tests</span></td>
+        </tr>
+        <tr>
+          <td>Unexpected runtime errors fail closed</td>
+          <td><span class="tag tag-code">Code</span> <span class="tag tag-test">Tests</span></td>
+        </tr>
+        <tr>
+          <td>All outcomes produce hash-linked evidence</td>
+          <td><span class="tag tag-code">Code</span> <span class="tag tag-test">Tests</span> <span class="tag tag-demo">Demo</span></td>
+        </tr>
+        <tr>
+          <td>Replay of evidence produces identical outcomes</td>
+          <td><span class="tag tag-code">Code</span> <span class="tag tag-test">Tests</span> <span class="tag tag-demo">Demo</span></td>
+        </tr>
+        <tr>
+          <td>262 tests passing, 0 failing</td>
+          <td><span class="tag tag-test">Tests</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- Section 7: Reviewer path -->
+  <section class="section">
+    <div class="section-title">Reviewer quick path</div>
+    <ol class="review-path">
+      <li>Read the one-page system definition: <code>docs/one-page.md</code></li>
+      <li>Run the REJECT scenario above — confirm AI self-authorization is blocked</li>
+      <li>Run the HOLD scenario above — confirm missing approval pauses execution</li>
+      <li>Run the ALLOW scenario above — confirm approved action produces release authorization</li>
+      <li>Inspect evidence output: check evidenceBundleId, auditEventCount, chainVerified, replayMatchedOriginal</li>
+      <li>Review the <a href="/security" style="color:var(--blue)">Security page</a> — implemented controls and review questions</li>
+      <li>Review the <a href="/pilot" style="color:var(--blue)">Pilot page</a> — what is ready and what requires client definition</li>
+      <li>Review the <a href="/deployment" style="color:var(--blue)">Deployment page</a> — deployment posture and options</li>
+      <li>Run the full test suite: <code>pnpm test</code></li>
+      <li>Run support readiness validation: <code>pnpm demo:support:validate</code></li>
+    </ol>
+  </section>
+
+  <!-- Limitation banner -->
+  <div class="limit-banner">
+    <strong>Current limitation notice:</strong>
+    This is a review-ready core demo, not a production client deployment.
+    It does not provide production monitoring, SLA, managed hosting, cryptographic signing, persistent storage, or legal certification.
+  </div>
+
+  <footer>
+    <strong>CerbaSeal enforces authority — not judgment.</strong><br>
+    Claims on this page are backed by code, tests, or visible demo output. Nothing is asserted without evidence.
+  </footer>
+
+</div>
+<script>
+(function() {
+  function runScenario(id, btn) {
+    btn.disabled = true;
+    btn.textContent = 'Running…';
+    var out = document.getElementById('out-' + id);
+    fetch('/api/' + id)
+      .then(function(r) { return r.json(); })
+      .then(function(d) {
+        btn.disabled = false;
+        btn.textContent = id === 'reject' ? 'Run blocked AI action' : id === 'hold' ? 'Run missing-approval action' : 'Run approved action';
+        var ds = d.outcome ? d.outcome.displayState : '?';
+        var rc = d.outcome && d.outcome.reasonCodes ? d.outcome.reasonCodes.join(', ') : '';
+        var rel = d.proof ? (d.proof.releaseAuthorizationExists ? 'present' : 'none') : '?';
+        var blk = d.proof ? (d.proof.blockedActionRecordExists ? 'present' : 'none') : '?';
+        var ev = d.evidence ? d.evidence.auditEventCount : '?';
+        var cv = d.evidence ? (d.evidence.chainVerified ? 'yes' : 'no') : '?';
+        var rm = d.evidence ? (d.evidence.replayMatchedOriginal ? 'yes' : 'no') : '?';
+        var ra = d.diagnostics ? d.diagnostics.recommendedNextAction : '';
+        out.innerHTML = '<div class="sc-result-badge badge-' + ds + '">' + ds + '</div>' +
+          '<div class="sc-detail-row"><span class="sc-detail-key">Reason codes:</span><span class="sc-detail-val">' + rc + '</span></div>' +
+          '<div class="sc-detail-row"><span class="sc-detail-key">Release auth:</span><span class="sc-detail-val">' + rel + '</span></div>' +
+          '<div class="sc-detail-row"><span class="sc-detail-key">Blocked record:</span><span class="sc-detail-val">' + blk + '</span></div>' +
+          '<div class="sc-detail-row"><span class="sc-detail-key">Audit events:</span><span class="sc-detail-val">' + ev + '</span></div>' +
+          '<div class="sc-detail-row"><span class="sc-detail-key">Chain verified:</span><span class="sc-detail-val">' + cv + '</span></div>' +
+          '<div class="sc-detail-row"><span class="sc-detail-key">Replay matched:</span><span class="sc-detail-val">' + rm + '</span></div>' +
+          (ra ? '<div class="sc-detail-row" style="margin-top:0.4rem"><span class="sc-detail-key">Next action:</span><span class="sc-detail-val">' + ra + '</span></div>' : '');
+        out.classList.add('visible');
+      })
+      .catch(function(e) {
+        btn.disabled = false;
+        out.innerHTML = '<span style="color:var(--red)">Request failed: ' + e.message + '</span>';
+        out.classList.add('visible');
+      });
+  }
+  window.runScenario = runScenario;
+}());
+</script>
+</body>
+</html>

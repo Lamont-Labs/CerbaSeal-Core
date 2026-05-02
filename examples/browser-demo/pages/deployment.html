@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CerbaSeal — Deployment Posture</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0f0f11; --surface: #18181b; --surface2: #09090b;
+      --border: #27272a; --border2: #3f3f46;
+      --text: #e4e4e7; --muted: #71717a; --dim: #52525b;
+      --red: #f87171; --red-bg: #1c0a0a; --red-border: #7f1d1d;
+      --yellow: #facc15; --yellow-bg: #1a1300; --yellow-bdr: #78350f;
+      --green: #4ade80; --green-bg: #0a1c0e; --green-bdr: #14532d;
+      --blue: #60a5fa; --blue-bg: #0a1220; --blue-bdr: #1e3a5f;
+    }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+           background: var(--bg); color: var(--text); min-height: 100vh; line-height: 1.6; }
+    .page { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem 5rem; }
+    nav { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 2.5rem;
+          padding-bottom: 1.25rem; border-bottom: 1px solid var(--border); }
+    nav a { font-size: 0.8rem; font-weight: 600; color: var(--muted); text-decoration: none;
+             padding: 0.35rem 0.75rem; border-radius: 5px; border: 1px solid var(--border2); }
+    nav a:hover { color: var(--text); border-color: var(--muted); }
+    nav a.active { color: var(--text); border-color: var(--blue); background: var(--blue-bg); }
+    .hero { margin-bottom: 3rem; }
+    .hero h1 { font-size: 1.7rem; font-weight: 800; letter-spacing: -0.03em; color: #fafafa; margin-bottom: 0.75rem; }
+    .hero .tagline { font-size: 1rem; color: var(--muted); max-width: 680px; }
+    .section { margin-bottom: 3rem; }
+    .section-title { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em;
+                      color: var(--dim); margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); }
+    h2 { font-size: 1.05rem; font-weight: 700; color: #fafafa; margin-bottom: 0.5rem; }
+    p { font-size: 0.9rem; color: #a1a1aa; margin-bottom: 0.75rem; max-width: 720px; }
+    .mode-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; }
+    @media (max-width: 640px) { .mode-grid { grid-template-columns: 1fr; } }
+    .mode-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1.1rem; }
+    .mode-label { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em;
+                   color: var(--dim); margin-bottom: 0.4rem; }
+    .mode-title { font-size: 0.9rem; font-weight: 700; color: var(--text); margin-bottom: 0.5rem; }
+    .mode-desc { font-size: 0.8rem; color: var(--muted); margin-bottom: 0.75rem; }
+    ul.mode-pros { list-style: none; display: flex; flex-direction: column; gap: 0.25rem; }
+    ul.mode-pros li { font-size: 0.78rem; color: #a1a1aa; display: flex; gap: 0.4rem; }
+    ul.mode-pros li::before { content: "→"; color: var(--dim); flex-shrink: 0; }
+    .current-status { padding: 1rem 1.25rem; background: var(--surface); border: 1px solid var(--border2);
+                        border-left: 3px solid var(--yellow); border-radius: 6px; font-size: 0.87rem; color: #a1a1aa; max-width: 720px; }
+    .current-status strong { color: var(--yellow); }
+    ul.check-list { list-style: none; display: flex; flex-direction: column; gap: 0.4rem; }
+    ul.check-list li { font-size: 0.84rem; color: #a1a1aa; display: flex; gap: 0.5rem; padding: 0.35rem 0.6rem;
+                        background: var(--surface); border: 1px solid var(--border); border-radius: 4px; }
+    ul.check-list li.ok::before { content: "✓"; color: var(--green); flex-shrink: 0; }
+    ul.check-list li.needs::before { content: "○"; color: var(--dim); flex-shrink: 0; }
+    ul.check-list li.block::before { content: "✗"; color: var(--red); flex-shrink: 0; }
+    .update-steps { counter-reset: step; list-style: none; display: flex; flex-direction: column; gap: 0.4rem; }
+    .update-steps li { counter-increment: step; display: flex; gap: 0.75rem; font-size: 0.85rem; color: #a1a1aa;
+                         padding: 0.55rem 0.9rem; background: var(--surface); border: 1px solid var(--border); border-radius: 5px; }
+    .update-steps li::before { content: counter(step); background: var(--surface2); border: 1px solid var(--border2);
+                                 color: var(--muted); font-size: 0.72rem; font-weight: 700;
+                                 min-width: 1.5rem; height: 1.5rem; border-radius: 50%;
+                                 display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .limit-banner { margin-top: 3rem; padding: 0.9rem 1.25rem; background: var(--surface);
+                     border: 1px solid var(--border2); border-left: 3px solid var(--dim); border-radius: 6px;
+                     font-size: 0.83rem; color: var(--muted); }
+    .limit-banner strong { color: var(--text); }
+    footer { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--border);
+              font-size: 0.78rem; color: var(--dim); line-height: 1.7; }
+    footer strong { color: var(--muted); }
+    code { font-family: "SF Mono", "Fira Code", monospace; font-size: 0.82em;
+            background: var(--surface2); border: 1px solid var(--border); padding: 0.1em 0.35em; border-radius: 3px; }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <nav>
+    <a href="/">Demo</a>
+    <a href="/review">Review</a>
+    <a href="/pilot">Pilot</a>
+    <a href="/security">Security</a>
+    <a href="/deployment" class="active">Deployment</a>
+  </nav>
+
+  <header class="hero">
+    <h1>Deployment Posture</h1>
+    <p class="tagline">Current demo status, intended pilot deployment models, and minimum readiness checklist.</p>
+  </header>
+
+  <!-- Current -->
+  <section class="section">
+    <div class="section-title">Current deployment</div>
+    <div class="current-status">
+      <strong>Current status: Replit-hosted browser demo only.</strong><br><br>
+      This is a demonstration surface. It is not a client deployment. It runs on Replit infrastructure
+      as a Node http server with no external API calls, no database, no authentication, and no
+      persistent storage. It is suitable for technical review and demonstration. It is not suitable
+      for handling real client data or production decisions.
+    </div>
+    <br>
+    <ul class="check-list">
+      <li class="ok">Replit-hosted Node http server</li>
+      <li class="ok">No external API calls</li>
+      <li class="ok">No database dependency</li>
+      <li class="ok">No authentication layer</li>
+      <li class="ok">No framework dependency</li>
+      <li class="ok">Suitable for technical review</li>
+      <li class="ok">Suitable for demonstration</li>
+      <li class="block">Not suitable for real client data</li>
+      <li class="block">Not suitable for production decisions</li>
+      <li class="block">Not a client deployment</li>
+    </ul>
+  </section>
+
+  <!-- Deployment modes -->
+  <section class="section">
+    <div class="section-title">Intended pilot deployment models</div>
+    <div class="mode-grid">
+      <div class="mode-card">
+        <div class="mode-label">Mode A</div>
+        <div class="mode-title">Embedded library</div>
+        <div class="mode-desc">CerbaSeal imported directly inside the client service at the decision boundary.</div>
+        <ul class="mode-pros">
+          <li>lowest network surface area</li>
+          <li>no separate service to operate</li>
+          <li>direct TypeScript/Node integration</li>
+          <li>requires engineering integration effort</li>
+        </ul>
+      </div>
+      <div class="mode-card">
+        <div class="mode-label">Mode B</div>
+        <div class="mode-title">Internal HTTP service</div>
+        <div class="mode-desc">CerbaSeal runs as an internal enforcement service. Workflow calls the enforcement endpoint.</div>
+        <ul class="mode-pros">
+          <li>cleaner separation of concerns</li>
+          <li>easier to audit independently</li>
+          <li>requires network and security controls</li>
+          <li>requires internal hosting</li>
+        </ul>
+      </div>
+      <div class="mode-card">
+        <div class="mode-label">Mode C</div>
+        <div class="mode-title">Client-controlled pilot environment</div>
+        <div class="mode-desc">Temporary controlled environment for the pilot period. Client controls infrastructure.</div>
+        <ul class="mode-pros">
+          <li>client controls data residency</li>
+          <li>EU-compatible if hosted in EU</li>
+          <li>requires data processing agreement</li>
+          <li>requires hosting review</li>
+        </ul>
+      </div>
+    </div>
+    <br>
+    <p>
+      In all pilot modes: client controls workflow data. Client controls deployment environment.
+      Evidence records should remain in client-controlled storage. CerbaSeal does not require
+      outbound network access.
+    </p>
+  </section>
+
+  <!-- Not acceptable -->
+  <section class="section">
+    <div class="section-title">What is not acceptable for a serious pilot</div>
+    <ul class="check-list">
+      <li class="block">unmanaged public demo handling real client data</li>
+      <li class="block">undefined data movement between systems</li>
+      <li class="block">unclear evidence ownership</li>
+      <li class="block">open-ended support without defined scope</li>
+      <li class="block">no security review before client data touches the system</li>
+      <li class="block">no defined rollback or update process</li>
+    </ul>
+  </section>
+
+  <!-- Minimum readiness -->
+  <section class="section">
+    <div class="section-title">Minimum deployment readiness checklist</div>
+    <ul class="check-list">
+      <li class="needs">deployment environment selected (Mode A, B, or C)</li>
+      <li class="needs">data boundaries defined</li>
+      <li class="needs">logging destination defined</li>
+      <li class="needs">evidence retention period defined</li>
+      <li class="needs">security review complete for chosen environment</li>
+      <li class="needs">support window and scope defined</li>
+      <li class="needs">rollback and update process documented</li>
+      <li class="needs">version pinned and frozen for pilot</li>
+      <li class="ok">test suite passing (262 / 262)</li>
+      <li class="needs">pilot workflow scope frozen (one workflow, one decision path)</li>
+    </ul>
+  </section>
+
+  <!-- Update process -->
+  <section class="section">
+    <div class="section-title">Fix / update process during pilot</div>
+    <ol class="update-steps">
+      <li>Reproduce the issue locally with a test case</li>
+      <li>Apply fix to enforcement core</li>
+      <li>Run full test suite — confirm 0 regressions</li>
+      <li>Run <code>pnpm demo:web:validate</code> — confirm 98 / 98 assertions pass</li>
+      <li>Run <code>pnpm demo:support:validate</code> — confirm support readiness</li>
+      <li>Create new tagged version</li>
+      <li>Deploy to agreed environment</li>
+      <li>Verify replay and audit chain behavior against pilot scenarios</li>
+      <li>Document change in a change record</li>
+    </ol>
+  </section>
+
+  <div class="limit-banner">
+    <strong>Current limitation notice:</strong>
+    This is a review-ready core demo, not a production client deployment.
+    The hosted demo at cerbaseal.replit.app is suitable for technical review only.
+    It must not be used to process real client data.
+  </div>
+
+  <footer>
+    <strong>CerbaSeal enforces authority — not judgment.</strong><br>
+    Deployment posture described here reflects design intent, not current production status.
+  </footer>
+
+</div>
+</body>
+</html>

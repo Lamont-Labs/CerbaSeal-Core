@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CerbaSeal — Pilot Readiness</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0f0f11; --surface: #18181b; --surface2: #09090b;
+      --border: #27272a; --border2: #3f3f46;
+      --text: #e4e4e7; --muted: #71717a; --dim: #52525b;
+      --red: #f87171; --red-bg: #1c0a0a; --red-border: #7f1d1d;
+      --yellow: #facc15; --yellow-bg: #1a1300; --yellow-bdr: #78350f;
+      --green: #4ade80; --green-bg: #0a1c0e; --green-bdr: #14532d;
+      --blue: #60a5fa; --blue-bg: #0a1220; --blue-bdr: #1e3a5f;
+    }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+           background: var(--bg); color: var(--text); min-height: 100vh; line-height: 1.6; }
+    .page { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem 5rem; }
+    nav { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 2.5rem;
+          padding-bottom: 1.25rem; border-bottom: 1px solid var(--border); }
+    nav a { font-size: 0.8rem; font-weight: 600; color: var(--muted); text-decoration: none;
+             padding: 0.35rem 0.75rem; border-radius: 5px; border: 1px solid var(--border2); }
+    nav a:hover { color: var(--text); border-color: var(--muted); }
+    nav a.active { color: var(--text); border-color: var(--blue); background: var(--blue-bg); }
+    .hero { margin-bottom: 3rem; }
+    .hero h1 { font-size: 1.7rem; font-weight: 800; letter-spacing: -0.03em; color: #fafafa; margin-bottom: 0.75rem; }
+    .hero .tagline { font-size: 1rem; color: var(--muted); max-width: 680px; }
+    .section { margin-bottom: 3rem; }
+    .section-title { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em;
+                      color: var(--dim); margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); }
+    h2 { font-size: 1.05rem; font-weight: 700; color: #fafafa; margin-bottom: 0.5rem; }
+    p { font-size: 0.9rem; color: #a1a1aa; margin-bottom: 0.75rem; max-width: 720px; }
+    .thesis {
+      padding: 1.25rem 1.5rem; background: var(--surface); border: 1px solid var(--border2);
+      border-left: 3px solid var(--blue); border-radius: 6px;
+      font-size: 1rem; font-weight: 600; color: var(--text); max-width: 720px; line-height: 1.5;
+    }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media (max-width: 640px) { .two-col { grid-template-columns: 1fr; } }
+    .box { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1.1rem 1.25rem; }
+    .box-title { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
+                  color: var(--dim); margin-bottom: 0.75rem; }
+    ul.check-list { list-style: none; display: flex; flex-direction: column; gap: 0.35rem; }
+    ul.check-list li { font-size: 0.84rem; color: #a1a1aa; display: flex; gap: 0.5rem; padding: 0.3rem 0.5rem;
+                        border-radius: 4px; }
+    ul.check-list li.ready { background: #0a1c0e; border: 1px solid var(--green-bdr); }
+    ul.check-list li.ready::before { content: "✓"; color: var(--green); flex-shrink: 0; }
+    ul.check-list li.needs::before { content: "○"; color: var(--dim); flex-shrink: 0; }
+    ul.check-list li.agreement::before { content: "◇"; color: var(--yellow); flex-shrink: 0; }
+    ul.check-list li.review::before { content: "?"; color: var(--muted); flex-shrink: 0; }
+    .intake-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+    @media (max-width: 600px) { .intake-grid { grid-template-columns: 1fr; } }
+    .intake-item { background: var(--surface); border: 1px solid var(--border); border-radius: 5px;
+                    padding: 0.6rem 0.9rem; font-size: 0.82rem; color: #a1a1aa;
+                    display: flex; gap: 0.5rem; align-items: flex-start; }
+    .intake-item::before { content: "□"; color: var(--dim); flex-shrink: 0; }
+    .boundary-box { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1.1rem 1.25rem; }
+    .scope-in { border-left: 3px solid var(--green); }
+    .scope-out { border-left: 3px solid var(--dim); }
+    .neutral-box {
+      padding: 1rem 1.25rem; background: var(--surface); border: 1px solid var(--border2);
+      border-radius: 6px; font-size: 0.87rem; color: var(--muted); max-width: 720px;
+    }
+    .limit-banner { margin-top: 3rem; padding: 0.9rem 1.25rem; background: var(--surface);
+                     border: 1px solid var(--border2); border-left: 3px solid var(--dim); border-radius: 6px;
+                     font-size: 0.83rem; color: var(--muted); }
+    .limit-banner strong { color: var(--text); }
+    footer { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--border);
+              font-size: 0.78rem; color: var(--dim); line-height: 1.7; }
+    footer strong { color: var(--muted); }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <nav>
+    <a href="/">Demo</a>
+    <a href="/review">Review</a>
+    <a href="/pilot" class="active">Pilot</a>
+    <a href="/security">Security</a>
+    <a href="/deployment">Deployment</a>
+  </nav>
+
+  <header class="hero">
+    <h1>Pilot Readiness</h1>
+    <p class="tagline">What is ready now. What requires a client. What requires agreement.</p>
+  </header>
+
+  <!-- Thesis -->
+  <section class="section">
+    <div class="section-title">Pilot thesis</div>
+    <div class="thesis">
+      "First pilot should be one client, one workflow, one decision path,
+      one approval model, one enforcement promise, and one verifiable outcome."
+    </div>
+    <br>
+    <p>
+      CerbaSeal's enforcement core is ready. What is not yet defined is the client-specific layer:
+      which workflow, which action classes, which approval model, which deployment environment,
+      and what the pilot success criteria are. Those are defined in collaboration with a client —
+      not in this repository.
+    </p>
+    <p>
+      Most likely first pilot category: AI-assisted decision governance in a regulated or
+      regulation-exposed workflow where an AI system proposes actions that require structured
+      human approval before execution.
+    </p>
+  </section>
+
+  <!-- Readiness status -->
+  <section class="section">
+    <div class="section-title">What is ready and what is not</div>
+    <div class="two-col">
+      <div class="box">
+        <div class="box-title">Ready now</div>
+        <ul class="check-list">
+          <li class="ready">deterministic enforcement gate</li>
+          <li class="ready">ALLOW / HOLD / REJECT outcomes</li>
+          <li class="ready">evidence bundle generation</li>
+          <li class="ready">hash-linked audit log</li>
+          <li class="ready">replay validation</li>
+          <li class="ready">diagnostic reports</li>
+          <li class="ready">operator action guidance</li>
+          <li class="ready">system health verification</li>
+          <li class="ready">integrity verification</li>
+          <li class="ready">browser demo</li>
+          <li class="ready">262 passing tests</li>
+          <li class="ready">pilot-safe mode documentation</li>
+        </ul>
+      </div>
+      <div class="box">
+        <div class="box-title">Requires client definition</div>
+        <ul class="check-list">
+          <li class="needs">client workflow name and scope</li>
+          <li class="needs">upstream proposal source</li>
+          <li class="needs">downstream action system</li>
+          <li class="needs">action taxonomy</li>
+          <li class="needs">policy pack reference</li>
+          <li class="needs">provenance source</li>
+          <li class="needs">approval model and authority classes</li>
+          <li class="needs">logging / evidence destination</li>
+          <li class="needs">deployment environment</li>
+          <li class="needs">sensitive data flag scope</li>
+          <li class="needs">prohibited-use conditions</li>
+          <li class="needs">pilot success criteria</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Intake checklist -->
+  <section class="section">
+    <div class="section-title">Pilot intake checklist — items to define before a pilot begins</div>
+    <div class="intake-grid">
+      <div class="intake-item">workflow name and description</div>
+      <div class="intake-item">decision action being governed</div>
+      <div class="intake-item">permitted action classes</div>
+      <div class="intake-item">approval required: yes / no</div>
+      <div class="intake-item">prohibited-use conditions</div>
+      <div class="intake-item">sensitive data flag scope</div>
+      <div class="intake-item">provenance fields (model, ruleset, hash)</div>
+      <div class="intake-item">policy pack version</div>
+      <div class="intake-item">control validity requirements</div>
+      <div class="intake-item">trust state source</div>
+      <div class="intake-item">evidence retention expectations</div>
+      <div class="intake-item">who reviews HOLD outcomes</div>
+      <div class="intake-item">who receives diagnostic reports</div>
+      <div class="intake-item">who owns deployment</div>
+      <div class="intake-item">who owns support</div>
+      <div class="intake-item">who signs off on success</div>
+    </div>
+  </section>
+
+  <!-- Success criteria -->
+  <section class="section">
+    <div class="section-title">Proposed pilot success criteria</div>
+    <p>These are non-binding sample criteria. Actual criteria would be agreed with the pilot client.</p>
+    <ul class="check-list">
+      <li class="needs">CerbaSeal processes defined workflow inputs deterministically</li>
+      <li class="needs">All scenario outputs are stable across repeated runs</li>
+      <li class="needs">AI cannot produce authority-bearing action in any test case</li>
+      <li class="needs">Required approval paths HOLD until approval is present</li>
+      <li class="needs">Approved action produces release authorization</li>
+      <li class="needs">Evidence bundle is created for every evaluation</li>
+      <li class="needs">Replay matches original outcome</li>
+      <li class="needs">Audit chain verifies</li>
+      <li class="needs">Client can understand diagnostic output without founder involvement</li>
+    </ul>
+  </section>
+
+  <!-- Pilot boundaries -->
+  <section class="section">
+    <div class="section-title">Pilot scope boundaries</div>
+    <div class="two-col">
+      <div class="boundary-box scope-in">
+        <div class="box-title" style="color:var(--green)">In scope for pilot</div>
+        <ul class="check-list">
+          <li class="ready">one defined workflow</li>
+          <li class="ready">fixed action classes</li>
+          <li class="ready">enforcement evaluation</li>
+          <li class="ready">evidence generation</li>
+          <li class="ready">operator guidance from reason codes</li>
+          <li class="ready">bug fixes within scope</li>
+          <li class="ready">scenario clarification</li>
+          <li class="ready">configuration adjustment</li>
+          <li class="ready">deployment assistance</li>
+        </ul>
+      </div>
+      <div class="boundary-box scope-out">
+        <div class="box-title" style="color:var(--dim)">Out of scope for pilot</div>
+        <ul class="check-list">
+          <li class="needs">new workflow classes</li>
+          <li class="needs">new feature development</li>
+          <li class="needs">new integration layer</li>
+          <li class="needs">multi-client support</li>
+          <li class="needs">production monitoring</li>
+          <li class="needs">indefinite support</li>
+          <li class="needs">open-ended custom development</li>
+          <li class="needs">legal or compliance certification</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Requires agreement -->
+  <section class="section">
+    <div class="section-title">Items requiring a working agreement</div>
+    <ul class="check-list">
+      <li class="agreement">commercial terms</li>
+      <li class="agreement">ownership of evidence records</li>
+      <li class="agreement">liability boundary</li>
+      <li class="agreement">support period and scope</li>
+      <li class="agreement">payment and billing</li>
+      <li class="agreement">data processing agreement (if applicable)</li>
+      <li class="agreement">version freeze and update process</li>
+    </ul>
+    <br>
+    <div class="neutral-box">
+      Commercial terms, ownership, liability, support, and payment would need to be defined
+      in a working agreement before pilot execution. This portal does not include pricing,
+      revenue terms, or commercial commitments.
+    </div>
+  </section>
+
+  <div class="limit-banner">
+    <strong>Current limitation notice:</strong>
+    This is a review-ready core demo, not a production client deployment.
+    No pilot client currently exists. All pilot shapes described here are proposed, not contracted.
+  </div>
+
+  <footer>
+    <strong>CerbaSeal enforces authority — not judgment.</strong><br>
+    Pilot readiness items are accurate as of the current repository state.
+  </footer>
+
+</div>
+</body>
+</html>
