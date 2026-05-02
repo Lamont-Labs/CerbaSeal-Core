@@ -23,7 +23,7 @@ export const REVIEW_SUMMARY = {
     "export manifest",
     "diagnostic report service",
     "browser demo with live enforcement",
-    "262 passing tests (0 failing)",
+    "323 passing tests (0 failing, 15 test files)",
     "support readiness layer (health check, integrity verification, operator action reports)"
   ],
   notYetImplemented: [
@@ -69,9 +69,9 @@ export const REVIEW_SUMMARY = {
     }
   ],
   testStatus: {
-    reportedPassing: 262,
+    reportedPassing: 323,
     reportedFailing: 0,
-    testFiles: 14
+    testFiles: 15
   },
   coreVerdicts: ["ALLOW", "HOLD", "REJECT"],
   coreClaims: [

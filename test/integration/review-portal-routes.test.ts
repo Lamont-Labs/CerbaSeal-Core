@@ -150,8 +150,8 @@ describe("/api/review-summary JSON", () => {
       expect(typeof c.support).toBe("string");
     });
   });
-  it("testStatus reportedPassing is at least 262", () => {
-    expect(REVIEW_SUMMARY.testStatus.reportedPassing).toBeGreaterThanOrEqual(262);
+  it("testStatus reportedPassing is at least 323", () => {
+    expect(REVIEW_SUMMARY.testStatus.reportedPassing).toBeGreaterThanOrEqual(323);
   });
   it("testStatus reportedFailing is 0", () => {
     expect(REVIEW_SUMMARY.testStatus.reportedFailing).toBe(0);
