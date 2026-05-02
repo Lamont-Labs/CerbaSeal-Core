@@ -33,7 +33,51 @@ function readPage(filename: string): string {
   return readFileSync(join(__dirname, "pages", filename), "utf-8");
 }
 
+function readIndex(): string {
+  return readFileSync(join(__dirname, "index.html"), "utf-8");
+}
+
 console.log("[review-portal] Running validation...\n");
+
+// ── Entry surface (/) checks ──────────────────────────────────────────────
+console.log("Page: / (entry surface)");
+const indexHtml = readIndex();
+assert("/ contains system name CerbaSeal",
+  indexHtml.includes("CerbaSeal"));
+assert("/ contains deterministic execution enforcement subtitle",
+  indexHtml.includes("Deterministic execution enforcement"));
+assert("/ contains one-line definition",
+  indexHtml.includes("AI systems can propose actions") &&
+  indexHtml.includes("CerbaSeal decides whether those actions are allowed to execute"));
+assert("/ contains three core function bullets",
+  indexHtml.includes("Blocks unauthorized execution attempts") &&
+  indexHtml.includes("Enforces approval, control, and trust requirements") &&
+  indexHtml.includes("Produces verifiable evidence for every decision"));
+assert("/ contains Live Enforcement Scenarios label",
+  indexHtml.includes("Live Enforcement Scenarios"));
+assert("/ contains three scenario buttons",
+  indexHtml.includes('id="btn-reject"') &&
+  indexHtml.includes('id="btn-hold"') &&
+  indexHtml.includes('id="btn-allow"'));
+assert("/ contains Review-ready core status",
+  indexHtml.includes("Review-ready core") && indexHtml.includes("Not yet client deployed"));
+assert("/ contains implemented + not-yet-implemented lists",
+  indexHtml.includes("Currently implemented") && indexHtml.includes("Not yet implemented"));
+assert("/ contains For Reviewers section",
+  indexHtml.includes("For Reviewers") && indexHtml.includes("Review Portal") &&
+  indexHtml.includes("Pilot Readiness") && indexHtml.includes("Security Summary") &&
+  indexHtml.includes("Deployment Posture"));
+assert("/ contains links to all reviewer pages",
+  indexHtml.includes('href="/review"') && indexHtml.includes('href="/pilot"') &&
+  indexHtml.includes('href="/security"') && indexHtml.includes('href="/deployment"'));
+assert("/ contains canonical limitation notice",
+  indexHtml.includes("review-ready core demo, not a production client deployment"));
+assert("/ loads client.js",
+  indexHtml.includes('src="/client.js"'));
+assert("/ does not claim production readiness",
+  !indexHtml.includes("production-ready") && !indexHtml.includes("fully compliant") &&
+  !indexHtml.includes("regulator-approved") && !indexHtml.includes("enterprise-grade"));
+console.log("");
 
 // ── Page content checks ────────────────────────────────────────────────────
 console.log("Page: /review");

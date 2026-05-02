@@ -21,6 +21,74 @@ function readPage(filename: string): string {
   return readFileSync(join(__dirname, "../../examples/browser-demo/pages", filename), "utf-8");
 }
 
+function readIndex(): string {
+  return readFileSync(join(__dirname, "../../examples/browser-demo/index.html"), "utf-8");
+}
+
+// ── / (entry surface) ────────────────────────────────────────────────────
+describe("/ entry surface", () => {
+  const html = readIndex();
+
+  it("contains the system name CerbaSeal", () => {
+    expect(html).toContain("CerbaSeal");
+  });
+  it("contains the deterministic execution enforcement subtitle", () => {
+    expect(html).toContain("Deterministic execution enforcement");
+  });
+  it("contains the one-line definition", () => {
+    expect(html).toContain("AI systems can propose actions");
+    expect(html).toContain("CerbaSeal decides whether those actions are allowed to execute");
+  });
+  it("contains the three core function bullets", () => {
+    expect(html).toContain("Blocks unauthorized execution attempts");
+    expect(html).toContain("Enforces approval, control, and trust requirements");
+    expect(html).toContain("Produces verifiable evidence for every decision");
+  });
+  it("contains the Live Enforcement Scenarios section label", () => {
+    expect(html).toContain("Live Enforcement Scenarios");
+  });
+  it("contains all three scenario buttons", () => {
+    expect(html).toContain('id="btn-reject"');
+    expect(html).toContain('id="btn-hold"');
+    expect(html).toContain('id="btn-allow"');
+  });
+  it("contains the Review-ready core status", () => {
+    expect(html).toContain("Review-ready core");
+    expect(html).toContain("Not yet client deployed");
+  });
+  it("contains currently implemented and not-yet-implemented lists", () => {
+    expect(html).toContain("Currently implemented");
+    expect(html).toContain("Not yet implemented");
+    expect(html).toContain("Deterministic execution gate");
+    expect(html).toContain("Third-party security review");
+  });
+  it("contains links to all reviewer pages", () => {
+    expect(html).toContain('href="/review"');
+    expect(html).toContain('href="/pilot"');
+    expect(html).toContain('href="/security"');
+    expect(html).toContain('href="/deployment"');
+  });
+  it("contains For Reviewers section with review buttons", () => {
+    expect(html).toContain("For Reviewers");
+    expect(html).toContain("Review Portal");
+    expect(html).toContain("Pilot Readiness");
+    expect(html).toContain("Security Summary");
+    expect(html).toContain("Deployment Posture");
+  });
+  it("contains the canonical limitation notice", () => {
+    expect(html).toContain("review-ready core demo, not a production client deployment");
+  });
+  it("loads the client.js script", () => {
+    expect(html).toContain('src="/client.js"');
+  });
+  it("does not claim production readiness", () => {
+    expect(html).not.toContain("production-ready");
+    expect(html).not.toContain("fully compliant");
+    expect(html).not.toContain("regulator-approved");
+    expect(html).not.toContain("enterprise-grade");
+  });
+});
+
 // ── /review page ──────────────────────────────────────────────────────────
 describe("/review page content", () => {
   const html = readPage("review.html");

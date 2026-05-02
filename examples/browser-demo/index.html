@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CerbaSeal Enforcement Demo</title>
+  <title>CerbaSeal — Entry Surface</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -55,33 +55,47 @@
     nav a:hover { color: var(--text); border-color: var(--muted); }
     nav a.active { color: var(--text); border-color: var(--blue); background: var(--blue-bg); }
 
-    /* ── Hero ── */
+    /* ── Hero (Section A) ── */
     .hero { border-bottom: 1px solid var(--border); padding-bottom: 2rem; margin-bottom: 2.5rem; }
     .hero h1 {
-      font-size: 1.6rem; font-weight: 700; letter-spacing: -0.03em;
-      color: #fafafa; line-height: 1.3; margin-bottom: 0.6rem;
+      font-size: 2.4rem; font-weight: 800; letter-spacing: -0.04em;
+      color: #fafafa; line-height: 1.1; margin-bottom: 0.6rem;
     }
     .hero .subtitle {
-      font-size: 0.9rem; color: var(--muted); margin-bottom: 1rem;
+      font-size: 1rem; color: var(--text); margin-bottom: 1rem; line-height: 1.4;
     }
-    .hero .explanation {
-      font-size: 0.875rem; color: #a1a1aa; max-width: 640px;
-      padding: 0.75rem 1rem; background: var(--surface);
+    .hero .one-line {
+      font-size: 0.9rem; color: #a1a1aa; max-width: 640px;
+      padding: 0.85rem 1.1rem; background: var(--surface);
       border: 1px solid var(--border); border-radius: 6px;
     }
+    .hero .one-line strong { color: var(--text); font-weight: 600; }
 
     /* ── Section heading ── */
+    .section { margin-bottom: 2.5rem; }
     .section-label {
       font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
       letter-spacing: 0.1em; color: var(--dim); margin-bottom: 1rem;
     }
 
-    /* ── Scenario cards ── */
+    /* ── Core function bullets (Section B) ── */
+    .fn-list {
+      list-style: none; padding: 0; margin: 0;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem;
+    }
+    @media (max-width: 700px) { .fn-list { grid-template-columns: 1fr; } }
+    .fn-list li {
+      padding: 0.9rem 1rem; background: var(--surface);
+      border: 1px solid var(--border); border-radius: 8px;
+      font-size: 0.85rem; color: var(--text); line-height: 1.45;
+    }
+
+    /* ── Scenario cards (Section C) ── */
     .scenario-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 0.75rem;
-      margin-bottom: 2.5rem;
+      margin-bottom: 1.5rem;
     }
     @media (max-width: 600px) { .scenario-grid { grid-template-columns: 1fr; } }
 
@@ -95,7 +109,7 @@
     .scenario-card.card-allow  { border-color: var(--green-bdr);  background: var(--green-bg); }
 
     .card-title {
-      font-size: 0.8rem; font-weight: 600; color: var(--text); line-height: 1.3;
+      font-size: 0.85rem; font-weight: 700; color: var(--text); line-height: 1.3;
     }
     .card-desc { font-size: 0.75rem; color: var(--muted); flex: 1; }
     .card-expected {
@@ -108,9 +122,9 @@
 
     /* ── Buttons ── */
     .scenario-btn {
-      margin-top: 0.75rem; padding: 0.55rem 0.75rem;
+      margin-top: 0.75rem; padding: 0.6rem 0.75rem;
       font-size: 0.8rem; font-weight: 600; border-radius: 6px;
-      border: 1px solid; cursor: pointer; transition: opacity 0.15s;
+      border: 1px solid; cursor: pointer; transition: opacity 0.15s, background 0.15s;
       font-family: inherit; text-align: center; width: 100%;
     }
     .btn-reject { background: transparent; color: var(--red);    border-color: var(--red-border); }
@@ -137,7 +151,6 @@
     }
     #scenario-title-label { color: var(--muted); font-weight: 500; text-transform: none; letter-spacing: 0; }
 
-    /* Layer 1 — big badge */
     .state-badge-wrap {
       padding: 1.5rem 1.1rem 1rem; text-align: center;
       border-bottom: 1px solid var(--border);
@@ -151,7 +164,6 @@
     .badge-PAUSED  { color: var(--yellow); border-color: var(--yellow-bdr); background: var(--yellow-bg); }
     .badge-ALLOWED { color: var(--green);  border-color: var(--green-bdr);  background: var(--green-bg); }
 
-    /* Layers 2 + 3 */
     .consequence-wrap {
       padding: 1rem 1.1rem; border-bottom: 1px solid var(--border);
       display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem 1.5rem;
@@ -161,7 +173,6 @@
                 letter-spacing: 0.07em; color: var(--dim); margin-bottom: 0.2rem; }
     .cq-value { font-size: 0.875rem; color: var(--text); }
 
-    /* Plain English explanation */
     .plain-english {
       padding: 0.85rem 1.1rem; border-bottom: 1px solid var(--border);
       background: var(--surface2);
@@ -170,7 +181,6 @@
       letter-spacing: 0.09em; color: var(--dim); margin-bottom: 0.3rem; }
     .plain-english .pe-text { font-size: 0.85rem; color: #a1a1aa; line-height: 1.5; }
 
-    /* Layer 4 — proof summary */
     .proof-grid {
       display: grid; grid-template-columns: repeat(2, 1fr);
       gap: 0; border-bottom: 1px solid var(--border);
@@ -188,7 +198,6 @@
     .pv-HOLD,   .pv-PAUSED,  .pv-pending         { color: var(--yellow); }
     .pv-ALLOW,  .pv-ALLOWED, .pv-present, .pv-true { color: var(--green); }
 
-    /* Technical trace */
     .proof-expand { padding: 0; border-bottom: 1px solid var(--border); }
     details { padding: 0; }
     summary {
@@ -213,17 +222,13 @@
       white-space: pre-wrap; word-break: break-word;
     }
 
-    /* Reviewer notes */
-    .reviewer-notes {
-      padding: 0.85rem 1.1rem;
-    }
+    .reviewer-notes { padding: 0.85rem 1.1rem; }
     .rn-label { font-size: 0.65rem; font-weight: 700; text-transform: uppercase;
       letter-spacing: 0.09em; color: var(--dim); margin-bottom: 0.3rem; }
     .rn-text { font-size: 0.82rem; color: var(--muted); line-height: 1.5; }
 
-    /* Placeholder and loading */
     #placeholder {
-      padding: 3rem 0; text-align: center; font-size: 0.875rem; color: var(--dim);
+      padding: 2rem 0; text-align: center; font-size: 0.85rem; color: var(--dim);
       border: 1px dashed var(--border); border-radius: 10px; margin-bottom: 1rem;
     }
     .loading-msg {
@@ -233,16 +238,88 @@
       padding: 1.25rem 1.1rem; font-size: 0.875rem; color: var(--red);
     }
 
-    /* Limitation banner */
+    /* ── Why It Matters (Section D) ── */
+    .why-list {
+      list-style: none; padding: 0; margin: 0;
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.6rem;
+    }
+    @media (max-width: 600px) { .why-list { grid-template-columns: 1fr; } }
+    .why-list li {
+      padding: 0.75rem 0.9rem; background: var(--surface2);
+      border-left: 2px solid var(--border2); border-radius: 4px;
+      font-size: 0.85rem; color: #a1a1aa;
+    }
+
+    /* ── Current Status (Section E) ── */
+    .status-banner {
+      display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+      padding: 1rem 1.1rem; background: var(--surface);
+      border: 1px solid var(--border); border-left: 3px solid var(--blue);
+      border-radius: 6px; margin-bottom: 1rem;
+    }
+    .status-pill {
+      display: inline-block; padding: 0.2rem 0.6rem;
+      font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.08em; border-radius: 4px;
+      color: var(--blue); border: 1px solid var(--blue-bdr); background: var(--blue-bg);
+    }
+    .status-text { font-size: 0.875rem; color: var(--text); }
+    .status-text strong { color: #fafafa; }
+    .status-text .qual { color: var(--muted); }
+
+    .status-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;
+    }
+    @media (max-width: 600px) { .status-grid { grid-template-columns: 1fr; } }
+    .status-col {
+      padding: 0.9rem 1rem; background: var(--surface2);
+      border: 1px solid var(--border); border-radius: 6px;
+    }
+    .status-col h3 {
+      font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.08em; margin-bottom: 0.55rem;
+    }
+    .status-col.col-impl  h3 { color: var(--green); }
+    .status-col.col-noyet h3 { color: var(--yellow); }
+    .status-col ul { list-style: none; padding: 0; margin: 0; }
+    .status-col li {
+      font-size: 0.82rem; color: #a1a1aa;
+      padding: 0.2rem 0; padding-left: 1rem; position: relative;
+    }
+    .status-col li::before {
+      position: absolute; left: 0; top: 0.2rem; font-size: 0.75rem;
+    }
+    .status-col.col-impl  li::before { content: "✓"; color: var(--green); }
+    .status-col.col-noyet li::before { content: "○"; color: var(--yellow); }
+
+    /* ── Reviewer buttons (Section F) ── */
+    .review-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.6rem;
+    }
+    @media (max-width: 700px) { .review-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 400px) { .review-grid { grid-template-columns: 1fr; } }
+    .review-btn {
+      display: block; padding: 0.85rem 0.9rem;
+      background: var(--surface); border: 1px solid var(--border2);
+      border-radius: 8px; color: var(--text); text-decoration: none;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .review-btn:hover { border-color: var(--blue); background: var(--blue-bg); }
+    .review-btn .rb-title { font-size: 0.85rem; font-weight: 700; color: var(--text); }
+    .review-btn .rb-desc  { font-size: 0.72rem; color: var(--muted); margin-top: 0.2rem; }
+    .review-btn .rb-arrow { color: var(--dim); font-size: 0.75rem; margin-left: 0.3rem; }
+
+    /* ── Limitation banner ── */
     .limit-banner {
-      margin-top: 1.5rem; padding: 0.75rem 1rem;
+      margin-top: 1.5rem; padding: 0.85rem 1.1rem;
       background: var(--surface); border: 1px solid var(--border2);
       border-left: 3px solid var(--dim); border-radius: 6px;
-      font-size: 0.8rem; color: var(--muted);
+      font-size: 0.82rem; color: var(--muted); line-height: 1.55;
     }
     .limit-banner strong { color: var(--text); }
+    .limit-banner a { color: var(--blue); }
 
-    /* Footer */
+    /* ── Footer ── */
     footer {
       margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--border);
       font-size: 0.8rem; color: var(--dim); line-height: 1.7;
@@ -253,7 +330,7 @@
 <body>
 <div class="page">
 
-  <!-- ── Nav ── -->
+  <!-- ── Nav (Phase 4) ── -->
   <nav>
     <a href="/" class="active">Demo</a>
     <a href="/review">Review</a>
@@ -262,161 +339,228 @@
     <a href="/deployment">Deployment</a>
   </nav>
 
-  <!-- ── Hero ── -->
+  <!-- ── Section A — Hero ── -->
   <header class="hero">
-    <h1>AI tries to act. CerbaSeal decides if it is allowed.</h1>
-    <p class="subtitle">A runtime enforcement gate for AI-assisted actions. Every attempted action becomes REJECT, HOLD, or ALLOW — with evidence.</p>
-    <p class="explanation">
-      CerbaSeal sits between decision systems and execution systems.
-      It does not decide whether an action is correct.
-      It decides whether the action is <strong>authorized to execute</strong>.
+    <h1>CerbaSeal</h1>
+    <p class="subtitle">Deterministic execution enforcement for AI-assisted systems</p>
+    <p class="one-line">
+      AI systems can propose actions.
+      <strong>CerbaSeal decides whether those actions are allowed to execute.</strong>
     </p>
   </header>
 
-  <!-- ── Scenario cards ── -->
-  <section aria-label="Scenarios">
-    <p class="section-label">Try the enforcement loop</p>
+  <!-- ── Section B — Core Function ── -->
+  <section class="section" aria-label="Core function">
+    <p class="section-label">Core function</p>
+    <ul class="fn-list">
+      <li>Blocks unauthorized execution attempts</li>
+      <li>Enforces approval, control, and trust requirements</li>
+      <li>Produces verifiable evidence for every decision</li>
+    </ul>
+  </section>
+
+  <!-- ── Section C — Live Enforcement Scenarios ── -->
+  <section class="section" aria-label="Live enforcement scenarios">
+    <p class="section-label">Live Enforcement Scenarios</p>
     <div class="scenario-grid">
 
       <div class="scenario-card card-reject">
-        <div class="card-title">AI tries to act without authority</div>
+        <div class="card-title">AI attempts to act → REJECT</div>
         <div class="card-desc">An AI system attempts to authorize and execute its own action without human oversight.</div>
         <div class="card-expected">Expected: REJECT</div>
-        <button class="scenario-btn btn-reject" id="btn-reject">Run blocked AI action</button>
+        <button class="scenario-btn btn-reject" id="btn-reject">Run /api/reject</button>
       </div>
 
       <div class="scenario-card card-hold">
-        <div class="card-title">Human submits action without approval</div>
+        <div class="card-title">Missing approval → HOLD</div>
         <div class="card-desc">A human-originated action is submitted but the required approval artifact is missing.</div>
         <div class="card-expected">Expected: HOLD</div>
-        <button class="scenario-btn btn-hold" id="btn-hold">Run missing-approval action</button>
+        <button class="scenario-btn btn-hold" id="btn-hold">Run /api/hold</button>
       </div>
 
       <div class="scenario-card card-allow">
-        <div class="card-title">Approved action</div>
+        <div class="card-title">Approved action → ALLOW</div>
         <div class="card-desc">A valid action is submitted with all required checks satisfied and approval in place.</div>
         <div class="card-expected">Expected: ALLOW</div>
-        <button class="scenario-btn btn-allow" id="btn-allow">Run approved action</button>
+        <button class="scenario-btn btn-allow" id="btn-allow">Run /api/allow</button>
       </div>
 
     </div>
-  </section>
 
-  <!-- ── Placeholder (shown before first click) ── -->
-  <div id="placeholder">Choose a scenario to run CerbaSeal enforcement.</div>
+    <!-- Placeholder before first click -->
+    <div id="placeholder">Run any scenario above to see the enforcement decision and evidence.</div>
 
-  <!-- ── Result section (hidden until result) ── -->
-  <section id="result-section" aria-live="polite" aria-label="Enforcement result">
+    <!-- Result section (hidden until result) -->
+    <div id="result-section" aria-live="polite" aria-label="Enforcement result">
 
-    <div class="result-wrap" id="result-wrap">
+      <div class="result-wrap" id="result-wrap">
 
-      <!-- Header row -->
-      <div class="result-header">
-        <span>Enforcement Result</span>
-        <span id="scenario-title-label"></span>
-      </div>
+        <div class="result-header">
+          <span>Enforcement Result</span>
+          <span id="scenario-title-label"></span>
+        </div>
 
-      <!-- Layer 1: Big outcome badge -->
-      <div class="state-badge-wrap">
-        <div class="state-badge" id="display-state-badge"></div>
-      </div>
+        <div class="state-badge-wrap">
+          <div class="state-badge" id="display-state-badge"></div>
+        </div>
 
-      <!-- Layer 2 + 3: Consequence + Reason -->
-      <div class="consequence-wrap">
-        <div>
-          <div class="cq-label">Consequence</div>
-          <div class="cq-value" id="consequence-text"></div>
-        </div>
-        <div>
-          <div class="cq-label">Enforcement Reason</div>
-          <div class="cq-value" id="reason-text"></div>
-        </div>
-      </div>
-
-      <!-- Plain English explanation -->
-      <div class="plain-english">
-        <div class="pe-label">Plain English</div>
-        <div class="pe-text" id="plain-english-text"></div>
-      </div>
-
-      <!-- Layer 4: Proof summary -->
-      <div class="proof-grid">
-        <div class="proof-cell">
-          <div class="proof-label">Final State</div>
-          <div class="proof-value" id="pv-final-state"></div>
-        </div>
-        <div class="proof-cell">
-          <div class="proof-label">Reason Codes</div>
-          <div class="proof-value" id="pv-reason-codes"></div>
-        </div>
-        <div class="proof-cell">
-          <div class="proof-label">Release Authorization</div>
-          <div class="proof-value" id="pv-release"></div>
-        </div>
-        <div class="proof-cell">
-          <div class="proof-label">Blocked Action Record</div>
-          <div class="proof-value" id="pv-blocked"></div>
-        </div>
-        <div class="proof-cell">
-          <div class="proof-label">Audit Events</div>
-          <div class="proof-value" id="pv-audit-events"></div>
-        </div>
-        <div class="proof-cell">
-          <div class="proof-label">Chain Verified</div>
-          <div class="proof-value" id="pv-chain-verified"></div>
-        </div>
-        <div class="proof-cell">
-          <div class="proof-label">Replay Matched</div>
-          <div class="proof-value" id="pv-replay-matched"></div>
-        </div>
-        <div class="proof-cell">
-          <div class="proof-label">Next Action</div>
-          <div class="proof-value" id="pv-next-action"></div>
-        </div>
-      </div>
-
-      <!-- Technical Trace -->
-      <div class="proof-expand">
-        <details id="proof-details">
-          <summary>Technical trace — enforcement proof</summary>
-          <div class="proof-body">
-            <p class="proof-note">This proof is generated from the actual CerbaSeal evaluation result. It is deterministic — running the same scenario always produces the same output.</p>
-            <pre id="proof-output"></pre>
+        <div class="consequence-wrap">
+          <div>
+            <div class="cq-label">Consequence</div>
+            <div class="cq-value" id="consequence-text"></div>
           </div>
-        </details>
+          <div>
+            <div class="cq-label">Enforcement Reason</div>
+            <div class="cq-value" id="reason-text"></div>
+          </div>
+        </div>
+
+        <div class="plain-english">
+          <div class="pe-label">Plain English</div>
+          <div class="pe-text" id="plain-english-text"></div>
+        </div>
+
+        <div class="proof-grid">
+          <div class="proof-cell">
+            <div class="proof-label">Final State</div>
+            <div class="proof-value" id="pv-final-state"></div>
+          </div>
+          <div class="proof-cell">
+            <div class="proof-label">Reason Codes</div>
+            <div class="proof-value" id="pv-reason-codes"></div>
+          </div>
+          <div class="proof-cell">
+            <div class="proof-label">Release Authorization</div>
+            <div class="proof-value" id="pv-release"></div>
+          </div>
+          <div class="proof-cell">
+            <div class="proof-label">Blocked Action Record</div>
+            <div class="proof-value" id="pv-blocked"></div>
+          </div>
+          <div class="proof-cell">
+            <div class="proof-label">Audit Events</div>
+            <div class="proof-value" id="pv-audit-events"></div>
+          </div>
+          <div class="proof-cell">
+            <div class="proof-label">Chain Verified</div>
+            <div class="proof-value" id="pv-chain-verified"></div>
+          </div>
+          <div class="proof-cell">
+            <div class="proof-label">Replay Matched</div>
+            <div class="proof-value" id="pv-replay-matched"></div>
+          </div>
+          <div class="proof-cell">
+            <div class="proof-label">Next Action</div>
+            <div class="proof-value" id="pv-next-action"></div>
+          </div>
+        </div>
+
+        <div class="proof-expand">
+          <details id="proof-details">
+            <summary>Technical trace — enforcement proof</summary>
+            <div class="proof-body">
+              <p class="proof-note">This proof is generated from the actual CerbaSeal evaluation result. It is deterministic — running the same scenario always produces the same output.</p>
+              <pre id="proof-output"></pre>
+            </div>
+          </details>
+        </div>
+
+        <div class="reviewer-notes">
+          <div class="rn-label">Reviewer Notes</div>
+          <div class="rn-text" id="reviewer-notes-text"></div>
+        </div>
+
       </div>
 
-      <!-- Reviewer Notes -->
-      <div class="reviewer-notes">
-        <div class="rn-label">Reviewer Notes</div>
-        <div class="rn-text" id="reviewer-notes-text"></div>
+      <div id="error-panel" style="display:none" class="result-wrap">
+        <div class="result-header"><span>Demo request failed</span></div>
+        <div class="error-msg" id="error-text"></div>
       </div>
 
     </div>
-
-    <!-- Error state -->
-    <div id="error-panel" style="display:none" class="result-wrap">
-      <div class="result-header"><span>Demo request failed</span></div>
-      <div class="error-msg" id="error-text"></div>
-    </div>
-
   </section>
 
-  <!-- ── Limitation banner ── -->
+  <!-- ── Section D — Why It Matters ── -->
+  <section class="section" aria-label="Why it matters">
+    <p class="section-label">Why it matters</p>
+    <ul class="why-list">
+      <li>Prevents AI from acting autonomously on consequential actions</li>
+      <li>Preserves human authority over execution</li>
+      <li>Creates audit-ready, replayable decision records</li>
+      <li>Enforces deterministic decision boundaries</li>
+    </ul>
+  </section>
+
+  <!-- ── Section E — Current Status ── -->
+  <section class="section" aria-label="Current status">
+    <p class="section-label">Current status</p>
+
+    <div class="status-banner">
+      <span class="status-pill">Status</span>
+      <span class="status-text">
+        <strong>Review-ready core.</strong>
+        <span class="qual">Not yet client deployed.</span>
+      </span>
+    </div>
+
+    <div class="status-grid">
+      <div class="status-col col-impl">
+        <h3>Currently implemented</h3>
+        <ul>
+          <li>Deterministic execution gate</li>
+          <li>Invariant enforcement (12 named invariants)</li>
+          <li>Audit chain + replay</li>
+          <li>323 passing tests</li>
+        </ul>
+      </div>
+      <div class="status-col col-noyet">
+        <h3>Not yet implemented</h3>
+        <ul>
+          <li>Client deployment</li>
+          <li>Third-party security review</li>
+          <li>Persistent storage</li>
+          <li>Identity provider integration</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Section F — For Reviewers ── -->
+  <section class="section" aria-label="For reviewers">
+    <p class="section-label">For Reviewers</p>
+    <div class="review-grid">
+      <a class="review-btn" href="/review">
+        <div class="rb-title">Review Portal <span class="rb-arrow">→</span></div>
+        <div class="rb-desc">Maturity, claims, and evidence index</div>
+      </a>
+      <a class="review-btn" href="/pilot">
+        <div class="rb-title">Pilot Readiness <span class="rb-arrow">→</span></div>
+        <div class="rb-desc">What is ready, what needs definition</div>
+      </a>
+      <a class="review-btn" href="/security">
+        <div class="rb-title">Security Summary <span class="rb-arrow">→</span></div>
+        <div class="rb-desc">Controls, threats, known limitations</div>
+      </a>
+      <a class="review-btn" href="/deployment">
+        <div class="rb-title">Deployment Posture <span class="rb-arrow">→</span></div>
+        <div class="rb-desc">Modes, boundaries, readiness checklist</div>
+      </a>
+    </div>
+  </section>
+
+  <!-- ── Section G — Limitation Notice ── -->
   <div class="limit-banner">
-    <strong>Current limitation notice:</strong>
+    <strong>Limitation notice:</strong>
     This is a review-ready core demo, not a production client deployment.
-    It does not provide production monitoring, SLA, managed hosting, cryptographic signing, or persistent storage.
-    See <a href="/review" style="color:var(--blue)">the Review portal</a> for full maturity details.
+    It is a review-ready core demonstration. It is not a production deployment and should not be used with real client data.
+    See <a href="/review">the Review portal</a> for full maturity details.
   </div>
 
   <!-- ── Footer ── -->
   <footer>
     <strong>CerbaSeal enforces authority — not judgment.</strong><br>
     It does not determine whether an action is correct.<br>
-    It determines whether the action is authorized to execute.<br><br>
-    This is a review-ready core demo only —
-    not a production API, authentication layer, persistence layer, or policy engine.
+    It determines whether the action is authorized to execute.
   </footer>
 
 </div>
