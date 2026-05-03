@@ -319,6 +319,121 @@ describe("Existing scenario routes preserved", () => {
   });
 });
 
+// ── /one-page System Brief ───────────────────────────────────────────────
+describe("/one-page System Brief", () => {
+  const html = readPage("one-page.html");
+
+  it("contains System Brief title with version", () => {
+    expect(html).toContain("System Brief");
+    expect(html).toContain("v0.1.0");
+  });
+  it("contains one-line definition", () => {
+    expect(html).toContain("deterministic execution enforcement spine");
+  });
+  it("contains the three what-it-does bullets", () => {
+    expect(html).toContain("Blocks unauthorized execution attempts");
+    expect(html).toContain("Enforces approval and control requirements");
+    expect(html).toContain("Produces verifiable evidence for every decision");
+  });
+  it("contains the three core scenarios with reason codes", () => {
+    expect(html).toContain("AI_CANNOT_AUTHORIZE");
+    expect(html).toContain("REQUIRED_APPROVAL_MISSING");
+    expect(html).toContain("DECISION_ALLOWED");
+  });
+  it("contains what-it-is-NOT bullets", () => {
+    expect(html).toContain("Not a full governance platform");
+    expect(html).toContain("Not production deployed");
+    expect(html).toContain("Not independently security-reviewed");
+    expect(html).toContain("Not handling real client data");
+  });
+  it("contains current status (review-ready core, 323 tests)", () => {
+    expect(html).toContain("Review-ready core");
+    expect(html).toContain("Not yet client deployed");
+    expect(html).toContain("323 tests passing");
+  });
+  it("contains live demo proof URL", () => {
+    expect(html).toContain("https://cerbaseal.replit.app/");
+  });
+  it("contains the limitation notice", () => {
+    expect(html).toContain("review-ready core demonstration");
+    expect(html).toContain("Not a production deployment");
+  });
+  it("does not claim production readiness", () => {
+    expect(html).not.toContain("production-ready");
+    expect(html).not.toContain("fully compliant");
+    expect(html).not.toContain("regulator-approved");
+  });
+});
+
+// ── Cross-page enhancements (Phases 2–6) ─────────────────────────────────
+describe("Homepage flow visual + version label + brief link", () => {
+  const html = readIndex();
+
+  it("contains the Enforcement Boundary label", () => {
+    expect(html).toContain("Enforcement Boundary");
+  });
+  it("contains the flow caption", () => {
+    expect(html).toContain("All consequential actions must pass through CerbaSeal before execution");
+  });
+  it("exposes Version: 0.1.0 and Status: Review Candidate", () => {
+    expect(html).toContain("Version: 0.1.0");
+    expect(html).toContain("Review Candidate");
+  });
+  it("links to the one-page brief", () => {
+    expect(html).toContain('href="/one-page"');
+  });
+});
+
+describe("/review — 10-Minute Review Path + handoff + version", () => {
+  const html = readPage("review.html");
+
+  it("contains the 10-Minute Review Path section", () => {
+    expect(html).toContain("10-Minute Review Path");
+  });
+  it("includes guided step buttons for all three scenarios", () => {
+    expect(html).toContain('data-r10="reject"');
+    expect(html).toContain('data-r10="hold"');
+    expect(html).toContain('data-r10="allow"');
+  });
+  it("contains the 'Running CerbaSeal Without the Author' handoff section", () => {
+    expect(html).toContain("Running CerbaSeal Without the Author");
+  });
+  it("handoff lists the core commands", () => {
+    expect(html).toContain("pnpm demo:web");
+    expect(html).toContain("pnpm test");
+    expect(html).toContain("pnpm review:validate");
+  });
+  it("handoff notes no external dependencies required", () => {
+    expect(html).toContain("No external dependencies or services required to run core demo");
+  });
+  it("exposes Version: 0.1.0 and Status: Review Candidate", () => {
+    expect(html).toContain("Version: 0.1.0");
+    expect(html).toContain("Review Candidate");
+  });
+});
+
+describe("/security — Known Limitations + Production-Change list", () => {
+  const html = readPage("security.html");
+
+  it("contains the Known Limitations section header", () => {
+    expect(html).toContain("Known Limitations");
+  });
+  it("lists the explicit weak points without softening", () => {
+    expect(html).toContain("No cryptographic signing of evidence artifacts");
+    expect(html).toContain("No identity verification");
+    expect(html).toContain("Audit log is in-memory");
+    expect(html).toContain("Hash chain proves consistency, not origin authenticity");
+    expect(html).toContain("No multi-tenant isolation model");
+    expect(html).toContain("No access control layer");
+  });
+  it("contains the 'What Would Need To Change For Production' section", () => {
+    expect(html).toContain("What Would Need To Change For Production");
+    expect(html).toContain("persistent storage layer");
+    expect(html).toContain("cryptographic signing");
+    expect(html).toContain("identity provider integration");
+  });
+});
+
 // ── Claim discipline across all pages ────────────────────────────────────
 describe("Claim discipline — all portal pages", () => {
   const allHtml = ["review.html", "pilot.html", "security.html", "deployment.html"]

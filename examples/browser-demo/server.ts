@@ -73,6 +73,10 @@ const server = createServer((req, res) => {
     serveFile(res, join(__dirname, "pages", "deployment.html"), "text/html; charset=utf-8");
     return;
   }
+  if (url === "/one-page") {
+    serveFile(res, join(__dirname, "pages", "one-page.html"), "text/html; charset=utf-8");
+    return;
+  }
 
   // Existing scenario routes
   if (url === "/api/reject") { serveScenario(res, "reject", getRejectScenario); return; }
@@ -102,6 +106,6 @@ server.on("error", (err) => { console.error("Server error:", err.message); });
 server.listen(PORT, HOST, () => {
   console.log(`CerbaSeal browser demo running at http://localhost:${PORT}`);
   console.log("Demo routes:   GET /api/reject  /api/hold  /api/allow");
-  console.log("Portal pages:  GET /review  /pilot  /security  /deployment");
+  console.log("Portal pages:  GET /review  /pilot  /security  /deployment  /one-page");
   console.log("JSON APIs:     GET /api/review-summary  /api/pilot-readiness  /api/security-summary");
 });

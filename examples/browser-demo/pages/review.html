@@ -168,8 +168,87 @@
     <a href="/deployment">Deployment</a>
   </nav>
 
+  <!-- Version label -->
+  <div aria-label="Build status" style="margin-bottom:1.5rem;display:flex;align-items:center;gap:0.55rem;flex-wrap:wrap;font-family:'SF Mono','Fira Code',monospace;font-size:0.72rem;letter-spacing:0.05em;color:var(--muted);">
+    <span>Version: 0.1.0</span>
+    <span style="color:var(--border2);">·</span>
+    <span>Status: Review Candidate</span>
+  </div>
+
+  <!-- 10-Minute Review Path -->
+  <section class="section" aria-label="10-Minute Review Path">
+    <div class="section-title">10-Minute Review Path</div>
+    <p>Validate the system in under ten minutes without reading full docs. Each button calls the real API route and renders the actual result inline.</p>
+    <ol class="r10-steps" style="counter-reset:r10;list-style:none;display:flex;flex-direction:column;gap:0.55rem;">
+      <li style="display:flex;gap:0.85rem;padding:0.7rem 0.95rem;background:var(--surface);border:1px solid var(--border);border-radius:6px;align-items:center;flex-wrap:wrap;">
+        <span style="font-family:'SF Mono','Fira Code',monospace;font-size:0.72rem;font-weight:700;color:var(--muted);min-width:1.2rem;">1.</span>
+        <span style="font-size:0.87rem;color:#a1a1aa;flex:1;min-width:200px;">Read definition (30 seconds)</span>
+        <a href="#review-definition" style="font-size:0.78rem;color:var(--blue);text-decoration:none;">go to definition →</a>
+      </li>
+      <li style="display:flex;gap:0.85rem;padding:0.7rem 0.95rem;background:var(--surface);border:1px solid var(--border);border-radius:6px;align-items:center;flex-wrap:wrap;">
+        <span style="font-family:'SF Mono','Fira Code',monospace;font-size:0.72rem;font-weight:700;color:var(--muted);min-width:1.2rem;">2.</span>
+        <span style="font-size:0.87rem;color:#a1a1aa;flex:1;min-width:200px;">Run "AI attempts action" → expect <strong style="color:var(--red);">REJECT</strong></span>
+        <button data-r10="reject" style="font-family:inherit;font-size:0.78rem;font-weight:600;padding:0.4rem 0.7rem;border-radius:5px;border:1px solid var(--red-border);background:var(--red-bg);color:var(--red);cursor:pointer;">Run /api/reject</button>
+        <span class="r10-result" id="r10-result-reject" style="font-family:'SF Mono','Fira Code',monospace;font-size:0.74rem;color:var(--muted);width:100%;margin-top:0.3rem;display:none;"></span>
+      </li>
+      <li style="display:flex;gap:0.85rem;padding:0.7rem 0.95rem;background:var(--surface);border:1px solid var(--border);border-radius:6px;align-items:center;flex-wrap:wrap;">
+        <span style="font-family:'SF Mono','Fira Code',monospace;font-size:0.72rem;font-weight:700;color:var(--muted);min-width:1.2rem;">3.</span>
+        <span style="font-size:0.87rem;color:#a1a1aa;flex:1;min-width:200px;">Run "Missing approval" → expect <strong style="color:var(--yellow);">HOLD</strong></span>
+        <button data-r10="hold" style="font-family:inherit;font-size:0.78rem;font-weight:600;padding:0.4rem 0.7rem;border-radius:5px;border:1px solid var(--yellow-bdr);background:var(--yellow-bg);color:var(--yellow);cursor:pointer;">Run /api/hold</button>
+        <span class="r10-result" id="r10-result-hold" style="font-family:'SF Mono','Fira Code',monospace;font-size:0.74rem;color:var(--muted);width:100%;margin-top:0.3rem;display:none;"></span>
+      </li>
+      <li style="display:flex;gap:0.85rem;padding:0.7rem 0.95rem;background:var(--surface);border:1px solid var(--border);border-radius:6px;align-items:center;flex-wrap:wrap;">
+        <span style="font-family:'SF Mono','Fira Code',monospace;font-size:0.72rem;font-weight:700;color:var(--muted);min-width:1.2rem;">4.</span>
+        <span style="font-size:0.87rem;color:#a1a1aa;flex:1;min-width:200px;">Run "Approved action" → expect <strong style="color:var(--green);">ALLOW</strong></span>
+        <button data-r10="allow" style="font-family:inherit;font-size:0.78rem;font-weight:600;padding:0.4rem 0.7rem;border-radius:5px;border:1px solid var(--green-bdr);background:var(--green-bg);color:var(--green);cursor:pointer;">Run /api/allow</button>
+        <span class="r10-result" id="r10-result-allow" style="font-family:'SF Mono','Fira Code',monospace;font-size:0.74rem;color:var(--muted);width:100%;margin-top:0.3rem;display:none;"></span>
+      </li>
+      <li style="display:block;padding:0.7rem 0.95rem;background:var(--surface);border:1px solid var(--border);border-radius:6px;">
+        <div><span style="font-family:'SF Mono','Fira Code',monospace;font-size:0.72rem;font-weight:700;color:var(--muted);">5.</span><span style="font-size:0.87rem;color:#a1a1aa;margin-left:0.55rem;">Confirm:</span></div>
+        <ul style="margin-top:0.45rem;padding-left:1.5rem;font-size:0.83rem;color:#a1a1aa;list-style:disc;">
+          <li>execution blocked when required</li>
+          <li>execution allowed only with approval</li>
+          <li>outcomes are deterministic</li>
+        </ul>
+      </li>
+    </ol>
+    <div style="margin-top:0.9rem;font-size:0.8rem;color:var(--muted);">
+      <a href="/one-page" style="color:var(--blue);text-decoration:none;">Open the one-page System Brief →</a>
+    </div>
+    <script>
+      (function() {
+        var labels = { reject: 'Run /api/reject', hold: 'Run /api/hold', allow: 'Run /api/allow' };
+        var btns = document.querySelectorAll('[data-r10]');
+        for (var i = 0; i < btns.length; i++) {
+          (function(btn) {
+            btn.addEventListener('click', function() {
+              var id = btn.getAttribute('data-r10');
+              var resEl = document.getElementById('r10-result-' + id);
+              btn.disabled = true; btn.textContent = 'Running…';
+              fetch('/api/' + id).then(function(r){
+                if (!r.ok) throw new Error('HTTP ' + r.status);
+                return r.json();
+              }).then(function(d){
+                btn.disabled = false; btn.textContent = labels[id];
+                var fs = d.outcome ? d.outcome.finalState : '?';
+                var lbl = d.execution ? d.execution.label : '?';
+                var rc = d.outcome && d.outcome.reasonCodes && d.outcome.reasonCodes.length ? d.outcome.reasonCodes[0] : '';
+                resEl.style.display = 'block';
+                resEl.textContent = 'finalState=' + fs + '  ·  execution=' + lbl + (rc ? '  ·  primaryReason=' + rc : '');
+              }).catch(function(e){
+                btn.disabled = false; btn.textContent = labels[id];
+                resEl.style.display = 'block';
+                resEl.textContent = 'request failed: ' + e.message;
+              });
+            });
+          })(btns[i]);
+        }
+      })();
+    </script>
+  </section>
+
   <!-- Hero -->
-  <header class="hero">
+  <header class="hero" id="review-definition">
     <h1>CerbaSeal — External Reviewer Portal</h1>
     <p class="tagline">A structured review surface for technical evaluators, security reviewers, and pilot decision-makers.</p>
     <div class="definition">
@@ -388,6 +467,46 @@
       <li>Run the full test suite: <code>pnpm test</code></li>
       <li>Run support readiness validation: <code>pnpm demo:support:validate</code></li>
     </ol>
+  </section>
+
+  <!-- Running CerbaSeal Without the Author -->
+  <section class="section" aria-label="Handoff instructions">
+    <div class="section-title">Running CerbaSeal Without the Author</div>
+    <p>Everything required to verify CerbaSeal is in this repository. No external services, accounts, or founder involvement needed.</p>
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title">Commands</div>
+        <ul class="label-list">
+          <li>Start demo: <code>pnpm demo:web</code></li>
+          <li>Run tests: <code>pnpm test</code></li>
+          <li>Validate demo: <code>pnpm demo:web:validate</code></li>
+          <li>Validate review portal: <code>pnpm review:validate</code></li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title">Where to start</div>
+        <ul class="label-list">
+          <li><code>docs/00-external-reviewer-brief.md</code></li>
+          <li><code>docs/demo/enforcement-loop.md</code></li>
+          <li><code>examples/browser-demo/</code></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:1rem;">
+      <div class="card-title">What to verify</div>
+      <ul class="label-list">
+        <li>scenarios produce expected outcomes</li>
+        <li>test suite passes</li>
+        <li>audit chain verifies</li>
+        <li>replay matches</li>
+      </ul>
+    </div>
+
+    <p style="margin-top:1rem;font-size:0.85rem;color:var(--muted);">
+      <strong style="color:var(--text);">Note:</strong>
+      No external dependencies or services required to run core demo.
+    </p>
   </section>
 
   <!-- Limitation banner -->

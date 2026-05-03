@@ -171,6 +171,37 @@
     </ul>
   </section>
 
+  <!-- Known Limitations / Not Yet Solved (explicit reviewer-facing list) -->
+  <section class="section">
+    <div class="section-title">Known Limitations / Not Yet Solved</div>
+    <p>Listed without softening. These are real boundaries of the current build.</p>
+    <ul class="plain-list">
+      <li class="limit">No cryptographic signing of evidence artifacts</li>
+      <li class="limit">No identity verification (actor is caller-supplied)</li>
+      <li class="limit">Audit log is in-memory (not persistent)</li>
+      <li class="limit">No external system health verification (loggingReady is declared, not checked)</li>
+      <li class="limit">No deployment hardening for production environments</li>
+      <li class="limit">No third-party security review completed</li>
+      <li class="limit">Hash chain proves consistency, not origin authenticity</li>
+      <li class="limit">No multi-tenant isolation model</li>
+      <li class="limit">No access control layer</li>
+    </ul>
+  </section>
+
+  <!-- What Would Need To Change For Production -->
+  <section class="section">
+    <div class="section-title">What Would Need To Change For Production</div>
+    <p>These items are required before production deployment with real client data.</p>
+    <ul class="plain-list">
+      <li class="question">persistent storage layer</li>
+      <li class="question">cryptographic signing / attestation</li>
+      <li class="question">identity provider integration</li>
+      <li class="question">deployment hardening</li>
+      <li class="question">monitoring + alerting</li>
+      <li class="question">external security review</li>
+    </ul>
+  </section>
+
   <!-- Claim discipline -->
   <section class="section">
     <div class="section-title">Claim discipline</div>

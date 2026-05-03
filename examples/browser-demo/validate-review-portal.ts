@@ -250,6 +250,79 @@ assert("All pages include limitation notice",
   ));
 console.log("");
 
+// ── /one-page System Brief ───────────────────────────────────────────────
+console.log("Page: /one-page");
+const onePageHtml = readPage("one-page.html");
+assert("/one-page contains System Brief title",
+  onePageHtml.includes("System Brief"));
+assert("/one-page contains version v0.1.0",
+  onePageHtml.includes("v0.1.0"));
+assert("/one-page contains one-line definition",
+  onePageHtml.includes("deterministic execution enforcement spine"));
+assert("/one-page contains three what-it-does bullets",
+  onePageHtml.includes("Blocks unauthorized execution attempts") &&
+  onePageHtml.includes("Enforces approval and control requirements") &&
+  onePageHtml.includes("Produces verifiable evidence for every decision"));
+assert("/one-page contains the three core scenarios",
+  onePageHtml.includes("AI_CANNOT_AUTHORIZE") &&
+  onePageHtml.includes("REQUIRED_APPROVAL_MISSING") &&
+  onePageHtml.includes("DECISION_ALLOWED"));
+assert("/one-page contains what-it-is-NOT bullets",
+  onePageHtml.includes("Not a full governance platform") &&
+  onePageHtml.includes("Not production deployed") &&
+  onePageHtml.includes("Not independently security-reviewed") &&
+  onePageHtml.includes("Not handling real client data"));
+assert("/one-page contains current status",
+  onePageHtml.includes("Review-ready core") &&
+  onePageHtml.includes("Not yet client deployed") &&
+  onePageHtml.includes("323 tests passing"));
+assert("/one-page contains live demo proof URL",
+  onePageHtml.includes("https://cerbaseal.replit.app/"));
+assert("/one-page contains limitation notice",
+  onePageHtml.includes("review-ready core demonstration") &&
+  onePageHtml.includes("Not a production deployment"));
+assert("/one-page does not claim production readiness",
+  !onePageHtml.includes("production-ready") &&
+  !onePageHtml.includes("fully compliant") &&
+  !onePageHtml.includes("regulator-approved"));
+console.log("");
+
+// ── New cross-page enhancements (Phases 2–6) ─────────────────────────────
+console.log("Cross-page enhancements:");
+assert("/ contains Enforcement Boundary flow visual",
+  indexHtml.includes("Enforcement Boundary") &&
+  indexHtml.includes("All consequential actions must pass through CerbaSeal before execution"));
+assert("/ exposes version label and Review Candidate status",
+  indexHtml.includes("Version: 0.1.0") && indexHtml.includes("Review Candidate"));
+assert("/ links to the one-page brief",
+  indexHtml.includes('href="/one-page"'));
+assert("/review contains 10-Minute Review Path section",
+  reviewHtml.includes("10-Minute Review Path"));
+assert("/review 10-min path includes guided step buttons",
+  reviewHtml.includes('data-r10="reject"') &&
+  reviewHtml.includes('data-r10="hold"') &&
+  reviewHtml.includes('data-r10="allow"'));
+assert("/review contains 'Running CerbaSeal Without the Author' section",
+  reviewHtml.includes("Running CerbaSeal Without the Author"));
+assert("/review handoff includes core commands",
+  reviewHtml.includes("pnpm demo:web") &&
+  reviewHtml.includes("pnpm test") &&
+  reviewHtml.includes("pnpm review:validate"));
+assert("/review handoff notes no external deps required",
+  reviewHtml.includes("No external dependencies or services required to run core demo"));
+assert("/review exposes version label and Review Candidate status",
+  reviewHtml.includes("Version: 0.1.0") && reviewHtml.includes("Review Candidate"));
+assert("/security contains Known Limitations section header",
+  securityHtml.includes("Known Limitations"));
+assert("/security contains 'What Would Need To Change For Production' section",
+  securityHtml.includes("What Would Need To Change For Production"));
+assert("/security Known Limitations lists the explicit weak points",
+  securityHtml.includes("No cryptographic signing of evidence artifacts") &&
+  securityHtml.includes("No identity verification") &&
+  securityHtml.includes("Audit log is in-memory") &&
+  securityHtml.includes("Hash chain proves consistency, not origin authenticity"));
+console.log("");
+
 // ── Final summary ────────────────────────────────────────────────────────
 console.log(`\nValidation complete: ${passed} passed, ${failed} failed.\n`);
 if (failed > 0) {

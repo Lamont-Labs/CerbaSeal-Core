@@ -4,11 +4,12 @@ Deterministic execution enforcement spine for AI-assisted workflows. Sits betwee
 
 ## Current State
 
-- 323 / 323 tests passing, 0 failing, 15 test files (`pnpm test`)
-- 62 / 62 portal validation assertions passing (`pnpm review:validate`)
+- 358 / 358 tests passing, 0 failing, 15 test files (`pnpm test`)
+- 97 / 97 portal validation assertions passing (`pnpm review:validate`)
 - External Reviewer & Pilot Readiness Portal live at `pnpm demo:web`
 - Adversarial integrity audit complete
 - No third-party security review yet — flagged on every portal page
+- Polish pass complete (v0.1.0 / Review Candidate): printable one-page System Brief at `/one-page`, 10-Minute Review Path on `/review` with interactive scenario buttons, explicit "Known Limitations / Not Yet Solved" + "What Would Need To Change For Production" on `/security`, "Enforcement Boundary" flow visual on `/`, and "Running CerbaSeal Without the Author" handoff section on `/review`.
 
 ## Repo Layout
 
@@ -31,6 +32,7 @@ Deterministic execution enforcement spine for AI-assisted workflows. Sits betwee
 | `/pilot` | HTML | Pilot readiness + intake checklist |
 | `/security` | HTML | Security controls, threats, limitations |
 | `/deployment` | HTML | Deployment posture and modes |
+| `/one-page` | HTML | Printable one-page System Brief (light theme) |
 | `/api/reject` | JSON | Live REJECT scenario |
 | `/api/hold` | JSON | Live HOLD scenario |
 | `/api/allow` | JSON | Live ALLOW scenario |
@@ -40,10 +42,10 @@ Deterministic execution enforcement spine for AI-assisted workflows. Sits betwee
 
 ## Scripts
 
-- `pnpm test` — full vitest suite (323 tests)
+- `pnpm test` — full vitest suite (358 tests)
 - `pnpm demo:web` — start browser demo + portal on port 3001
 - `pnpm demo:review` — alias for the portal
-- `pnpm review:validate` — headless 62-point portal validation
+- `pnpm review:validate` — headless 97-point portal validation
 - `pnpm demo:support` — support readiness demo
 - `pnpm demo:support:validate` — support readiness validation
 
