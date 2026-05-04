@@ -82,7 +82,7 @@
     /* ── Logo gate ── */
     .logo-gate {
       position: relative; display: inline-block;
-      width: 340px; max-width: 88vw;
+      width: 340px; max-width: calc(100vw - 4rem);
       isolation: isolate;
       margin-bottom: 1.75rem;
       cursor: crosshair;
@@ -127,6 +127,7 @@
     .hero-oneliner {
       font-family: var(--font-mono); font-size: 0.82rem; color: var(--text-3);
       margin-bottom: 2rem; line-height: 1.55;
+      overflow-wrap: break-word; word-break: break-word;
     }
     .hero-oneliner strong { color: var(--text-1); font-weight: 600; }
 
@@ -420,7 +421,7 @@
   <div class="nav-shell">
     <nav>
       <a href="/" class="brand">
-        <img src="/assets/cerbaseal-logo-primary.png" class="brand-logo-img" alt="CerbaSeal" />
+        <img src="/assets/cerbaseal-logo-mark.png" class="brand-logo-img" alt="CerbaSeal" />
         <span class="brand-name">CerbaSeal</span>
       </a>
       <div class="nav-links">
