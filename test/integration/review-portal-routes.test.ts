@@ -7,7 +7,7 @@
  */
 
 import { describe, it, expect } from "vitest";
-import { readFileSync } from "node:fs";
+import { readFileSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { REVIEW_SUMMARY, PILOT_READINESS, SECURITY_SUMMARY } from "../../examples/browser-demo/review-portal.js";
@@ -453,5 +453,71 @@ describe("Claim discipline — all portal pages", () => {
     ["review.html", "pilot.html", "security.html", "deployment.html"].forEach(f => {
       expect(readPage(f)).toContain("review-ready core demo, not a production client deployment");
     });
+  });
+});
+
+// ── Brand integration ─────────────────────────────────────────────────────
+describe("Brand integration", () => {
+  it("/ contains logo asset path", () => {
+    expect(readIndex()).toContain("/assets/cerbaseal-logo");
+  });
+
+  it("/ includes favicon link", () => {
+    expect(readIndex()).toContain("cerbaseal-favicon.png");
+  });
+
+  it("/review contains CerbaSeal System Identity section", () => {
+    expect(readPage("review.html")).toContain("CerbaSeal System Identity");
+  });
+
+  it("/review includes logo asset path", () => {
+    expect(readPage("review.html")).toContain("/assets/cerbaseal-logo-primary.png");
+  });
+
+  it("/pilot contains pilot readiness status code", () => {
+    expect(readPage("pilot.html")).toContain("core_ready_client_specifics_required");
+  });
+
+  it("/pilot includes logo asset path", () => {
+    expect(readPage("pilot.html")).toContain("/assets/cerbaseal-logo-primary.png");
+  });
+
+  it("/security contains machine-readable not_yet_third_party_reviewed status", () => {
+    expect(readPage("security.html")).toContain("not_yet_third_party_reviewed");
+  });
+
+  it("/security includes logo asset path", () => {
+    expect(readPage("security.html")).toContain("/assets/cerbaseal-logo-primary.png");
+  });
+
+  it("/deployment contains client-controlled language", () => {
+    const html = readPage("deployment.html").toLowerCase();
+    expect(html).toContain("client-controlled");
+  });
+
+  it("/deployment includes logo asset path", () => {
+    expect(readPage("deployment.html")).toContain("/assets/cerbaseal-logo-primary.png");
+  });
+
+  it("/one-page title contains CerbaSeal — System Brief", () => {
+    expect(readPage("one-page.html")).toContain("CerbaSeal — System Brief");
+  });
+
+  it("/one-page includes logo asset path", () => {
+    expect(readPage("one-page.html")).toContain("/assets/cerbaseal-logo-primary.png");
+  });
+
+  it("all portal pages include favicon link", () => {
+    ["review.html", "pilot.html", "security.html", "deployment.html", "one-page.html"].forEach(f => {
+      expect(readPage(f)).toContain("cerbaseal-favicon.png");
+    });
+  });
+
+  it("logo asset file exists on disk", () => {
+    const assetDir = join(__dirname, "../../examples/browser-demo/assets");
+    expect(existsSync(join(assetDir, "cerbaseal-logo-primary.png"))).toBe(true);
+    expect(existsSync(join(assetDir, "cerbaseal-favicon.png"))).toBe(true);
+    expect(existsSync(join(assetDir, "cerbaseal-logo-mark.png"))).toBe(true);
+    expect(existsSync(join(assetDir, "cerbaseal-logo-dark.png"))).toBe(true);
   });
 });

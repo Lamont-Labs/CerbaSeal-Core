@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CerbaSeal — External Reviewer Portal</title>
+  <title>CerbaSeal Review Portal</title>
+  <link rel="icon" href="/assets/cerbaseal-favicon.png" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -26,6 +27,10 @@
              padding: 0.35rem 0.75rem; border-radius: 5px; border: 1px solid var(--border2); }
     nav a:hover { color: var(--text); border-color: var(--muted); }
     nav a.active { color: var(--text); border-color: var(--blue); background: var(--blue-bg); }
+    .nav-brand { padding: 0 !important; border: none !important; background: none !important;
+                 margin-right: auto; display: inline-flex !important; align-items: center; gap: 0.45rem; }
+    .nav-brand img { width: 22px; height: 22px; object-fit: contain; filter: brightness(0) invert(1); }
+    .nav-brand span { font-weight: 700; font-size: 0.88rem; color: #fafafa; letter-spacing: -0.02em; }
 
     /* Hero */
     .hero { margin-bottom: 3rem; }
@@ -161,6 +166,7 @@
 <div class="page">
 
   <nav>
+    <a href="/" class="nav-brand"><img src="/assets/cerbaseal-logo-primary.png" alt="CerbaSeal" /><span>CerbaSeal</span></a>
     <a href="/">Demo</a>
     <a href="/review" class="active">Review</a>
     <a href="/pilot">Pilot</a>
@@ -508,6 +514,23 @@
       <strong style="color:var(--text);">Note:</strong>
       No external dependencies or services required to run core demo.
     </p>
+  </section>
+
+  <!-- CerbaSeal System Identity -->
+  <section class="section" aria-label="CerbaSeal System Identity">
+    <div class="section-title">CerbaSeal System Identity</div>
+    <div class="card">
+      <div class="card-title">Mark and Name</div>
+      <p style="font-size:0.88rem;color:var(--text);line-height:1.65;">
+        The CerbaSeal mark is a three-headed guardian representing the three enforcement outcomes:
+        ALLOW, HOLD, and REJECT. The keyhole in the shield body represents controlled execution —
+        nothing passes this boundary without authorization. The name combines Cerberus (the guardian
+        of a threshold) with Seal (the enforcement act of sealing an outcome with evidence).
+      </p>
+      <p style="margin-top:0.6rem;font-size:0.83rem;color:var(--muted);">
+        All claims in this portal are backed by code, tests, or visible demo output.
+      </p>
+    </div>
   </section>
 
   <!-- Limitation banner -->

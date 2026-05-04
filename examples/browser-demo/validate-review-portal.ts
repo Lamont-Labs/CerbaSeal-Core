@@ -6,7 +6,7 @@
  * Mirrors the pattern used in validate-demo.ts.
  */
 
-import { readFileSync } from "node:fs";
+import { readFileSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { REVIEW_SUMMARY, PILOT_READINESS, SECURITY_SUMMARY } from "./review-portal.js";
@@ -321,6 +321,38 @@ assert("/security Known Limitations lists the explicit weak points",
   securityHtml.includes("No identity verification") &&
   securityHtml.includes("Audit log is in-memory") &&
   securityHtml.includes("Hash chain proves consistency, not origin authenticity"));
+console.log("");
+
+// ── Brand integration assertions ─────────────────────────────────────────
+console.log("Brand integration:");
+assert("/ contains logo asset reference",
+  indexHtml.includes("/assets/cerbaseal-logo"));
+assert("/ includes favicon link",
+  indexHtml.includes("cerbaseal-favicon.png"));
+assert("/review contains CerbaSeal System Identity section",
+  reviewHtml.includes("CerbaSeal System Identity"));
+assert("/review includes logo asset path",
+  reviewHtml.includes("/assets/cerbaseal-logo-primary.png"));
+assert("/pilot contains pilot readiness status code",
+  pilotHtml.includes("core_ready_client_specifics_required"));
+assert("/pilot includes logo asset path",
+  pilotHtml.includes("/assets/cerbaseal-logo-primary.png"));
+assert("/security contains machine-readable not_yet_third_party_reviewed status",
+  securityHtml.includes("not_yet_third_party_reviewed"));
+assert("/security includes logo asset path",
+  securityHtml.includes("/assets/cerbaseal-logo-primary.png"));
+assert("/deployment includes logo asset path",
+  deploymentHtml.includes("/assets/cerbaseal-logo-primary.png"));
+
+const assetDir = join(__dirname, "assets");
+assert("cerbaseal-logo-primary.png asset exists on disk",
+  existsSync(join(assetDir, "cerbaseal-logo-primary.png")));
+assert("cerbaseal-favicon.png asset exists on disk",
+  existsSync(join(assetDir, "cerbaseal-favicon.png")));
+assert("cerbaseal-logo-mark.png asset exists on disk",
+  existsSync(join(assetDir, "cerbaseal-logo-mark.png")));
+assert("cerbaseal-logo-dark.png asset exists on disk",
+  existsSync(join(assetDir, "cerbaseal-logo-dark.png")));
 console.log("");
 
 // ── Final summary ────────────────────────────────────────────────────────

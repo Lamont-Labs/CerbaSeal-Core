@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CerbaSeal — Security Review</title>
+  <title>CerbaSeal Security Summary</title>
+  <link rel="icon" href="/assets/cerbaseal-favicon.png" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -24,6 +25,10 @@
              padding: 0.35rem 0.75rem; border-radius: 5px; border: 1px solid var(--border2); }
     nav a:hover { color: var(--text); border-color: var(--muted); }
     nav a.active { color: var(--text); border-color: var(--blue); background: var(--blue-bg); }
+    .nav-brand { padding: 0 !important; border: none !important; background: none !important;
+                 margin-right: auto; display: inline-flex !important; align-items: center; gap: 0.45rem; }
+    .nav-brand img { width: 22px; height: 22px; object-fit: contain; filter: brightness(0) invert(1); }
+    .nav-brand span { font-weight: 700; font-size: 0.88rem; color: #fafafa; letter-spacing: -0.02em; }
     .hero { margin-bottom: 3rem; }
     .hero h1 { font-size: 1.7rem; font-weight: 800; letter-spacing: -0.03em; color: #fafafa; margin-bottom: 0.75rem; }
     .hero .tagline { font-size: 1rem; color: var(--muted); max-width: 680px; }
@@ -72,6 +77,7 @@
 <div class="page">
 
   <nav>
+    <a href="/" class="nav-brand"><img src="/assets/cerbaseal-logo-primary.png" alt="CerbaSeal" /><span>CerbaSeal</span></a>
     <a href="/">Demo</a>
     <a href="/review">Review</a>
     <a href="/pilot">Pilot</a>
@@ -89,6 +95,7 @@
   <section class="section">
     <div class="section-title">Security posture summary</div>
     <div class="review-status">Not yet third-party reviewed</div>
+    <div style="font-family:'SF Mono','Fira Code',monospace;font-size:0.68rem;color:var(--muted);margin-top:0.35rem;margin-bottom:0.75rem;">status: not_yet_third_party_reviewed</div>
     <div class="posture-box">
       CerbaSeal is currently a deterministic enforcement library and demo with no external API calls,
       no database, and no authentication layer. Security review should focus on enforcement integrity,

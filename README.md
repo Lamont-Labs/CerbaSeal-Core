@@ -48,7 +48,7 @@ For the fastest review, open the hosted demo or run `pnpm demo:web` locally.
 
 Current proof state:
 
-- 323 / 323 tests passing (15 test files)
+- 372 / 372 tests passing (15 test files)
 - REJECT / HOLD / ALLOW runtime demo
 - fail-closed behavior
 - non-forgery protection
@@ -142,7 +142,8 @@ CerbaSeal is designed to be embedded as a deterministic enforcement layer.
 
 ## Status
 
-- 323 / 323 tests passing (15 test files)
+- 372 / 372 tests passing (15 test files)
 - Adversarial audit complete
 - Core enforcement loop validated
 - External Reviewer & Pilot Readiness Portal live (`pnpm demo:web` → `/review`, `/pilot`, `/security`, `/deployment`)
+- Brand system: CerbaSeal mark integrated across all portal pages (`docs/positioning/cerbaseal-brand-system.md`)

@@ -42,6 +42,17 @@ function serveJson(res: any, data: unknown) {
   res.end(JSON.stringify(data, null, 2));
 }
 
+function serveBinary(res: any, filePath: string, contentType: string) {
+  try {
+    const content = readFileSync(filePath);
+    res.writeHead(200, { "Content-Type": contentType, "Cache-Control": "no-store" });
+    res.end(content);
+  } catch {
+    res.writeHead(404, { "Content-Type": "application/json" });
+    res.end(JSON.stringify({ error: "Asset not found" }));
+  }
+}
+
 const server = createServer((req, res) => {
   const url = (req.url ?? "/").split("?")[0];
   res.setHeader("Cache-Control", "no-store");
@@ -94,6 +105,21 @@ const server = createServer((req, res) => {
   }
   if (url === "/api/security-summary") {
     serveJson(res, SECURITY_SUMMARY);
+    return;
+  }
+
+  // Static brand assets
+  if (url.startsWith("/assets/")) {
+    const assetName = url.slice("/assets/".length).replace(/\.\./g, "").replace(/\//g, "");
+    const ext = assetName.split(".").pop() ?? "";
+    const contentTypes: Record<string, string> = {
+      png: "image/png",
+      svg: "image/svg+xml",
+      ico: "image/x-icon",
+      webp: "image/webp",
+    };
+    const ct = contentTypes[ext] ?? "application/octet-stream";
+    serveBinary(res, join(__dirname, "assets", assetName), ct);
     return;
   }
 

@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CerbaSeal — Deterministic execution enforcement for AI-assisted systems</title>
   <meta name="description" content="CerbaSeal is a deterministic execution enforcement spine for AI-assisted systems. It returns ALLOW, HOLD, or REJECT with hash-linked evidence." />
+  <link rel="icon" href="/assets/cerbaseal-favicon.png" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -113,13 +114,8 @@
       font-weight: 700; color: var(--text-0); margin-right: auto;
       font-size: 0.95rem; letter-spacing: -0.02em;
     }
-    .brand-mark {
-      width: 22px; height: 22px; border-radius: 5px;
-      background: linear-gradient(135deg, var(--accent) 0%, #4f6ed8 100%);
-      box-shadow: 0 0 0 1px rgba(255,255,255,0.06) inset, 0 4px 12px rgba(110,147,255,0.25);
-      display: grid; place-items: center;
-      color: white; font-size: 0.65rem; font-weight: 800;
-      font-family: var(--font-mono); letter-spacing: -0.05em;
+    .brand-logo-img {
+      width: 26px; height: 26px; object-fit: contain; flex-shrink: 0;
     }
     .nav-links { display: flex; gap: 0.15rem; }
     .nav-link {
@@ -620,7 +616,7 @@
   <div class="nav-shell">
     <nav>
       <a href="/" class="brand">
-        <span class="brand-mark">CS</span>
+        <img src="/assets/cerbaseal-logo-dark.png" class="brand-logo-img" alt="CerbaSeal" />
         <span>CerbaSeal</span>
       </a>
       <div class="nav-links">
