@@ -80,19 +80,33 @@
     .hero-inner { max-width: 540px; margin: 0 auto; }
 
     /* ── Logo gate ── */
+    /*
+     * cerbaseal-logo-primary.png is 1536×1536 (square).
+     * The CERBASEAL text sits in the bottom ~16% of the image.
+     * aspect-ratio: 1/0.84 constrains the container to show 84% of
+     * the image height, and overflow:hidden clips the text strip.
+     * object-fit:cover + object-position:top ensures the image fills
+     * the box from the top without stretching.
+     */
     .logo-gate {
       position: relative; display: inline-block;
       width: 340px; max-width: calc(100vw - 4rem);
+      aspect-ratio: 1 / 0.84;
+      overflow: hidden;
       isolation: isolate;
       margin-bottom: 1.75rem;
       cursor: crosshair;
     }
-    .logo-gate > img.logo-base { width: 100%; height: auto; display: block; user-select: none; }
+    .logo-gate > img.logo-base {
+      width: 100%; height: 100%; display: block; user-select: none;
+      object-fit: cover; object-position: top center;
+    }
 
-    /* Overlay layers: stacked copies, filtered + clipped to each head region */
+    /* Overlay layers: stacked copies, same crop as base image */
     .logo-layer {
       position: absolute; top: 0; left: 0;
       width: 100%; height: 100%;
+      object-fit: cover; object-position: top center;
       opacity: 0;
       transition: opacity 0.22s ease;
       pointer-events: none;
@@ -100,18 +114,22 @@
     .logo-layer.hover  { opacity: 0.52; }
     .logo-layer.active { opacity: 0.76; }
 
-    /* Head regions (approximate elliptical clip per head) */
+    /*
+     * Head regions — clip-path values are calibrated for the
+     * 340×286px rendered box (84% of the 1536×1536 square logo).
+     * Heads sit at ~40-45% from top in the cropped display area.
+     */
     .layer-reject {
       filter: sepia(1) saturate(7) hue-rotate(-38deg) brightness(0.82);
-      clip-path: ellipse(22% 27% at 21% 35%);
+      clip-path: ellipse(22% 24% at 21% 42%);
     }
     .layer-hold {
       filter: sepia(1) saturate(5) hue-rotate(8deg) brightness(0.80);
-      clip-path: ellipse(26% 31% at 50% 29%);
+      clip-path: ellipse(26% 28% at 50% 37%);
     }
     .layer-allow {
       filter: sepia(1) saturate(7) hue-rotate(188deg) brightness(0.78);
-      clip-path: ellipse(22% 27% at 79% 35%);
+      clip-path: ellipse(22% 24% at 79% 42%);
     }
 
     /* ── Wordmark ── */
@@ -444,10 +462,10 @@
 
       <!-- Logo gate with per-head highlight layers -->
       <div class="logo-gate" id="logo-gate">
-        <img class="logo-base" src="/assets/cerbaseal-logo-mark.png" alt="CerbaSeal three-headed guardian mark" />
-        <img class="logo-layer layer-reject" id="layer-reject" src="/assets/cerbaseal-logo-mark.png" alt="" aria-hidden="true" />
-        <img class="logo-layer layer-hold"   id="layer-hold"   src="/assets/cerbaseal-logo-mark.png" alt="" aria-hidden="true" />
-        <img class="logo-layer layer-allow"  id="layer-allow"  src="/assets/cerbaseal-logo-mark.png" alt="" aria-hidden="true" />
+        <img class="logo-base" src="/assets/cerbaseal-logo-primary.png" alt="CerbaSeal three-headed guardian mark" />
+        <img class="logo-layer layer-reject" id="layer-reject" src="/assets/cerbaseal-logo-primary.png" alt="" aria-hidden="true" />
+        <img class="logo-layer layer-hold"   id="layer-hold"   src="/assets/cerbaseal-logo-primary.png" alt="" aria-hidden="true" />
+        <img class="logo-layer layer-allow"  id="layer-allow"  src="/assets/cerbaseal-logo-primary.png" alt="" aria-hidden="true" />
       </div>
 
       <div class="wordmark">CERBASEAL</div>
