@@ -10,614 +10,418 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      /* Surfaces */
-      --bg-0:       #07070a;
-      --bg-1:       #0d0d11;
-      --bg-2:       #131318;
-      --bg-3:       #18181f;
-      --bg-elev:    #1c1c24;
+      --bg:         #FFFFFF;
+      --bg-1:       #F8FAFC;
+      --bg-2:       #F1F5F9;
+      --bg-3:       #E8EDF4;
+      --text-0:     #0F172A;
+      --text-1:     #1E293B;
+      --text-2:     #334155;
+      --text-3:     #64748B;
+      --text-4:     #94A3B8;
+      --border:     #E2E8F0;
+      --border-1:   #CBD5E1;
 
-      /* Lines */
-      --line-1:     #1c1c22;
-      --line-2:     #26262d;
-      --line-3:     #34343d;
+      --reject:     #C94A4A;
+      --reject-bg:  #FEF2F2;
+      --reject-bdr: #FECACA;
+      --hold:       #B07E2A;
+      --hold-bg:    #FFFBEB;
+      --hold-bdr:   #FDE68A;
+      --allow:      #2A6E4E;
+      --allow-bg:   #F0FDF4;
+      --allow-bdr:  #BBF7D0;
 
-      /* Text */
-      --text-0:     #fafafa;
-      --text-1:     #e4e4e7;
-      --text-2:     #b4b4bb;
-      --text-3:     #8a8a93;
-      --text-4:     #5c5c66;
-      --text-5:     #3f3f48;
-
-      /* Accent (single restrained blue) */
-      --accent:     #6e93ff;
-      --accent-2:   #8aa6ff;
-      --accent-bg:  rgba(110, 147, 255, 0.08);
-      --accent-line:rgba(110, 147, 255, 0.32);
-
-      /* States */
-      --reject:     #f87171;
-      --reject-bg:  rgba(248, 113, 113, 0.07);
-      --reject-line:rgba(248, 113, 113, 0.3);
-
-      --hold:       #fbbf24;
-      --hold-bg:    rgba(251, 191, 36, 0.06);
-      --hold-line:  rgba(251, 191, 36, 0.3);
-
-      --allow:      #4ade80;
-      --allow-bg:   rgba(74, 222, 128, 0.06);
-      --allow-line: rgba(74, 222, 128, 0.3);
-
-      /* Typography */
-      --font-sans:  "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-      --font-mono:  "JetBrains Mono", "SF Mono", ui-monospace, "Menlo", "Monaco", "Consolas", monospace;
-
-      /* Container */
-      --container:  1080px;
-      --gutter:     1.5rem;
-      --radius-sm:  6px;
-      --radius:     10px;
-      --radius-lg:  14px;
+      --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --font-mono: "SF Mono", "JetBrains Mono", ui-monospace, "Fira Code", monospace;
+      --radius:    8px;
+      --shadow:    0 1px 3px rgba(15,23,42,0.08), 0 1px 2px rgba(15,23,42,0.04);
     }
 
-    html { -webkit-text-size-adjust: 100%; }
-    body {
-      font-family: var(--font-sans);
-      font-size: 15px;
-      line-height: 1.6;
-      color: var(--text-1);
-      background: var(--bg-0);
-      min-height: 100vh;
-      font-feature-settings: "ss01", "cv01", "cv02", "cv11";
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      letter-spacing: -0.005em;
-    }
+    html { font-family: var(--font-sans); background: var(--bg); color: var(--text-1); line-height: 1.6; }
 
-    /* Background — subtle radial wash + faint dot grid */
-    body::before {
-      content: "";
-      position: fixed; inset: 0; z-index: -2; pointer-events: none;
-      background:
-        radial-gradient(ellipse 1200px 600px at 50% -10%, rgba(110,147,255,0.08), transparent 70%),
-        radial-gradient(ellipse 800px 400px at 100% 30%, rgba(110,147,255,0.04), transparent 70%);
-    }
-    body::after {
-      content: "";
-      position: fixed; inset: 0; z-index: -1; pointer-events: none;
-      background-image: radial-gradient(rgba(255,255,255,0.025) 1px, transparent 1px);
-      background-size: 28px 28px;
-      background-position: 0 0;
-      mask-image: linear-gradient(to bottom, rgba(0,0,0,0.7), rgba(0,0,0,0.15) 70%, transparent);
-      -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0.7), rgba(0,0,0,0.15) 70%, transparent);
-    }
-
-    a { color: inherit; text-decoration: none; }
-
-    /* ── Glass nav ── */
+    /* ── Nav ── */
     .nav-shell {
-      position: sticky; top: 0; z-index: 50;
-      backdrop-filter: blur(14px) saturate(140%);
-      -webkit-backdrop-filter: blur(14px) saturate(140%);
-      background: rgba(7, 7, 10, 0.72);
-      border-bottom: 1px solid var(--line-1);
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(255,255,255,0.94);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
     }
     nav {
-      max-width: var(--container);
-      margin: 0 auto;
-      padding: 0.85rem var(--gutter);
-      display: flex; align-items: center; gap: 0.4rem;
+      max-width: 960px; margin: 0 auto; padding: 0 1.5rem;
+      height: 52px; display: flex; align-items: center; gap: 0.6rem;
     }
     .brand {
-      display: inline-flex; align-items: center; gap: 0.55rem;
-      font-weight: 700; color: var(--text-0); margin-right: auto;
-      font-size: 0.95rem; letter-spacing: -0.02em;
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      text-decoration: none; margin-right: auto; flex-shrink: 0;
     }
-    .brand-logo-img {
-      width: 26px; height: 26px; object-fit: contain; flex-shrink: 0;
-    }
-    .nav-links { display: flex; gap: 0.15rem; }
+    .brand-logo-img { width: 26px; height: 26px; object-fit: contain; }
+    .brand-name { font-weight: 700; font-size: 0.92rem; color: var(--text-0); letter-spacing: -0.02em; }
+    .nav-links { display: flex; gap: 0.05rem; align-items: center; flex-wrap: wrap; }
     .nav-link {
-      font-size: 0.82rem; font-weight: 500; color: var(--text-3);
-      padding: 0.4rem 0.75rem; border-radius: 6px; transition: color 0.15s, background 0.15s;
+      font-size: 0.79rem; color: var(--text-3); text-decoration: none;
+      padding: 0.3rem 0.6rem; border-radius: 5px; transition: color 0.13s, background 0.13s;
     }
     .nav-link:hover { color: var(--text-0); background: var(--bg-2); }
-    .nav-link.active { color: var(--text-0); background: var(--bg-2); }
-
-    /* ── Container ── */
-    .container { max-width: var(--container); margin: 0 auto; padding: 0 var(--gutter); }
-    section { padding: 4.5rem 0; }
-    @media (max-width: 720px) { section { padding: 3rem 0; } }
-
-    /* ── Eyebrow ── */
-    .eyebrow {
-      display: inline-flex; align-items: center; gap: 0.5rem;
-      font-family: var(--font-mono); font-size: 0.72rem; font-weight: 500;
-      color: var(--text-3); text-transform: uppercase; letter-spacing: 0.08em;
-      padding: 0.3rem 0.65rem; border-radius: 999px;
-      background: var(--bg-2); border: 1px solid var(--line-2);
-    }
-    .eyebrow .dot {
-      width: 6px; height: 6px; border-radius: 50%; background: var(--accent);
-      box-shadow: 0 0 0 3px var(--accent-bg);
-    }
-    .eyebrow .dot.dot-blue { background: var(--accent); box-shadow: 0 0 0 3px var(--accent-bg); }
-
-    /* ── Section heading ── */
-    .section-head { margin-bottom: 2rem; }
-    .section-eyebrow {
-      font-family: var(--font-mono); font-size: 0.72rem; font-weight: 500;
-      color: var(--text-4); text-transform: uppercase; letter-spacing: 0.12em;
-      margin-bottom: 0.65rem;
-    }
-    .section-title {
-      font-size: 1.75rem; font-weight: 700; color: var(--text-0);
-      letter-spacing: -0.025em; line-height: 1.2;
-    }
-    .section-sub {
-      font-size: 0.95rem; color: var(--text-3); margin-top: 0.5rem;
-      max-width: 620px; line-height: 1.6;
+    .nav-link.active { color: var(--text-0); font-weight: 600; }
+    .nav-status {
+      font-family: var(--font-mono); font-size: 0.67rem; color: var(--text-4);
+      padding: 0.2rem 0.55rem; border: 1px solid var(--border); border-radius: 4px;
+      white-space: nowrap; flex-shrink: 0;
     }
 
-    /* ── Hero (Section A) ── */
-    .hero { padding: 5.5rem 0 4rem; }
-    @media (max-width: 720px) { .hero { padding: 3rem 0 2.5rem; } }
-    .hero .eyebrow { margin-bottom: 1.75rem; }
-    .hero h1 {
-      font-size: clamp(2.6rem, 6.4vw, 4.5rem);
-      font-weight: 700; letter-spacing: -0.045em; line-height: 1;
-      color: var(--text-0); margin-bottom: 1.25rem;
-      background: linear-gradient(180deg, #ffffff 0%, #c6c6cc 100%);
-      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
-    }
-    .hero .subtitle {
-      font-size: clamp(1.05rem, 1.8vw, 1.4rem);
-      color: var(--text-2); font-weight: 400; line-height: 1.45;
-      max-width: 680px; margin-bottom: 2rem; letter-spacing: -0.012em;
-    }
-    .hero .one-line {
-      font-size: 0.95rem; color: var(--text-2);
-      max-width: 680px; padding: 1rem 1.25rem;
-      background: linear-gradient(180deg, var(--bg-2) 0%, var(--bg-1) 100%);
-      border: 1px solid var(--line-2); border-radius: var(--radius);
-      box-shadow: 0 1px 0 rgba(255,255,255,0.02) inset;
-      line-height: 1.55;
-    }
-    .hero .one-line strong { color: var(--text-0); font-weight: 600; }
+    /* ── Layout ── */
+    .container      { max-width: 720px; margin: 0 auto; padding: 0 1.5rem; }
+    .container-wide { max-width: 960px; margin: 0 auto; padding: 0 1.5rem; }
+    section { padding: 3.5rem 0; border-bottom: 1px solid var(--border); }
 
-    .hero-actions {
-      display: flex; gap: 0.6rem; margin-top: 1.75rem; flex-wrap: wrap;
-    }
-    .btn-primary, .btn-secondary {
-      display: inline-flex; align-items: center; gap: 0.5rem;
-      padding: 0.65rem 1.05rem; font-size: 0.85rem; font-weight: 600;
-      border-radius: 8px; transition: background 0.15s, border-color 0.15s, color 0.15s;
-      cursor: pointer; font-family: inherit; border: 1px solid;
-    }
-    .btn-primary {
-      color: white; background: var(--accent);
-      border-color: var(--accent);
-      box-shadow: 0 1px 0 rgba(255,255,255,0.15) inset, 0 8px 24px rgba(110,147,255,0.25);
-    }
-    .btn-primary:hover { background: var(--accent-2); }
-    .btn-secondary {
-      color: var(--text-1); background: transparent; border-color: var(--line-3);
-    }
-    .btn-secondary:hover { background: var(--bg-2); border-color: var(--text-4); color: var(--text-0); }
-    .arrow { font-size: 0.9rem; transition: transform 0.15s; }
-    .btn-primary:hover .arrow, .btn-secondary:hover .arrow { transform: translateX(2px); }
+    /* ── Hero ── */
+    .hero { padding: 3.25rem 1.5rem 3rem; text-align: center; }
+    .hero-inner { max-width: 540px; margin: 0 auto; }
 
-    /* ── Trust strip (stats) ── */
-    .stats {
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px;
-      background: var(--line-1);
-      border: 1px solid var(--line-1); border-radius: var(--radius);
-      overflow: hidden; margin-top: 3rem;
+    /* ── Logo gate ── */
+    .logo-gate {
+      position: relative; display: inline-block;
+      width: 340px; max-width: 88vw;
+      isolation: isolate;
+      margin-bottom: 1.75rem;
+      cursor: crosshair;
     }
-    @media (max-width: 720px) { .stats { grid-template-columns: repeat(2, 1fr); } }
-    .stat {
-      background: var(--bg-1); padding: 1.25rem 1.4rem;
+    .logo-gate > img.logo-base { width: 100%; height: auto; display: block; user-select: none; }
+
+    /* Overlay layers: stacked copies, filtered + clipped to each head region */
+    .logo-layer {
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 100%;
+      opacity: 0;
+      transition: opacity 0.22s ease;
+      pointer-events: none;
     }
-    .stat-num {
-      font-family: var(--font-mono); font-size: 1.7rem; font-weight: 600;
-      color: var(--text-0); letter-spacing: -0.04em; line-height: 1;
-      margin-bottom: 0.4rem;
+    .logo-layer.hover  { opacity: 0.52; }
+    .logo-layer.active { opacity: 0.76; }
+
+    /* Head regions (approximate elliptical clip per head) */
+    .layer-reject {
+      filter: sepia(1) saturate(7) hue-rotate(-38deg) brightness(0.82);
+      clip-path: ellipse(22% 27% at 21% 35%);
     }
-    .stat-num.muted { color: var(--text-3); }
-    .stat-num.allow { color: var(--allow); }
-    .stat-label {
-      font-size: 0.72rem; color: var(--text-3); font-weight: 500;
-      text-transform: uppercase; letter-spacing: 0.07em;
+    .layer-hold {
+      filter: sepia(1) saturate(5) hue-rotate(8deg) brightness(0.80);
+      clip-path: ellipse(26% 31% at 50% 29%);
+    }
+    .layer-allow {
+      filter: sepia(1) saturate(7) hue-rotate(188deg) brightness(0.78);
+      clip-path: ellipse(22% 27% at 79% 35%);
     }
 
-    /* ── Core function (Section B) ── */
-    .fn-list {
-      list-style: none; padding: 0; margin: 0;
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;
+    /* ── Wordmark ── */
+    .wordmark {
+      font-size: 2.55rem; font-weight: 800; letter-spacing: 0.18em;
+      color: var(--text-0); text-transform: uppercase; line-height: 1;
+      margin-bottom: 0.6rem;
     }
-    @media (max-width: 800px) { .fn-list { grid-template-columns: 1fr; } }
-    .fn-list li {
-      padding: 1.5rem 1.4rem;
-      background: var(--bg-1); border: 1px solid var(--line-1);
-      border-radius: var(--radius);
-      position: relative;
-      transition: border-color 0.15s, background 0.15s;
+    .wordmark-sub {
+      font-size: 1.02rem; color: var(--text-2); line-height: 1.45;
+      letter-spacing: -0.01em; margin-bottom: 0.9rem;
     }
-    .fn-list li:hover { border-color: var(--line-3); background: var(--bg-2); }
-    .fn-num {
-      font-family: var(--font-mono); font-size: 0.7rem; font-weight: 500;
-      color: var(--text-4); margin-bottom: 0.85rem; letter-spacing: 0.05em;
+    .hero-oneliner {
+      font-family: var(--font-mono); font-size: 0.82rem; color: var(--text-3);
+      margin-bottom: 2rem; line-height: 1.55;
     }
-    .fn-text {
-      font-size: 0.95rem; color: var(--text-1); font-weight: 500;
-      line-height: 1.45; letter-spacing: -0.01em;
+    .hero-oneliner strong { color: var(--text-1); font-weight: 600; }
+
+    /* ── Gate buttons ── */
+    .gate-section-label {
+      font-family: var(--font-mono); font-size: 0.63rem; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-4);
+      margin-bottom: 0.8rem;
+    }
+    .gate-buttons { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; }
+    .gate-btn {
+      padding: 0.65rem 1.9rem; border-radius: 6px; border: 1.5px solid;
+      font-size: 0.83rem; font-weight: 700; font-family: var(--font-mono);
+      letter-spacing: 0.1em; cursor: pointer; transition: all 0.14s ease;
+      outline: none; user-select: none;
+    }
+    .gate-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .gate-btn--reject { color: var(--reject); border-color: var(--reject-bdr); background: var(--reject-bg); }
+    .gate-btn--reject:hover:not(:disabled), .gate-btn--reject.active {
+      background: var(--reject); color: #fff; border-color: var(--reject);
+      box-shadow: 0 2px 10px rgba(201,74,74,0.28);
+    }
+    .gate-btn--hold { color: var(--hold); border-color: var(--hold-bdr); background: var(--hold-bg); }
+    .gate-btn--hold:hover:not(:disabled), .gate-btn--hold.active {
+      background: var(--hold); color: #fff; border-color: var(--hold);
+      box-shadow: 0 2px 10px rgba(176,126,42,0.28);
+    }
+    .gate-btn--allow { color: var(--allow); border-color: var(--allow-bdr); background: var(--allow-bg); }
+    .gate-btn--allow:hover:not(:disabled), .gate-btn--allow.active {
+      background: var(--allow); color: #fff; border-color: var(--allow);
+      box-shadow: 0 2px 10px rgba(42,110,78,0.28);
+    }
+    .gate-microcopy {
+      font-size: 0.73rem; color: var(--text-4); font-family: var(--font-mono);
+      margin-top: 0.7rem;
     }
 
-    /* ── Live Enforcement (Section C) ── */
-    .console-frame {
-      background: var(--bg-1); border: 1px solid var(--line-2);
-      border-radius: var(--radius-lg); overflow: hidden;
-      box-shadow: 0 1px 0 rgba(255,255,255,0.03) inset, 0 24px 48px -24px rgba(0,0,0,0.6);
-    }
-    .console-bar {
-      display: flex; align-items: center; gap: 0.65rem;
-      padding: 0.7rem 1.1rem; background: var(--bg-2);
-      border-bottom: 1px solid var(--line-2);
-      font-family: var(--font-mono); font-size: 0.72rem;
-      color: var(--text-3); letter-spacing: 0.02em;
-    }
-    .console-dots { display: flex; gap: 0.35rem; }
-    .console-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--line-3); }
-    .console-bar .path { color: var(--text-2); margin-left: 0.3rem; }
-    .console-bar .pulse {
-      margin-left: auto; display: inline-flex; align-items: center; gap: 0.4rem;
-      color: var(--allow); font-size: 0.7rem;
-    }
-    .console-bar .pulse::before {
-      content: ""; width: 6px; height: 6px; border-radius: 50%;
-      background: var(--allow); box-shadow: 0 0 0 3px rgba(74,222,128,0.15);
-    }
+    /* ── Execution zone ── */
+    .exec-zone { max-width: 560px; margin: 2rem auto 0; text-align: left; }
 
-    .scenario-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
-      background: var(--line-1);
+    /* Compact terminal summary */
+    .compact-summary {
+      display: none;
+      background: var(--text-0); border-radius: var(--radius);
+      overflow: hidden; margin-bottom: 0.75rem;
     }
-    @media (max-width: 820px) { .scenario-grid { grid-template-columns: 1fr; } }
-    .scenario-card {
-      background: var(--bg-1); padding: 1.5rem 1.35rem;
-      display: flex; flex-direction: column; gap: 0.7rem;
-      transition: background 0.15s;
+    .cs-header {
+      padding: 0.5rem 1rem;
+      background: rgba(255,255,255,0.07);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      font-family: var(--font-mono); font-size: 0.62rem; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
     }
-    .scenario-card:hover { background: var(--bg-2); }
-    .card-meta {
-      font-family: var(--font-mono); font-size: 0.7rem;
-      color: var(--text-4); letter-spacing: 0.05em;
-      display: flex; gap: 0.5rem; align-items: center;
+    .cs-grid { padding: 0.9rem 1.1rem 1rem; }
+    .cs-row { display: flex; gap: 0.75rem; align-items: baseline; padding: 0.22rem 0; }
+    .cs-key {
+      font-family: var(--font-mono); font-size: 0.69rem; letter-spacing: 0.06em;
+      text-transform: uppercase; color: rgba(255,255,255,0.32);
+      width: 92px; flex-shrink: 0;
     }
-    .card-meta .endpoint { color: var(--text-3); }
-    .card-title {
-      font-size: 1.02rem; font-weight: 600; color: var(--text-0);
-      letter-spacing: -0.018em; line-height: 1.3;
-    }
-    .card-title .arrow-state { font-weight: 500; color: var(--text-3); }
-    .card-title .state-reject { color: var(--reject); font-weight: 700; }
-    .card-title .state-hold   { color: var(--hold);   font-weight: 700; }
-    .card-title .state-allow  { color: var(--allow);  font-weight: 700; }
+    .cs-val { font-family: var(--font-mono); font-size: 0.86rem; font-weight: 600; color: rgba(255,255,255,0.82); }
+    .cs-val.state-BLOCKED { color: #F87171; }
+    .cs-val.state-PAUSED  { color: #FBD15B; }
+    .cs-val.state-ALLOWED { color: #4ADE80; }
 
-    .card-desc {
-      font-size: 0.84rem; color: var(--text-3); flex: 1; line-height: 1.5;
-    }
-    .card-expected {
-      font-family: var(--font-mono); font-size: 0.7rem; font-weight: 500;
-      letter-spacing: 0.06em;
-    }
-    .scenario-card.card-reject .card-expected { color: var(--reject); }
-    .scenario-card.card-hold   .card-expected { color: var(--hold); }
-    .scenario-card.card-allow  .card-expected { color: var(--allow); }
-
-    .scenario-btn {
-      margin-top: 0.4rem; padding: 0.65rem 0.85rem;
-      font-size: 0.82rem; font-weight: 600;
-      font-family: var(--font-mono); letter-spacing: -0.01em;
-      border-radius: 7px; border: 1px solid; cursor: pointer;
-      transition: background 0.15s, color 0.15s, border-color 0.15s;
-      text-align: center; width: 100%;
-    }
-    .btn-reject {
-      background: var(--reject-bg); color: var(--reject); border-color: var(--reject-line);
-    }
-    .btn-reject:hover:not(:disabled) { background: rgba(248,113,113,0.14); }
-    .btn-hold {
-      background: var(--hold-bg); color: var(--hold); border-color: var(--hold-line);
-    }
-    .btn-hold:hover:not(:disabled) { background: rgba(251,191,36,0.13); }
-    .btn-allow {
-      background: var(--allow-bg); color: var(--allow); border-color: var(--allow-line);
-    }
-    .btn-allow:hover:not(:disabled) { background: rgba(74,222,128,0.13); }
-    .scenario-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-
-    /* ── Result panel (preserves IDs) ── */
+    /* Placeholder */
     #placeholder {
-      padding: 2.5rem 1.5rem; text-align: center;
-      font-size: 0.875rem; color: var(--text-4);
-      background: var(--bg-1); border-top: 1px solid var(--line-1);
-      font-family: var(--font-mono);
-    }
-    #result-section { display: none; background: var(--bg-1); border-top: 1px solid var(--line-1); }
-    .result-wrap { background: var(--bg-1); }
-    .result-header {
-      padding: 0.85rem 1.2rem; border-bottom: 1px solid var(--line-1);
-      font-family: var(--font-mono); font-size: 0.72rem; font-weight: 500;
-      letter-spacing: 0.06em; color: var(--text-4); text-transform: uppercase;
-      display: flex; justify-content: space-between; align-items: center;
-    }
-    #scenario-title-label {
-      color: var(--text-2); font-weight: 500; text-transform: none;
-      letter-spacing: -0.005em; font-family: var(--font-sans); font-size: 0.82rem;
+      font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-4);
+      padding: 1.25rem 1.5rem;
+      border: 1px dashed var(--border-1); border-radius: var(--radius);
+      text-align: center;
     }
 
-    .state-badge-wrap {
-      padding: 2.25rem 1.2rem 1.6rem; text-align: center;
-      border-bottom: 1px solid var(--line-1);
+    /* Full proof panel (client.js generated) */
+    #result-section { display: none; }
+    .loading-msg {
+      font-family: var(--font-mono); font-size: 0.82rem; color: var(--text-3);
+      padding: 1.25rem 1.5rem; text-align: center;
+      border: 1px solid var(--border); border-radius: var(--radius);
     }
+    .result-wrap {
+      background: var(--bg-1); border: 1px solid var(--border);
+      border-radius: var(--radius); overflow: hidden;
+    }
+    .result-header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0.6rem 1rem;
+      background: var(--bg-2); border-bottom: 1px solid var(--border);
+      font-family: var(--font-mono); font-size: 0.65rem; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3);
+    }
+    .state-badge-wrap { padding: 1rem 1rem 0.5rem; text-align: center; }
     .state-badge {
       display: inline-block; padding: 0.4rem 1.1rem;
-      font-family: var(--font-mono); font-size: 2rem; font-weight: 700;
-      letter-spacing: -0.04em; border-radius: var(--radius); border: 1px solid;
+      border-radius: 5px; font-family: var(--font-mono);
+      font-size: 1.05rem; font-weight: 800; letter-spacing: 0.12em;
     }
-    .badge-BLOCKED { color: var(--reject); border-color: var(--reject-line); background: var(--reject-bg); }
-    .badge-PAUSED  { color: var(--hold);   border-color: var(--hold-line);   background: var(--hold-bg); }
-    .badge-ALLOWED { color: var(--allow);  border-color: var(--allow-line);  background: var(--allow-bg); }
-
+    .badge-BLOCKED { background: var(--reject-bg); color: var(--reject); border: 1.5px solid var(--reject-bdr); }
+    .badge-PAUSED  { background: var(--hold-bg);   color: var(--hold);   border: 1.5px solid var(--hold-bdr); }
+    .badge-ALLOWED { background: var(--allow-bg);  color: var(--allow);  border: 1.5px solid var(--allow-bdr); }
     .consequence-wrap {
-      padding: 1.25rem 1.2rem; border-bottom: 1px solid var(--line-1);
-      display: grid; grid-template-columns: 1fr 1fr; gap: 1rem 2rem;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 0; padding: 0.75rem 1rem 0;
     }
-    @media (max-width: 600px) { .consequence-wrap { grid-template-columns: 1fr; } }
-    .cq-label {
-      font-family: var(--font-mono); font-size: 0.7rem; font-weight: 500;
-      text-transform: uppercase; letter-spacing: 0.07em;
-      color: var(--text-4); margin-bottom: 0.3rem;
-    }
-    .cq-value { font-size: 0.92rem; color: var(--text-1); line-height: 1.5; }
-
-    .plain-english {
-      padding: 1rem 1.2rem; border-bottom: 1px solid var(--line-1);
-      background: var(--bg-2);
-    }
-    .plain-english .pe-label {
-      font-family: var(--font-mono); font-size: 0.68rem; font-weight: 500;
-      text-transform: uppercase; letter-spacing: 0.08em;
-      color: var(--text-4); margin-bottom: 0.4rem;
-    }
-    .plain-english .pe-text { font-size: 0.9rem; color: var(--text-2); line-height: 1.55; }
-
+    .cq-label { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-4); font-family: var(--font-mono); margin-bottom: 0.2rem; }
+    .cq-value { font-size: 0.86rem; color: var(--text-1); }
+    .plain-english { padding: 0.75rem 1rem; border-top: 1px solid var(--border); margin-top: 0.75rem; }
+    .pe-label { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-4); font-family: var(--font-mono); margin-bottom: 0.25rem; }
+    .pe-text  { font-size: 0.85rem; color: var(--text-2); line-height: 1.55; }
     .proof-grid {
-      display: grid; grid-template-columns: repeat(2, 1fr);
-      gap: 0; border-bottom: 1px solid var(--line-1);
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 1px; background: var(--border); border-top: 1px solid var(--border);
     }
-    .proof-cell {
-      padding: 0.95rem 1.2rem; border-right: 1px solid var(--line-1);
-      border-bottom: 1px solid var(--line-1);
+    .proof-cell { background: var(--bg-1); padding: 0.6rem 0.85rem; }
+    .proof-label { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-4); font-family: var(--font-mono); margin-bottom: 0.15rem; }
+    .proof-value { font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-1); }
+    .proof-value.pv-REJECT, .proof-value.pv-BLOCKED { color: var(--reject); }
+    .proof-value.pv-HOLD,   .proof-value.pv-PAUSED  { color: var(--hold); }
+    .proof-value.pv-ALLOW,  .proof-value.pv-ALLOWED { color: var(--allow); }
+    .proof-value.pv-present { color: var(--allow); }
+    .proof-value.pv-none    { color: var(--text-4); }
+    .proof-expand { border-top: 1px solid var(--border); }
+    .proof-expand summary {
+      padding: 0.6rem 1rem; font-size: 0.72rem; font-family: var(--font-mono);
+      color: var(--text-3); cursor: pointer; user-select: none; list-style: none;
     }
-    .proof-cell:nth-child(even) { border-right: none; }
-    .proof-cell:nth-last-child(-n+2) { border-bottom: none; }
-    .proof-label {
-      font-family: var(--font-mono); font-size: 0.68rem; font-weight: 500;
-      text-transform: uppercase; letter-spacing: 0.06em;
-      color: var(--text-4); margin-bottom: 0.3rem;
+    .proof-expand summary:hover { color: var(--text-0); }
+    .proof-expand summary::before { content: "▶  "; font-size: 0.6rem; }
+    .proof-expand details[open] summary::before { content: "▼  "; }
+    .proof-body { padding: 0 1rem 1rem; }
+    .proof-note { font-size: 0.76rem; color: var(--text-3); margin-bottom: 0.65rem; line-height: 1.5; }
+    .proof-body pre {
+      font-family: var(--font-mono); font-size: 0.73rem; color: var(--text-2);
+      background: var(--bg-2); padding: 0.85rem 1rem; border-radius: 5px;
+      overflow-x: auto; white-space: pre-wrap; line-height: 1.55;
     }
-    .proof-value {
-      font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-1);
-      font-weight: 500; word-break: break-all; letter-spacing: -0.01em;
-    }
-    .pv-REJECT, .pv-BLOCKED, .pv-none, .pv-false { color: var(--reject); }
-    .pv-HOLD,   .pv-PAUSED,  .pv-pending          { color: var(--hold); }
-    .pv-ALLOW,  .pv-ALLOWED, .pv-present, .pv-true { color: var(--allow); }
+    .reviewer-notes { border-top: 1px solid var(--border); padding: 0.75rem 1rem; }
+    .rn-label { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-4); font-family: var(--font-mono); margin-bottom: 0.3rem; }
+    .rn-text  { font-size: 0.83rem; color: var(--text-2); line-height: 1.55; }
+    .error-msg { padding: 1rem; font-family: var(--font-mono); font-size: 0.82rem; color: var(--reject); white-space: pre-wrap; }
 
-    .proof-expand { padding: 0; border-bottom: 1px solid var(--line-1); }
-    details { padding: 0; }
-    summary {
-      padding: 0.85rem 1.2rem; font-size: 0.82rem; font-weight: 500;
-      color: var(--text-3); cursor: pointer; list-style: none; user-select: none;
-      display: flex; align-items: center; gap: 0.45rem;
-      font-family: var(--font-mono); letter-spacing: -0.005em;
+    /* ── Section shared ── */
+    .section-eyebrow {
+      font-family: var(--font-mono); font-size: 0.62rem; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-4);
+      margin-bottom: 0.45rem;
     }
-    summary::-webkit-details-marker { display: none; }
-    summary::before { content: "▸"; font-size: 0.7rem; transition: transform 0.15s; color: var(--text-4); }
-    details[open] summary::before { transform: rotate(90deg); }
-    summary:hover { color: var(--text-0); }
-    .proof-body { padding: 0 1.2rem 1.1rem; border-top: 1px solid var(--line-1); }
-    .proof-note {
-      font-size: 0.78rem; color: var(--text-3); margin-bottom: 0.85rem;
-      padding-top: 0.85rem; line-height: 1.55;
-    }
-    pre {
-      background: var(--bg-0); border: 1px solid var(--line-1);
-      border-radius: var(--radius-sm); padding: 1rem; font-size: 0.78rem;
-      line-height: 1.55; overflow: auto; max-height: 380px;
-      color: var(--text-2); font-family: var(--font-mono);
-      white-space: pre-wrap; word-break: break-word;
-    }
+    .section-title { font-size: 1.4rem; font-weight: 800; color: var(--text-0); letter-spacing: -0.02em; margin-bottom: 0.45rem; }
+    .section-sub   { font-size: 0.9rem; color: var(--text-3); margin-bottom: 2rem; }
 
-    .reviewer-notes { padding: 1rem 1.2rem; background: var(--bg-2); }
-    .rn-label {
-      font-family: var(--font-mono); font-size: 0.68rem; font-weight: 500;
-      text-transform: uppercase; letter-spacing: 0.08em;
-      color: var(--text-4); margin-bottom: 0.4rem;
-    }
-    .rn-text { font-size: 0.86rem; color: var(--text-2); line-height: 1.55; }
+    /* ── Enforcement explanation ── */
+    .enforce-text { max-width: 580px; }
+    .enforce-text p { font-size: 0.98rem; color: var(--text-1); line-height: 1.75; margin-bottom: 0.75rem; }
+    .enforce-text p:last-child { margin-bottom: 0; }
+    .enforce-text strong { color: var(--text-0); }
 
-    .loading-msg { padding: 3rem; text-align: center; font-size: 0.875rem; color: var(--text-4); font-family: var(--font-mono); }
-    .error-msg { padding: 1.4rem 1.2rem; font-size: 0.9rem; color: var(--reject); font-family: var(--font-mono); }
+    /* Enforcement boundary diagram */
+    .boundary-diagram {
+      max-width: 400px; margin-top: 2.5rem;
+      padding: 1.5rem 1.25rem;
+      background: var(--bg-1); border: 1px solid var(--border); border-radius: var(--radius);
+      text-align: center;
+    }
+    .bd-title {
+      font-family: var(--font-mono); font-size: 0.6rem; font-weight: 700;
+      letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-4);
+      margin-bottom: 1rem;
+    }
+    .bd-node {
+      padding: 0.42rem 1rem; background: var(--bg-2); border: 1px solid var(--border);
+      border-radius: 5px; font-size: 0.82rem; color: var(--text-2);
+      display: inline-block; min-width: 175px;
+    }
+    .bd-gate { background: var(--bg); border-color: var(--text-0); color: var(--text-0); font-weight: 700; border-width: 1.5px; }
+    .bd-arrow { color: var(--text-4); font-family: var(--font-mono); font-size: 0.9rem; margin: 0.4rem 0; display: block; }
+    .bd-outcomes {
+      display: inline-flex; gap: 0.35rem; align-items: center;
+      font-family: var(--font-mono); font-size: 0.75rem; font-weight: 700;
+      flex-wrap: wrap; justify-content: center;
+    }
+    .bd-r { color: var(--reject); padding: 0.22rem 0.5rem; background: var(--reject-bg); border: 1px solid var(--reject-bdr); border-radius: 4px; }
+    .bd-h { color: var(--hold);   padding: 0.22rem 0.5rem; background: var(--hold-bg);   border: 1px solid var(--hold-bdr);   border-radius: 4px; }
+    .bd-a { color: var(--allow);  padding: 0.22rem 0.5rem; background: var(--allow-bg);  border: 1px solid var(--allow-bdr);  border-radius: 4px; }
+    .bd-sep { color: var(--text-4); }
+    .bd-caption { margin-top: 0.9rem; font-size: 0.79rem; color: var(--text-3); line-height: 1.5; }
 
-    /* ── Why It Matters (Section D) ── */
-    .why-list {
-      list-style: none; padding: 0; margin: 0;
-      display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;
+    /* ── System proof panels ── */
+    .proof-panels-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1rem;
     }
-    @media (max-width: 720px) { .why-list { grid-template-columns: 1fr; } }
-    .why-list li {
-      display: flex; gap: 0.9rem; align-items: flex-start;
-      padding: 1.2rem 1.3rem;
-      background: var(--bg-1); border: 1px solid var(--line-1);
-      border-radius: var(--radius);
+    .pp-panel {
+      background: var(--bg-1); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.3rem;
     }
-    .why-mark {
-      flex-shrink: 0; width: 26px; height: 26px; border-radius: 7px;
-      background: var(--accent-bg); border: 1px solid var(--accent-line);
-      color: var(--accent); display: grid; place-items: center;
-      font-size: 0.85rem; font-weight: 700;
+    .pp-eyebrow {
+      font-family: var(--font-mono); font-size: 0.6rem; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-4);
+      margin-bottom: 0.6rem;
     }
-    .why-text {
-      font-size: 0.92rem; color: var(--text-1); line-height: 1.5; padding-top: 0.1rem;
-    }
+    .pp-title { font-size: 0.98rem; font-weight: 700; color: var(--text-0); margin-bottom: 0.6rem; }
+    .pp-body  { font-size: 0.84rem; color: var(--text-2); line-height: 1.6; }
+    .inv-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.18rem 0.65rem; margin-top: 0.85rem; list-style: none; }
+    .inv-grid li { font-family: var(--font-mono); font-size: 0.74rem; color: var(--text-3); }
 
-    /* ── Current Status (Section E) ── */
+    .fn-list { list-style: none; display: flex; flex-direction: column; gap: 0.55rem; }
+    .fn-item { display: flex; gap: 0.75rem; align-items: baseline; font-size: 0.9rem; color: var(--text-2); }
+    .fn-num  { font-family: var(--font-mono); color: var(--text-4); font-size: 0.72rem; flex-shrink: 0; }
+
+    /* ── Status section ── */
     .status-banner {
-      display: flex; align-items: center; gap: 1.2rem; flex-wrap: wrap;
-      padding: 1.1rem 1.4rem;
-      background: linear-gradient(180deg, var(--bg-2) 0%, var(--bg-1) 100%);
-      border: 1px solid var(--line-2); border-left: 3px solid var(--accent);
-      border-radius: var(--radius); margin-bottom: 1.25rem;
+      display: flex; align-items: center; gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      background: var(--bg-1); border: 1px solid var(--border); border-radius: var(--radius);
+      margin-bottom: 1.25rem;
     }
     .status-pill {
-      display: inline-flex; align-items: center; gap: 0.5rem;
-      font-family: var(--font-mono); font-size: 0.7rem; font-weight: 500;
-      letter-spacing: 0.08em; text-transform: uppercase;
-      color: var(--accent);
+      font-family: var(--font-mono); font-size: 0.6rem; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 0.18rem 0.5rem; background: var(--bg-3);
+      border: 1px solid var(--border-1); border-radius: 4px; color: var(--text-3); flex-shrink: 0;
     }
-    .status-pill::before {
-      content: ""; width: 7px; height: 7px; border-radius: 50%;
-      background: var(--accent); box-shadow: 0 0 0 3px var(--accent-bg);
-    }
-    .status-text { font-size: 0.95rem; color: var(--text-1); }
-    .status-text strong { color: var(--text-0); font-weight: 600; }
-    .status-text .qual { color: var(--text-3); }
-
-    .status-grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
-    }
-    @media (max-width: 720px) { .status-grid { grid-template-columns: 1fr; } }
-    .status-col {
-      padding: 1.25rem 1.35rem;
-      background: var(--bg-1); border: 1px solid var(--line-1);
-      border-radius: var(--radius);
-    }
+    .status-text { font-size: 0.87rem; color: var(--text-2); }
+    .status-text .qual { color: var(--text-4); margin-left: 0.4rem; }
+    .status-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
     .status-col h3 {
-      font-family: var(--font-mono); font-size: 0.7rem; font-weight: 500;
-      text-transform: uppercase; letter-spacing: 0.08em;
-      margin-bottom: 0.85rem; display: flex; align-items: center; gap: 0.5rem;
+      font-family: var(--font-mono); font-size: 0.65rem; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.6rem;
     }
-    .status-col.col-impl  h3 { color: var(--allow); }
-    .status-col.col-noyet h3 { color: var(--hold); }
-    .status-col h3::before {
-      content: ""; width: 6px; height: 6px; border-radius: 50%;
-    }
-    .status-col.col-impl  h3::before { background: var(--allow); box-shadow: 0 0 0 3px var(--allow-bg); }
-    .status-col.col-noyet h3::before { background: var(--hold);  box-shadow: 0 0 0 3px var(--hold-bg); }
-    .status-col ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.45rem; }
-    .status-col li {
-      font-size: 0.88rem; color: var(--text-2);
-      padding-left: 1.1rem; position: relative; line-height: 1.45;
-    }
-    .status-col li::before {
-      position: absolute; left: 0; top: 0.05rem; font-family: var(--font-mono);
-      font-size: 0.85rem;
-    }
-    .status-col.col-impl  li::before { content: "✓"; color: var(--allow); }
-    .status-col.col-noyet li::before { content: "○"; color: var(--hold); }
+    .status-col.col-impl h3  { color: var(--allow); }
+    .status-col.col-noyet h3 { color: var(--reject); }
+    .status-col ul { list-style: none; }
+    .status-col li { font-size: 0.85rem; color: var(--text-2); padding: 0.24rem 0; border-bottom: 1px solid var(--border); }
+    .status-col li:last-child { border-bottom: none; }
 
-    /* ── For Reviewers (Section F) ── */
-    .review-grid {
-      display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;
-    }
-    @media (max-width: 720px) { .review-grid { grid-template-columns: 1fr; } }
+    /* ── For Reviewers ── */
+    .review-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(195px, 1fr)); gap: 0.85rem; }
     .review-btn {
-      display: flex; flex-direction: column; gap: 0.35rem;
-      padding: 1.4rem 1.4rem;
-      background: var(--bg-1); border: 1px solid var(--line-2);
-      border-radius: var(--radius);
-      transition: border-color 0.15s, background 0.15s, transform 0.15s;
-      position: relative; overflow: hidden;
+      display: block; text-decoration: none;
+      background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 1rem 1.1rem; transition: border-color 0.13s, box-shadow 0.13s;
     }
-    .review-btn:hover { border-color: var(--accent-line); background: var(--bg-2); }
-    .review-btn .rb-eyebrow {
-      font-family: var(--font-mono); font-size: 0.68rem; font-weight: 500;
-      color: var(--text-4); letter-spacing: 0.08em; text-transform: uppercase;
-    }
-    .review-btn .rb-title {
-      font-size: 1.05rem; font-weight: 600; color: var(--text-0);
-      letter-spacing: -0.018em; display: flex; align-items: center; gap: 0.5rem;
-    }
-    .review-btn .rb-arrow {
-      color: var(--text-4); margin-left: auto; font-size: 0.95rem;
-      transition: transform 0.15s, color 0.15s;
-    }
-    .review-btn:hover .rb-arrow { color: var(--accent); transform: translateX(3px); }
-    .review-btn .rb-desc { font-size: 0.85rem; color: var(--text-3); line-height: 1.5; }
+    .review-btn:hover { border-color: var(--border-1); box-shadow: var(--shadow); }
+    .rb-eyebrow { font-family: var(--font-mono); font-size: 0.65rem; color: var(--text-4); margin-bottom: 0.3rem; }
+    .rb-title   { font-size: 0.9rem; font-weight: 700; color: var(--text-0); margin-bottom: 0.3rem; }
+    .rb-arrow   { color: var(--text-4); }
+    .rb-desc    { font-size: 0.79rem; color: var(--text-3); line-height: 1.45; }
 
     /* ── Limitation banner ── */
     .limit-banner {
-      display: flex; gap: 0.85rem; align-items: flex-start;
-      padding: 1.1rem 1.3rem;
-      background: var(--bg-1); border: 1px solid var(--line-2);
-      border-left: 3px solid var(--text-4); border-radius: var(--radius);
-      font-size: 0.88rem; color: var(--text-2); line-height: 1.55;
-      margin-top: 2rem;
+      margin-top: 1.5rem; display: flex; gap: 0.75rem; align-items: flex-start;
+      padding: 0.9rem 1.1rem;
+      background: #FFFBF0; border: 1px solid var(--hold-bdr); border-radius: var(--radius);
+      font-size: 0.83rem; color: var(--text-2); line-height: 1.6;
     }
-    .limit-icon {
-      flex-shrink: 0; width: 20px; height: 20px; border-radius: 5px;
-      background: var(--bg-3); border: 1px solid var(--line-3);
-      color: var(--text-3); display: grid; place-items: center;
-      font-size: 0.7rem; font-weight: 700; font-family: var(--font-mono);
-      margin-top: 0.05rem;
-    }
-    .limit-banner strong { color: var(--text-0); font-weight: 600; }
-    .limit-banner a { color: var(--accent); text-decoration: none; border-bottom: 1px solid transparent; transition: border-color 0.15s; }
-    .limit-banner a:hover { border-bottom-color: var(--accent); }
+    .limit-icon { font-weight: 900; color: var(--hold); flex-shrink: 0; }
+    .limit-banner a { color: var(--text-1); }
 
     /* ── Footer ── */
-    footer {
-      margin-top: 5rem; padding: 3rem 0 4rem;
-      border-top: 1px solid var(--line-1);
-    }
-    .footer-grid {
-      display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 2.5rem;
-    }
-    @media (max-width: 720px) { .footer-grid { grid-template-columns: 1fr; gap: 1.75rem; } }
-    .footer-brand .brand { margin-bottom: 0.85rem; }
-    .footer-tag {
-      font-size: 0.85rem; color: var(--text-3); line-height: 1.6; max-width: 380px;
-    }
-    .footer-tag strong { color: var(--text-1); font-weight: 500; }
+    footer { padding: 2.5rem 0; }
+    .footer-grid { display: flex; gap: 2.5rem; flex-wrap: wrap; align-items: flex-start; margin-bottom: 1.5rem; }
+    .footer-brand { flex: 1; min-width: 180px; }
+    .footer-tag { font-size: 0.82rem; color: var(--text-3); line-height: 1.65; margin-top: 0.7rem; max-width: 260px; }
     .footer-col h4 {
-      font-family: var(--font-mono); font-size: 0.68rem; font-weight: 500;
-      text-transform: uppercase; letter-spacing: 0.08em;
-      color: var(--text-4); margin-bottom: 0.85rem;
+      font-family: var(--font-mono); font-size: 0.65rem; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-4); margin-bottom: 0.55rem;
     }
-    .footer-col ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.5rem; }
-    .footer-col a {
-      font-size: 0.85rem; color: var(--text-2); transition: color 0.15s;
-    }
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 0.22rem; }
+    .footer-col a { font-size: 0.83rem; color: var(--text-3); text-decoration: none; }
     .footer-col a:hover { color: var(--text-0); }
     .footer-meta {
-      margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--line-1);
-      font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-4);
-      display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem;
+      font-family: var(--font-mono); font-size: 0.69rem; color: var(--text-4);
+      display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;
+      padding-top: 1.25rem; border-top: 1px solid var(--border);
+    }
+
+    @media (max-width: 600px) {
+      .wordmark { font-size: 2rem; letter-spacing: 0.12em; }
+      .logo-gate { width: 270px; }
+      .gate-buttons { flex-direction: column; align-items: center; }
+      .status-grid { grid-template-columns: 1fr; }
+      .nav-status { display: none; }
+      .nav-links .nav-link { padding: 0.3rem 0.4rem; font-size: 0.74rem; }
     }
   </style>
 </head>
 <body>
 
-  <!-- ── Glass nav ── -->
+  <!-- ── Nav ── -->
   <div class="nav-shell">
     <nav>
       <a href="/" class="brand">
-        <img src="/assets/cerbaseal-logo-dark.png" class="brand-logo-img" alt="CerbaSeal" />
-        <span>CerbaSeal</span>
+        <img src="/assets/cerbaseal-logo-primary.png" class="brand-logo-img" alt="CerbaSeal" />
+        <span class="brand-name">CerbaSeal</span>
       </a>
       <div class="nav-links">
         <a href="/" class="nav-link active">Demo</a>
@@ -627,170 +431,67 @@
         <a href="/deployment" class="nav-link">Deployment</a>
         <a href="/one-page" class="nav-link">Brief</a>
       </div>
+      <span class="nav-status">Version: 0.1.0 · Review Candidate</span>
     </nav>
   </div>
 
-  <!-- ── Section A — Hero ── -->
-  <section class="hero">
-    <div class="container">
-      <span class="eyebrow">
-        <span class="dot dot-blue"></span>
-        v0.1.0 · Review-ready core
-      </span>
-      <h1>CerbaSeal</h1>
-      <p class="subtitle">Deterministic execution enforcement for AI-assisted systems.</p>
-      <p class="one-line">
+  <!-- ════════════════════════════════════════════
+       SECTION 1 — HERO (logo-driven execution gate)
+       ════════════════════════════════════════════ -->
+  <section class="hero" aria-label="CerbaSeal execution gate">
+    <div class="hero-inner">
+
+      <!-- Logo gate with per-head highlight layers -->
+      <div class="logo-gate" id="logo-gate">
+        <img class="logo-base" src="/assets/cerbaseal-logo-mark.png" alt="CerbaSeal three-headed guardian mark" />
+        <img class="logo-layer layer-reject" id="layer-reject" src="/assets/cerbaseal-logo-mark.png" alt="" aria-hidden="true" />
+        <img class="logo-layer layer-hold"   id="layer-hold"   src="/assets/cerbaseal-logo-mark.png" alt="" aria-hidden="true" />
+        <img class="logo-layer layer-allow"  id="layer-allow"  src="/assets/cerbaseal-logo-mark.png" alt="" aria-hidden="true" />
+      </div>
+
+      <div class="wordmark">CERBASEAL</div>
+      <p class="wordmark-sub">Deterministic execution enforcement for AI-assisted systems.</p>
+      <p class="hero-oneliner">
         AI systems can propose actions.
         <strong>CerbaSeal decides whether those actions are allowed to execute.</strong>
       </p>
-      <div class="hero-actions">
-        <a class="btn-primary" href="#scenarios">Run live enforcement <span class="arrow">→</span></a>
-        <a class="btn-secondary" href="/review">Open review portal <span class="arrow">→</span></a>
-        <a class="btn-secondary" href="/one-page">Download One-Page Brief <span class="arrow">→</span></a>
-      </div>
-      <div aria-label="Build status" style="margin-top:1.25rem;display:flex;align-items:center;gap:0.55rem;flex-wrap:wrap;font-family:var(--font-mono);font-size:0.72rem;letter-spacing:0.05em;color:var(--text-3);">
-        <span>Version: 0.1.0</span>
-        <span style="color:var(--text-5);">·</span>
-        <span>Status: Review Candidate</span>
-      </div>
 
-      <!-- Trust strip -->
-      <div class="stats">
-        <div class="stat">
-          <div class="stat-num allow">323</div>
-          <div class="stat-label">Tests passing</div>
-        </div>
-        <div class="stat">
-          <div class="stat-num">12</div>
-          <div class="stat-label">Named invariants</div>
-        </div>
-        <div class="stat">
-          <div class="stat-num">17</div>
-          <div class="stat-label">Reason codes</div>
-        </div>
-        <div class="stat">
-          <div class="stat-num muted">0</div>
-          <div class="stat-label">Failing</div>
-        </div>
+      <!-- Live gate controls -->
+      <div class="gate-section-label">Live Enforcement Scenarios</div>
+      <div class="gate-buttons" id="gate-buttons">
+        <button class="gate-btn gate-btn--reject" id="btn-reject">REJECT</button>
+        <button class="gate-btn gate-btn--hold"   id="btn-hold">HOLD</button>
+        <button class="gate-btn gate-btn--allow"  id="btn-allow">ALLOW</button>
       </div>
-    </div>
-  </section>
+      <p class="gate-microcopy">Run live gate scenario — each call hits a real enforcement route</p>
 
-  <!-- ── Flow Visual — Enforcement Boundary ── -->
-  <section aria-label="Enforcement boundary flow" style="padding:2rem 0 0;">
-    <div class="container">
-      <div style="max-width:480px;margin:0 auto;text-align:center;padding:1.7rem 1.5rem;background:var(--bg-1);border:1px solid var(--line-2);border-radius:var(--radius-lg);box-shadow:0 1px 0 rgba(255,255,255,0.03) inset;">
-        <div style="font-family:var(--font-mono);font-size:0.7rem;font-weight:500;letter-spacing:0.12em;color:var(--text-4);text-transform:uppercase;margin-bottom:1.15rem;">Enforcement Boundary</div>
-        <div style="display:flex;flex-direction:column;align-items:center;gap:0.65rem;">
-          <div style="padding:0.55rem 1rem;background:var(--bg-2);border:1px solid var(--line-2);border-radius:6px;font-size:0.85rem;color:var(--text-2);min-width:200px;">Decision System / AI</div>
-          <div style="color:var(--text-4);font-family:var(--font-mono);font-size:0.95rem;">↓</div>
-          <div style="padding:0.55rem 1rem;background:var(--accent-bg);border:1px solid var(--accent-line);border-radius:6px;font-size:0.9rem;font-weight:600;color:var(--accent);min-width:200px;">CerbaSeal</div>
-          <div style="color:var(--text-4);font-family:var(--font-mono);font-size:0.95rem;">↓</div>
-          <div style="display:inline-flex;gap:0.45rem;align-items:center;font-family:var(--font-mono);font-size:0.78rem;font-weight:600;flex-wrap:wrap;justify-content:center;">
-            <span style="color:var(--allow);padding:0.3rem 0.55rem;background:var(--allow-bg);border:1px solid var(--allow-line);border-radius:5px;">ALLOW</span>
-            <span style="color:var(--text-5);">|</span>
-            <span style="color:var(--hold);padding:0.3rem 0.55rem;background:var(--hold-bg);border:1px solid var(--hold-line);border-radius:5px;">HOLD</span>
-            <span style="color:var(--text-5);">|</span>
-            <span style="color:var(--reject);padding:0.3rem 0.55rem;background:var(--reject-bg);border:1px solid var(--reject-line);border-radius:5px;">REJECT</span>
+      <!-- Execution output zone -->
+      <div class="exec-zone">
+
+        <!-- Compact terminal output (updated via DOM observer) -->
+        <div class="compact-summary" id="compact-summary">
+          <div class="cs-header">Gate evaluation result</div>
+          <div class="cs-grid">
+            <div class="cs-row"><span class="cs-key">FINAL STATE</span><span class="cs-val" id="cs-state">—</span></div>
+            <div class="cs-row"><span class="cs-key">EXECUTION</span><span class="cs-val" id="cs-exec">—</span></div>
+            <div class="cs-row"><span class="cs-key">REASON</span><span class="cs-val" id="cs-reason">—</span></div>
+            <div class="cs-row"><span class="cs-key">INVARIANTS</span><span class="cs-val" id="cs-codes">—</span></div>
           </div>
-          <div style="color:var(--text-4);font-family:var(--font-mono);font-size:0.95rem;">↓</div>
-          <div style="padding:0.55rem 1rem;background:var(--bg-2);border:1px solid var(--line-2);border-radius:6px;font-size:0.85rem;color:var(--text-2);min-width:200px;">Execution System</div>
-        </div>
-        <p style="margin-top:1.25rem;font-size:0.83rem;color:var(--text-3);line-height:1.5;">All consequential actions must pass through CerbaSeal before execution.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ── Section B — Core Function ── -->
-  <section aria-label="Core function">
-    <div class="container">
-      <div class="section-head">
-        <div class="section-eyebrow">B · Core function</div>
-        <h2 class="section-title">What it does</h2>
-        <p class="section-sub">Three responsibilities. No more, no less. Everything else is out of scope.</p>
-      </div>
-      <ul class="fn-list">
-        <li>
-          <div class="fn-num">01</div>
-          <div class="fn-text">Blocks unauthorized execution attempts</div>
-        </li>
-        <li>
-          <div class="fn-num">02</div>
-          <div class="fn-text">Enforces approval, control, and trust requirements</div>
-        </li>
-        <li>
-          <div class="fn-num">03</div>
-          <div class="fn-text">Produces verifiable evidence for every decision</div>
-        </li>
-      </ul>
-    </div>
-  </section>
-
-  <!-- ── Section C — Live Enforcement Scenarios ── -->
-  <section id="scenarios" aria-label="Live enforcement scenarios">
-    <div class="container">
-      <div class="section-head">
-        <div class="section-eyebrow">C · Live</div>
-        <h2 class="section-title">Live Enforcement Scenarios</h2>
-        <p class="section-sub">Each button calls a real route on this server and renders the actual evaluation result. Deterministic — same input, same output, every time.</p>
-      </div>
-
-      <div class="console-frame">
-        <div class="console-bar">
-          <div class="console-dots">
-            <span class="console-dot"></span>
-            <span class="console-dot"></span>
-            <span class="console-dot"></span>
-          </div>
-          <span class="path">/api/{reject,hold,allow}</span>
-          <span class="pulse">live</span>
         </div>
 
-        <div class="scenario-grid">
+        <!-- Before first click -->
+        <div id="placeholder">// Click REJECT, HOLD, or ALLOW to run a live gate evaluation</div>
 
-          <div class="scenario-card card-reject">
-            <div class="card-meta"><span>01</span><span class="endpoint">GET /api/reject</span></div>
-            <div class="card-title">AI attempts to act <span class="arrow-state">→</span> <span class="state-reject">REJECT</span></div>
-            <div class="card-desc">An AI system attempts to authorize and execute its own action without human oversight.</div>
-            <div class="card-expected">Expected: REJECT</div>
-            <button class="scenario-btn btn-reject" id="btn-reject">Run /api/reject</button>
-          </div>
-
-          <div class="scenario-card card-hold">
-            <div class="card-meta"><span>02</span><span class="endpoint">GET /api/hold</span></div>
-            <div class="card-title">Missing approval <span class="arrow-state">→</span> <span class="state-hold">HOLD</span></div>
-            <div class="card-desc">A human-originated action is submitted but the required approval artifact is missing.</div>
-            <div class="card-expected">Expected: HOLD</div>
-            <button class="scenario-btn btn-hold" id="btn-hold">Run /api/hold</button>
-          </div>
-
-          <div class="scenario-card card-allow">
-            <div class="card-meta"><span>03</span><span class="endpoint">GET /api/allow</span></div>
-            <div class="card-title">Approved action <span class="arrow-state">→</span> <span class="state-allow">ALLOW</span></div>
-            <div class="card-desc">A valid action is submitted with all required checks satisfied and approval in place.</div>
-            <div class="card-expected">Expected: ALLOW</div>
-            <button class="scenario-btn btn-allow" id="btn-allow">Run /api/allow</button>
-          </div>
-
-        </div>
-
-        <!-- Placeholder before first click -->
-        <div id="placeholder">// Run any scenario above to see the enforcement decision and evidence</div>
-
-        <!-- Result section (hidden until result) -->
+        <!-- Full proof panel (managed by client.js) -->
         <div id="result-section" aria-live="polite" aria-label="Enforcement result">
-
-          <div class="result-wrap" id="result-wrap">
-
+          <div class="result-wrap" id="result-wrap" style="display:none;">
             <div class="result-header">
               <span>Enforcement Result</span>
               <span id="scenario-title-label"></span>
             </div>
-
             <div class="state-badge-wrap">
               <div class="state-badge" id="display-state-badge"></div>
             </div>
-
             <div class="consequence-wrap">
               <div>
                 <div class="cq-label">Consequence</div>
@@ -801,111 +502,159 @@
                 <div class="cq-value" id="reason-text"></div>
               </div>
             </div>
-
             <div class="plain-english">
               <div class="pe-label">Plain English</div>
               <div class="pe-text" id="plain-english-text"></div>
             </div>
-
             <div class="proof-grid">
-              <div class="proof-cell">
-                <div class="proof-label">Final State</div>
-                <div class="proof-value" id="pv-final-state"></div>
-              </div>
-              <div class="proof-cell">
-                <div class="proof-label">Reason Codes</div>
-                <div class="proof-value" id="pv-reason-codes"></div>
-              </div>
-              <div class="proof-cell">
-                <div class="proof-label">Release Authorization</div>
-                <div class="proof-value" id="pv-release"></div>
-              </div>
-              <div class="proof-cell">
-                <div class="proof-label">Blocked Action Record</div>
-                <div class="proof-value" id="pv-blocked"></div>
-              </div>
-              <div class="proof-cell">
-                <div class="proof-label">Audit Events</div>
-                <div class="proof-value" id="pv-audit-events"></div>
-              </div>
-              <div class="proof-cell">
-                <div class="proof-label">Chain Verified</div>
-                <div class="proof-value" id="pv-chain-verified"></div>
-              </div>
-              <div class="proof-cell">
-                <div class="proof-label">Replay Matched</div>
-                <div class="proof-value" id="pv-replay-matched"></div>
-              </div>
-              <div class="proof-cell">
-                <div class="proof-label">Next Action</div>
-                <div class="proof-value" id="pv-next-action"></div>
-              </div>
+              <div class="proof-cell"><div class="proof-label">Final State</div><div class="proof-value" id="pv-final-state"></div></div>
+              <div class="proof-cell"><div class="proof-label">Reason Codes</div><div class="proof-value" id="pv-reason-codes"></div></div>
+              <div class="proof-cell"><div class="proof-label">Release Auth</div><div class="proof-value" id="pv-release"></div></div>
+              <div class="proof-cell"><div class="proof-label">Blocked Record</div><div class="proof-value" id="pv-blocked"></div></div>
+              <div class="proof-cell"><div class="proof-label">Audit Events</div><div class="proof-value" id="pv-audit-events"></div></div>
+              <div class="proof-cell"><div class="proof-label">Chain Verified</div><div class="proof-value" id="pv-chain-verified"></div></div>
+              <div class="proof-cell"><div class="proof-label">Replay Matched</div><div class="proof-value" id="pv-replay-matched"></div></div>
+              <div class="proof-cell"><div class="proof-label">Next Action</div><div class="proof-value" id="pv-next-action"></div></div>
             </div>
-
             <div class="proof-expand">
               <details id="proof-details">
                 <summary>Technical trace — enforcement proof</summary>
                 <div class="proof-body">
-                  <p class="proof-note">This proof is generated from the actual CerbaSeal evaluation result. It is deterministic — running the same scenario always produces the same output.</p>
+                  <p class="proof-note">Generated from the actual CerbaSeal evaluation result. Deterministic — same input produces the same output every time.</p>
                   <pre id="proof-output"></pre>
                 </div>
               </details>
             </div>
-
             <div class="reviewer-notes">
               <div class="rn-label">Reviewer Notes</div>
               <div class="rn-text" id="reviewer-notes-text"></div>
             </div>
-
           </div>
-
           <div id="error-panel" style="display:none" class="result-wrap">
-            <div class="result-header"><span>Demo request failed</span></div>
+            <div class="result-header"><span>Request failed</span></div>
             <div class="error-msg" id="error-text"></div>
           </div>
-
         </div>
-      </div>
-    </div>
+
+      </div><!-- .exec-zone -->
+    </div><!-- .hero-inner -->
   </section>
 
-  <!-- ── Section D — Why It Matters ── -->
-  <section aria-label="Why it matters">
+  <!-- ════════════════════════════════════════════
+       SECTION 2 — ENFORCEMENT EXPLANATION
+       ════════════════════════════════════════════ -->
+  <section aria-label="Enforcement explanation">
     <div class="container">
-      <div class="section-head">
-        <div class="section-eyebrow">D · Why</div>
-        <h2 class="section-title">Why it matters</h2>
-        <p class="section-sub">The decision and execution boundaries collapse without enforcement. CerbaSeal preserves them.</p>
+      <div class="enforce-text">
+        <p>
+          CerbaSeal is an execution gate.
+          It enforces invariant rules over a decision envelope.
+        </p>
+        <p>
+          Every request results in one of three states:
+          <strong>REJECT</strong>, <strong>HOLD</strong>, or <strong>ALLOW</strong>.
+        </p>
+        <p>
+          AI systems may propose actions.
+          CerbaSeal decides if execution is permitted.
+        </p>
       </div>
-      <ul class="why-list">
-        <li>
-          <div class="why-mark">→</div>
-          <div class="why-text">Prevents AI from acting autonomously on consequential actions</div>
-        </li>
-        <li>
-          <div class="why-mark">→</div>
-          <div class="why-text">Preserves human authority over execution</div>
-        </li>
-        <li>
-          <div class="why-mark">→</div>
-          <div class="why-text">Creates audit-ready, replayable decision records</div>
-        </li>
-        <li>
-          <div class="why-mark">→</div>
-          <div class="why-text">Enforces deterministic decision boundaries</div>
-        </li>
-      </ul>
+
+      <!-- Enforcement Boundary flow visual -->
+      <div class="boundary-diagram" aria-label="Enforcement Boundary">
+        <div class="bd-title">Enforcement Boundary</div>
+        <div style="display:flex;flex-direction:column;align-items:center;">
+          <div class="bd-node">Decision System / AI</div>
+          <span class="bd-arrow">↓</span>
+          <div class="bd-node bd-gate">CerbaSeal</div>
+          <span class="bd-arrow">↓</span>
+          <div class="bd-outcomes">
+            <span class="bd-r">REJECT</span>
+            <span class="bd-sep">|</span>
+            <span class="bd-h">HOLD</span>
+            <span class="bd-sep">|</span>
+            <span class="bd-a">ALLOW</span>
+          </div>
+          <span class="bd-arrow">↓</span>
+          <div class="bd-node">Execution System</div>
+        </div>
+        <p class="bd-caption">All consequential actions must pass through CerbaSeal before execution.</p>
+      </div>
     </div>
   </section>
 
-  <!-- ── Section E — Current Status ── -->
+  <!-- ════════════════════════════════════════════
+       SECTION 3 — SYSTEM PROOF
+       ════════════════════════════════════════════ -->
+  <section aria-label="System proof">
+    <div class="container-wide">
+
+      <div style="max-width:720px;margin:0 auto 2rem;padding:0 1.5rem;">
+        <div class="section-eyebrow">System proof</div>
+        <h2 class="section-title">What it does</h2>
+        <p class="section-sub">Three responsibilities, backed by 372 passing tests. No claim without evidence.</p>
+        <ul class="fn-list">
+          <li class="fn-item"><span class="fn-num">01</span>Blocks unauthorized execution attempts</li>
+          <li class="fn-item"><span class="fn-num">02</span>Enforces approval, control, and trust requirements</li>
+          <li class="fn-item"><span class="fn-num">03</span>Produces verifiable evidence for every decision</li>
+        </ul>
+      </div>
+
+      <div class="proof-panels-grid" style="max-width:960px;margin:0 auto;padding:0 1.5rem;">
+
+        <!-- Invariants panel -->
+        <div class="pp-panel">
+          <div class="pp-eyebrow">Invariants</div>
+          <div class="pp-title">12 named invariants</div>
+          <div class="pp-body">
+            Each decision is evaluated against all 12 invariants in sequence.
+            No partial passes. One failure halts the evaluation.
+          </div>
+          <ul class="inv-grid">
+            <li>INV-01</li><li>INV-02</li>
+            <li>INV-03</li><li>INV-04</li>
+            <li>INV-05</li><li>INV-06</li>
+            <li>INV-07</li><li>INV-08</li>
+            <li>INV-09</li><li>INV-10</li>
+            <li>INV-11</li><li>INV-12</li>
+          </ul>
+        </div>
+
+        <!-- Audit trail panel -->
+        <div class="pp-panel">
+          <div class="pp-eyebrow">Audit trail</div>
+          <div class="pp-title">Hash-linked, append-only</div>
+          <div class="pp-body">
+            Every decision is hash-linked and append-only.
+            The chain can be verified at any time.
+            Every evaluation can be replayed — the same input always produces the same output.
+            Each record is bound to the specific request that created it.
+          </div>
+        </div>
+
+        <!-- Non-authority panel -->
+        <div class="pp-panel">
+          <div class="pp-eyebrow">Authority model</div>
+          <div class="pp-title">AI is non-authoritative</div>
+          <div class="pp-body">
+            AI is non-authoritative. Enforcement is deterministic.
+            An AI actor cannot produce a release authorization regardless of any other field values.
+            INV-05 fires unconditionally. No approval flag or trust state can override this check.
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════
+       SECTION 4 — CURRENT STATUS
+       ════════════════════════════════════════════ -->
   <section aria-label="Current status">
     <div class="container">
-      <div class="section-head">
-        <div class="section-eyebrow">E · Status</div>
-        <h2 class="section-title">Current status</h2>
-        <p class="section-sub">Honest about what is implemented and what is not. No version of this page will overstate what exists.</p>
-      </div>
+      <div class="section-eyebrow">Status</div>
+      <h2 class="section-title">What exists now</h2>
+      <p class="section-sub">Honest about what is implemented and what is not. No version of this page overstates what exists.</p>
 
       <div class="status-banner">
         <span class="status-pill">Status</span>
@@ -922,7 +671,7 @@
             <li>Deterministic execution gate</li>
             <li>Invariant enforcement (12 named invariants)</li>
             <li>Audit chain + replay</li>
-            <li>323 passing tests</li>
+            <li>372 passing tests</li>
           </ul>
         </div>
         <div class="status-col col-noyet">
@@ -938,44 +687,45 @@
     </div>
   </section>
 
-  <!-- ── Section F — For Reviewers ── -->
+  <!-- ════════════════════════════════════════════
+       SECTION 5 — FOR REVIEWERS
+       ════════════════════════════════════════════ -->
   <section aria-label="For reviewers">
     <div class="container">
-      <div class="section-head">
-        <div class="section-eyebrow">F · Review path</div>
-        <h2 class="section-title">For Reviewers</h2>
-        <p class="section-sub">Four pages, each focused on a single concern. Read in any order.</p>
-      </div>
+      <div class="section-eyebrow">Review path</div>
+      <h2 class="section-title">For Reviewers</h2>
+      <p class="section-sub">Four pages, each focused on a single concern. Read in any order.</p>
+
       <div class="review-grid">
         <a class="review-btn" href="/review">
           <div class="rb-eyebrow">/review</div>
           <div class="rb-title">Review Portal <span class="rb-arrow">→</span></div>
-          <div class="rb-desc">Maturity, claims, and evidence index — what is implemented, what is not, and where to verify.</div>
+          <div class="rb-desc">Maturity, claims, and evidence — what is implemented, what is not, and where to verify.</div>
         </a>
         <a class="review-btn" href="/pilot">
           <div class="rb-eyebrow">/pilot</div>
           <div class="rb-title">Pilot Readiness <span class="rb-arrow">→</span></div>
-          <div class="rb-desc">What is ready now, what requires client definition, and what requires written agreement.</div>
+          <div class="rb-desc">What is ready now and what requires client definition and written agreement.</div>
         </a>
         <a class="review-btn" href="/security">
           <div class="rb-eyebrow">/security</div>
           <div class="rb-title">Security Summary <span class="rb-arrow">→</span></div>
-          <div class="rb-desc">Implemented controls, threats covered, known limitations, and recommended reviewer questions.</div>
+          <div class="rb-desc">Implemented controls, threats covered, and known limitations.</div>
         </a>
         <a class="review-btn" href="/deployment">
           <div class="rb-eyebrow">/deployment</div>
           <div class="rb-title">Deployment Posture <span class="rb-arrow">→</span></div>
-          <div class="rb-desc">Three deployment modes, boundary assumptions, and minimum readiness checklist.</div>
+          <div class="rb-desc">Three deployment modes and minimum readiness checklist.</div>
         </a>
       </div>
 
-      <!-- ── Section G — Limitation Notice ── -->
+      <!-- Limitation notice -->
       <div class="limit-banner">
         <div class="limit-icon">!</div>
         <div>
           <strong>Limitation notice.</strong>
           This is a review-ready core demo, not a production client deployment.
-          It is a review-ready core demonstration and should not be used with real client data.
+          It should not be used with real client data.
           See <a href="/review">the Review portal</a> for full maturity details.
         </div>
       </div>
@@ -984,21 +734,20 @@
 
   <!-- ── Footer ── -->
   <footer>
-    <div class="container">
+    <div class="container-wide">
       <div class="footer-grid">
         <div class="footer-brand">
           <a href="/" class="brand">
-            <span class="brand-mark">CS</span>
-            <span>CerbaSeal</span>
+            <img src="/assets/cerbaseal-logo-mark.png" class="brand-logo-img" style="width:22px;height:22px;" alt="CerbaSeal" />
+            <span class="brand-name">CerbaSeal</span>
           </a>
           <div class="footer-tag">
-            <strong>CerbaSeal enforces authority — not judgment.</strong>
-            It does not determine whether an action is correct.
-            It determines whether the action is authorized to execute.
+            CerbaSeal enforces authority — not judgment.
+            It determines whether an action is authorized to execute, not whether it is correct.
           </div>
         </div>
         <div class="footer-col">
-          <h4>Demo</h4>
+          <h4>API</h4>
           <ul>
             <li><a href="/api/reject">/api/reject</a></li>
             <li><a href="/api/hold">/api/hold</a></li>
@@ -1006,22 +755,89 @@
           </ul>
         </div>
         <div class="footer-col">
-          <h4>Reviewer</h4>
+          <h4>Review</h4>
           <ul>
-            <li><a href="/review">Review</a></li>
-            <li><a href="/pilot">Pilot</a></li>
-            <li><a href="/security">Security</a></li>
-            <li><a href="/deployment">Deployment</a></li>
+            <li><a href="/review">Review Portal</a></li>
+            <li><a href="/pilot">Pilot Readiness</a></li>
+            <li><a href="/security">Security Summary</a></li>
+            <li><a href="/deployment">Deployment Posture</a></li>
+            <li><a href="/one-page">One-Page Brief</a></li>
           </ul>
         </div>
       </div>
       <div class="footer-meta">
-        <span>v0.1.0 · review-ready core</span>
-        <span>323 tests · 12 invariants · 17 reason codes</span>
+        <span>v0.1.0 · review-ready core · Review Candidate</span>
+        <span>372 tests · 12 invariants · 17 reason codes</span>
       </div>
     </div>
   </footer>
 
 <script src="/client.js"></script>
+<script>
+(function () {
+
+  /* ── 1. Logo head highlighting ── */
+  var layers = {
+    'btn-reject': document.getElementById('layer-reject'),
+    'btn-hold':   document.getElementById('layer-hold'),
+    'btn-allow':  document.getElementById('layer-allow'),
+  };
+  var allLayers = Object.values(layers);
+
+  Object.keys(layers).forEach(function (btnId) {
+    var btn   = document.getElementById(btnId);
+    var layer = layers[btnId];
+    if (!btn || !layer) return;
+
+    btn.addEventListener('mouseenter', function () {
+      if (!layer.classList.contains('active')) {
+        layer.classList.add('hover');
+      }
+    });
+    btn.addEventListener('mouseleave', function () {
+      layer.classList.remove('hover');
+    });
+    btn.addEventListener('click', function () {
+      allLayers.forEach(function (l) { l.classList.remove('active', 'hover'); });
+      document.querySelectorAll('.gate-btn').forEach(function (b) { b.classList.remove('active'); });
+      layer.classList.add('active');
+      btn.classList.add('active');
+    });
+  });
+
+  /* ── 2. Compact terminal summary via MutationObserver ── */
+  var compactSummary = document.getElementById('compact-summary');
+  var resultSection  = document.getElementById('result-section');
+  if (!compactSummary || !resultSection) return;
+
+  function updateCompact() {
+    var badge    = document.getElementById('display-state-badge');
+    var consEl   = document.getElementById('consequence-text');
+    var reasonEl = document.getElementById('reason-text');
+    var codesEl  = document.getElementById('pv-reason-codes');
+    if (!badge || !badge.textContent || badge.textContent.trim() === '') return;
+
+    var stateText = badge.textContent.trim();
+    compactSummary.style.display = 'block';
+
+    var csState  = document.getElementById('cs-state');
+    var csExec   = document.getElementById('cs-exec');
+    var csReason = document.getElementById('cs-reason');
+    var csCodes  = document.getElementById('cs-codes');
+
+    if (csState) {
+      csState.textContent = stateText;
+      csState.className = 'cs-val state-' + stateText;
+    }
+    if (csExec   && consEl)   csExec.textContent   = consEl.textContent   || '—';
+    if (csReason && reasonEl) csReason.textContent = reasonEl.textContent || '—';
+    if (csCodes  && codesEl)  csCodes.textContent  = codesEl.textContent  || '—';
+  }
+
+  var obs = new MutationObserver(updateCompact);
+  obs.observe(resultSection, { childList: true, subtree: true, characterData: true });
+
+}());
+</script>
 </body>
 </html>
