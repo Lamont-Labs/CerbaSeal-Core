@@ -6,6 +6,9 @@
   <title>CerbaSeal — Deterministic execution enforcement for AI-assisted systems</title>
   <meta name="description" content="CerbaSeal is a deterministic execution enforcement spine for AI-assisted systems. It returns ALLOW, HOLD, or REJECT with hash-linked evidence." />
   <link rel="icon" href="/assets/cerbaseal-favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -32,10 +35,10 @@
       --allow-bg:   #F0FDF4;
       --allow-bdr:  #BBF7D0;
 
-      --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      --font-mono: "SF Mono", "JetBrains Mono", ui-monospace, "Fira Code", monospace;
-      --radius:    8px;
-      --shadow:    0 1px 3px rgba(15,23,42,0.08), 0 1px 2px rgba(15,23,42,0.04);
+      --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --font-mono: "JetBrains Mono", "SF Mono", ui-monospace, "Fira Code", monospace;
+      --radius:    6px;
+      --shadow:    0 1px 3px rgba(15,23,42,0.06), 0 1px 2px rgba(15,23,42,0.03);
     }
 
     html { font-family: var(--font-sans); background: var(--bg); color: var(--text-1); line-height: 1.6; }
@@ -72,21 +75,34 @@
 
     /* ── Layout ── */
     .container      { max-width: 720px; margin: 0 auto; padding: 0 1.5rem; }
-    .container-wide { max-width: 960px; margin: 0 auto; padding: 0 1.5rem; }
-    section { padding: 3.5rem 0; border-bottom: 1px solid var(--border); }
+    .container-wide { max-width: 1100px; margin: 0 auto; padding: 0 1.5rem; }
+    section { padding: 3.5rem 0; border-top: 1px solid rgba(0,0,0,0.04); }
+    section:first-of-type { border-top: none; }
 
     /* ── Hero ── */
-    .hero { padding: 3.25rem 1.5rem 3rem; text-align: center; }
-    .hero-inner { max-width: 540px; margin: 0 auto; }
+    .hero {
+      padding: 3.25rem 1.5rem 3.5rem; text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute; inset: 0; z-index: 0;
+      background-image: url('/assets/hero-system.png');
+      background-size: cover; background-position: center;
+      opacity: 0.07;
+      pointer-events: none;
+    }
+    .hero-bg-overlay {
+      position: absolute; inset: 0; z-index: 1;
+      background: linear-gradient(to bottom, rgba(255,255,255,0.88), rgba(255,255,255,1));
+      pointer-events: none;
+    }
+    .hero-inner { max-width: 540px; margin: 0 auto; position: relative; z-index: 2; }
 
     /* ── Logo gate ── */
     /*
      * cerbaseal-logo-primary.png is 1536×1536 (square).
-     * The CERBASEAL text sits in the bottom ~16% of the image.
-     * aspect-ratio: 1/0.84 constrains the container to show 84% of
-     * the image height, and overflow:hidden clips the text strip.
-     * object-fit:cover + object-position:top ensures the image fills
-     * the box from the top without stretching.
+     * aspect-ratio: 1/0.84 clips the CERBASEAL text strip at the bottom.
+     * object-fit:cover + object-position:top fills from the top.
      */
     .logo-gate {
       position: relative; display: inline-block;
@@ -96,7 +112,10 @@
       isolation: isolate;
       margin-bottom: 1.75rem;
       cursor: crosshair;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+      transition: transform 0.18s ease;
     }
+    .logo-gate:hover { transform: scale(1.01); }
     .logo-gate > img.logo-base {
       width: 100%; height: 100%; display: block; user-select: none;
       object-fit: cover; object-position: top center;
@@ -134,13 +153,14 @@
 
     /* ── Wordmark ── */
     .wordmark {
-      font-size: 2.55rem; font-weight: 800; letter-spacing: 0.18em;
-      color: var(--text-0); text-transform: uppercase; line-height: 1;
+      font-size: 2.55rem; font-weight: 800; letter-spacing: 0.12em;
+      color: #0F172A; text-transform: uppercase; line-height: 1;
       margin-bottom: 0.6rem;
     }
     .wordmark-sub {
-      font-size: 1.02rem; color: var(--text-2); line-height: 1.45;
+      font-size: 1rem; color: var(--text-2); line-height: 1.4;
       letter-spacing: -0.01em; margin-bottom: 0.9rem;
+      opacity: 0.65;
     }
     .hero-oneliner {
       font-family: var(--font-mono); font-size: 0.82rem; color: var(--text-3);
@@ -157,28 +177,36 @@
     }
     .gate-buttons { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; }
     .gate-btn {
-      padding: 0.65rem 1.9rem; border-radius: 6px; border: 1.5px solid;
-      font-size: 0.83rem; font-weight: 700; font-family: var(--font-mono);
-      letter-spacing: 0.1em; cursor: pointer; transition: all 0.14s ease;
+      padding: 0.62rem 1.75rem; border-radius: var(--radius); border: 1px solid;
+      font-size: 0.82rem; font-weight: 700; font-family: var(--font-mono);
+      letter-spacing: 0.1em; cursor: pointer; transition: background 0.14s ease, border-color 0.14s ease;
       outline: none; user-select: none;
     }
     .gate-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-    .gate-btn--reject { color: var(--reject); border-color: var(--reject-bdr); background: var(--reject-bg); }
-    .gate-btn--reject:hover:not(:disabled), .gate-btn--reject.active {
-      background: var(--reject); color: #fff; border-color: var(--reject);
-      box-shadow: 0 2px 10px rgba(201,74,74,0.28);
+    .gate-btn--reject {
+      color: var(--reject);
+      border-color: rgba(201,74,74,0.25);
+      background: rgba(201,74,74,0.06);
     }
-    .gate-btn--hold { color: var(--hold); border-color: var(--hold-bdr); background: var(--hold-bg); }
-    .gate-btn--hold:hover:not(:disabled), .gate-btn--hold.active {
-      background: var(--hold); color: #fff; border-color: var(--hold);
-      box-shadow: 0 2px 10px rgba(176,126,42,0.28);
+    .gate-btn--reject:hover:not(:disabled) { background: rgba(201,74,74,0.13); border-color: rgba(201,74,74,0.4); }
+    .gate-btn--reject.active { background: rgba(201,74,74,0.14); border-color: rgba(201,74,74,0.45); }
+
+    .gate-btn--hold {
+      color: var(--hold);
+      border-color: rgba(200,155,60,0.25);
+      background: rgba(200,155,60,0.06);
     }
-    .gate-btn--allow { color: var(--allow); border-color: var(--allow-bdr); background: var(--allow-bg); }
-    .gate-btn--allow:hover:not(:disabled), .gate-btn--allow.active {
-      background: var(--allow); color: #fff; border-color: var(--allow);
-      box-shadow: 0 2px 10px rgba(42,110,78,0.28);
+    .gate-btn--hold:hover:not(:disabled) { background: rgba(200,155,60,0.13); border-color: rgba(200,155,60,0.4); }
+    .gate-btn--hold.active { background: rgba(200,155,60,0.14); border-color: rgba(200,155,60,0.45); }
+
+    .gate-btn--allow {
+      color: var(--allow);
+      border-color: rgba(58,110,165,0.25);
+      background: rgba(58,110,165,0.06);
     }
+    .gate-btn--allow:hover:not(:disabled) { background: rgba(58,110,165,0.13); border-color: rgba(58,110,165,0.4); }
+    .gate-btn--allow.active { background: rgba(58,110,165,0.14); border-color: rgba(58,110,165,0.45); }
     .gate-microcopy {
       font-size: 0.73rem; color: var(--text-4); font-family: var(--font-mono);
       margin-top: 0.7rem;
@@ -224,19 +252,20 @@
     /* Full proof panel (client.js generated) */
     #result-section { display: none; }
     .loading-msg {
-      font-family: var(--font-mono); font-size: 0.82rem; color: var(--text-3);
-      padding: 1.25rem 1.5rem; text-align: center;
+      font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-3);
+      padding: 1.1rem 1.25rem; text-align: center;
       border: 1px solid var(--border); border-radius: var(--radius);
     }
     .result-wrap {
-      background: var(--bg-1); border: 1px solid var(--border);
+      background: #F8FAFC; border: 1px solid #E2E8F0;
       border-radius: var(--radius); overflow: hidden;
+      font-family: var(--font-mono);
     }
     .result-header {
       display: flex; justify-content: space-between; align-items: center;
-      padding: 0.6rem 1rem;
-      background: var(--bg-2); border-bottom: 1px solid var(--border);
-      font-family: var(--font-mono); font-size: 0.65rem; font-weight: 700;
+      padding: 0.55rem 1rem;
+      background: #F1F5F9; border-bottom: 1px solid #E2E8F0;
+      font-family: var(--font-mono); font-size: 0.63rem; font-weight: 700;
       letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3);
     }
     .state-badge-wrap { padding: 1rem 1rem 0.5rem; text-align: center; }
@@ -298,18 +327,27 @@
     .section-sub   { font-size: 0.9rem; color: var(--text-3); margin-bottom: 2rem; }
 
     /* ── Enforcement explanation ── */
-    .enforce-text { max-width: 580px; }
-    .enforce-text p { font-size: 0.98rem; color: var(--text-1); line-height: 1.75; margin-bottom: 0.75rem; }
+    .enforce-section { background: #FAFAFB; }
+    .enforce-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center; }
+    @media (max-width: 720px) { .enforce-layout { grid-template-columns: 1fr; gap: 2rem; } }
+    .enforce-text { max-width: 480px; }
+    .enforce-text p { font-size: 0.96rem; color: var(--text-1); line-height: 1.75; margin-bottom: 0.75rem; }
     .enforce-text p:last-child { margin-bottom: 0; }
     .enforce-text strong { color: var(--text-0); }
 
-    /* Enforcement boundary diagram */
-    .boundary-diagram {
-      max-width: 400px; margin-top: 2.5rem;
-      padding: 1.5rem 1.25rem;
-      background: var(--bg-1); border: 1px solid var(--border); border-radius: var(--radius);
-      text-align: center;
+    /* Enforcement flow image (replaces boundary diagram) */
+    .enforce-flow-img {
+      width: 100%; height: auto; display: block;
+      border-radius: var(--radius);
+      opacity: 0.92;
     }
+    .enforce-flow-caption {
+      font-family: var(--font-mono); font-size: 0.62rem; color: var(--text-4);
+      text-align: center; margin-top: 0.6rem; letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    /* Keep boundary diagram styles for mobile fallback / backward compat */
     .bd-title {
       font-family: var(--font-mono); font-size: 0.6rem; font-weight: 700;
       letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-4);
@@ -334,20 +372,29 @@
     .bd-caption { margin-top: 0.9rem; font-size: 0.79rem; color: var(--text-3); line-height: 1.5; }
 
     /* ── System proof panels ── */
+    .proof-section {
+      position: relative; overflow: hidden;
+    }
+    .proof-section-bg {
+      position: absolute; right: -5%; top: 50%; transform: translateY(-50%);
+      width: 45%; height: auto; opacity: 0.06;
+      pointer-events: none; user-select: none;
+    }
     .proof-panels-grid {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1rem;
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 0.85rem;
+      position: relative; z-index: 1;
     }
     .pp-panel {
-      background: var(--bg-1); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 1.3rem;
+      background: var(--bg); border: 1px solid rgba(0,0,0,0.06);
+      border-radius: var(--radius); padding: 1.25rem;
     }
     .pp-eyebrow {
       font-family: var(--font-mono); font-size: 0.6rem; font-weight: 700;
       letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-4);
-      margin-bottom: 0.6rem;
+      margin-bottom: 0.55rem;
     }
-    .pp-title { font-size: 0.98rem; font-weight: 700; color: var(--text-0); margin-bottom: 0.6rem; }
-    .pp-body  { font-size: 0.84rem; color: var(--text-2); line-height: 1.6; }
+    .pp-title { font-size: 0.96rem; font-weight: 700; color: var(--text-0); margin-bottom: 0.55rem; }
+    .pp-body  { font-size: 0.83rem; color: var(--text-2); line-height: 1.6; }
     .inv-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.18rem 0.65rem; margin-top: 0.85rem; list-style: none; }
     .inv-grid li { font-family: var(--font-mono); font-size: 0.74rem; color: var(--text-3); }
 
@@ -356,10 +403,11 @@
     .fn-num  { font-family: var(--font-mono); color: var(--text-4); font-size: 0.72rem; flex-shrink: 0; }
 
     /* ── Status section ── */
+    .status-section { background: #FAFAFB; }
     .status-banner {
       display: flex; align-items: center; gap: 0.75rem;
-      padding: 0.75rem 1rem;
-      background: var(--bg-1); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 0.7rem 1rem;
+      background: var(--bg); border: 1px solid rgba(0,0,0,0.06); border-radius: var(--radius);
       margin-bottom: 1.25rem;
     }
     .status-pill {
@@ -382,13 +430,13 @@
     .status-col li:last-child { border-bottom: none; }
 
     /* ── For Reviewers ── */
-    .review-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(195px, 1fr)); gap: 0.85rem; }
+    .review-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(195px, 1fr)); gap: 0.75rem; }
     .review-btn {
       display: block; text-decoration: none;
-      background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius);
-      padding: 1rem 1.1rem; transition: border-color 0.13s, box-shadow 0.13s;
+      background: var(--bg); border: 1px solid rgba(0,0,0,0.06); border-radius: var(--radius);
+      padding: 1rem 1.1rem; transition: border-color 0.14s;
     }
-    .review-btn:hover { border-color: var(--border-1); box-shadow: var(--shadow); }
+    .review-btn:hover { border-color: rgba(0,0,0,0.14); }
     .rb-eyebrow { font-family: var(--font-mono); font-size: 0.65rem; color: var(--text-4); margin-bottom: 0.3rem; }
     .rb-title   { font-size: 0.9rem; font-weight: 700; color: var(--text-0); margin-bottom: 0.3rem; }
     .rb-arrow   { color: var(--text-4); }
@@ -458,6 +506,8 @@
        SECTION 1 — HERO (logo-driven execution gate)
        ════════════════════════════════════════════ -->
   <section class="hero" aria-label="CerbaSeal execution gate">
+    <div class="hero-bg" aria-hidden="true"></div>
+    <div class="hero-bg-overlay" aria-hidden="true"></div>
     <div class="hero-inner">
 
       <!-- Logo gate with per-head highlight layers -->
@@ -562,42 +612,37 @@
   <!-- ════════════════════════════════════════════
        SECTION 2 — ENFORCEMENT EXPLANATION
        ════════════════════════════════════════════ -->
-  <section aria-label="Enforcement explanation">
-    <div class="container">
-      <div class="enforce-text">
-        <p>
-          CerbaSeal is an execution gate.
-          It enforces invariant rules over a decision envelope.
-        </p>
-        <p>
-          Every request results in one of three states:
-          <strong>REJECT</strong>, <strong>HOLD</strong>, or <strong>ALLOW</strong>.
-        </p>
-        <p>
-          AI systems may propose actions.
-          CerbaSeal decides if execution is permitted.
-        </p>
-      </div>
+  <section class="enforce-section" aria-label="Enforcement explanation">
+    <div class="container-wide">
+      <div class="enforce-layout">
 
-      <!-- Enforcement Boundary flow visual -->
-      <div class="boundary-diagram" aria-label="Enforcement Boundary">
-        <div class="bd-title">Enforcement Boundary</div>
-        <div style="display:flex;flex-direction:column;align-items:center;">
-          <div class="bd-node">Decision System / AI</div>
-          <span class="bd-arrow">↓</span>
-          <div class="bd-node bd-gate">CerbaSeal</div>
-          <span class="bd-arrow">↓</span>
-          <div class="bd-outcomes">
-            <span class="bd-r">REJECT</span>
-            <span class="bd-sep">|</span>
-            <span class="bd-h">HOLD</span>
-            <span class="bd-sep">|</span>
-            <span class="bd-a">ALLOW</span>
-          </div>
-          <span class="bd-arrow">↓</span>
-          <div class="bd-node">Execution System</div>
+        <div class="enforce-text">
+          <div class="section-eyebrow">How it works</div>
+          <h2 class="section-title" style="margin-bottom:1rem;">Enforcement Boundary</h2>
+          <p>
+            CerbaSeal is an execution gate.
+            It enforces invariant rules over a decision envelope.
+          </p>
+          <p>
+            Every request results in one of three states:
+            <strong>REJECT</strong>, <strong>HOLD</strong>, or <strong>ALLOW</strong>.
+          </p>
+          <p>
+            AI systems may propose actions.
+            CerbaSeal decides if execution is permitted.
+          </p>
+          <p>All consequential actions must pass through CerbaSeal before execution.</p>
         </div>
-        <p class="bd-caption">All consequential actions must pass through CerbaSeal before execution.</p>
+
+        <div>
+          <img
+            class="enforce-flow-img"
+            src="/assets/enforcement-flow.png"
+            alt="Enforcement pipeline: decision flows into CerbaSeal gate, splits into REJECT, HOLD, or ALLOW"
+          />
+          <p class="enforce-flow-caption">Enforcement pipeline — deterministic, three-outcome</p>
+        </div>
+
       </div>
     </div>
   </section>
@@ -605,10 +650,11 @@
   <!-- ════════════════════════════════════════════
        SECTION 3 — SYSTEM PROOF
        ════════════════════════════════════════════ -->
-  <section aria-label="System proof">
+  <section class="proof-section" aria-label="System proof">
+    <img class="proof-section-bg" src="/assets/audit-chain.png" alt="" aria-hidden="true" />
     <div class="container-wide">
 
-      <div style="max-width:720px;margin:0 auto 2rem;padding:0 1.5rem;">
+      <div style="max-width:720px;margin:0 auto 2rem;position:relative;z-index:1;">
         <div class="section-eyebrow">System proof</div>
         <h2 class="section-title">What it does</h2>
         <p class="section-sub">Three responsibilities, backed by 372 passing tests. No claim without evidence.</p>
@@ -619,7 +665,7 @@
         </ul>
       </div>
 
-      <div class="proof-panels-grid" style="max-width:960px;margin:0 auto;padding:0 1.5rem;">
+      <div class="proof-panels-grid" style="max-width:1060px;margin:0 auto;">
 
         <!-- Invariants panel -->
         <div class="pp-panel">
@@ -669,7 +715,7 @@
   <!-- ════════════════════════════════════════════
        SECTION 4 — CURRENT STATUS
        ════════════════════════════════════════════ -->
-  <section aria-label="Current status">
+  <section class="status-section" aria-label="Current status">
     <div class="container">
       <div class="section-eyebrow">Status</div>
       <h2 class="section-title">What exists now</h2>

@@ -1,0 +1,26 @@
+uploads = []
+outputs = []
+
+[[generated]]
+id = "FfKnhgkNfv0PEZIZ46IBU"
+uri = "file://examples/browser-demo/assets/hero-system.png"
+type = "image"
+title = "hero system background"
+
+[[generated]]
+id = "LnnotvwNmKbP8aY_XcsES"
+uri = "file://examples/browser-demo/assets/enforcement-flow.png"
+type = "image"
+title = "enforcement flow diagram"
+
+[[generated]]
+id = "dby34hBvnHGOD7IQo4rj7"
+uri = "file://examples/browser-demo/assets/audit-chain.png"
+type = "image"
+title = "audit chain visual"
+
+[[generated]]
+id = "PO8fC1szmsHt_1XVS3arg"
+uri = "file://examples/browser-demo/assets/control-system.png"
+type = "image"
+title = "control system visual"
