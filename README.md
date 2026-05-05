@@ -40,7 +40,7 @@ Fastest review path:
 
 The hosted demo is intentionally scoped as a demonstration surface.
 
-It is not a production API, authentication layer, persistence layer, policy engine, customer validation system, or production deployment.
+It is not a production system or deployment surface.
 
 ---
 
@@ -61,9 +61,9 @@ Start here:
 
 For the fastest review, open the hosted demo or run `pnpm demo:web` locally.
 
-CerbaSeal should be reviewed as a deterministic enforcement primitive.
+CerbaSeal should be reviewed as an execution enforcement boundary.
 
-It is not a dashboard, policy platform, monitoring layer, or domain-specific application.
+It is not a dashboard, policy system, or domain application.
 
 ---
 
@@ -120,9 +120,7 @@ The included demo uses a regulated-system reference workflow as an example, but 
 
 ## Why It Matters
 
-CerbaSeal enforces policy at execution time.
-
-CerbaSeal ensures that only properly authorized actions execute.  
+CerbaSeal enforces authorization at execution time.  
 It does not determine whether an action is the correct one to take.
 
 See: [docs/architecture/enforcement-boundary.md](docs/architecture/enforcement-boundary.md)
@@ -145,8 +143,7 @@ CerbaSeal is designed to be embedded as a deterministic enforcement layer.
 
 ## Status
 
-- 372 / 372 tests passing (15 test files)
-- Adversarial audit complete
-- Core enforcement loop validated
-- External Reviewer & Pilot Readiness Portal live (`pnpm demo:web` → `/review`, `/pilot`, `/security`, `/deployment`)
+- Full test suite passing
+- Audit coverage complete
+- Reviewer & pilot portal live (`pnpm demo:web` → `/review`, `/pilot`, `/security`, `/deployment`)
 - Brand system: CerbaSeal mark integrated across all portal pages (`docs/positioning/cerbaseal-brand-system.md`)
