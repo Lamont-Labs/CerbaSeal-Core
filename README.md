@@ -2,10 +2,23 @@
 
 CerbaSeal is an enforcement layer for high-risk AI actions.
 
+Most AI systems rely on policy. CerbaSeal enforces it.
+
 It ensures:
 - AI systems cannot authorize themselves
 - Required approvals cannot be bypassed
 - Every decision produces verifiable evidence
+
+Current proof state:
+
+- 372 / 372 tests passing (15 test files)
+- Adversarial audit complete
+- Fail-closed behavior validated
+- REJECT / HOLD / ALLOW runtime demo
+- Non-forgery protection
+- Misuse + boundary condition tests
+
+Designed for rapid external review — demo, proof, and audit path available without setup.
 
 ---
 
@@ -23,9 +36,9 @@ Fastest review path:
 4. Click "Run approved action."
 5. Open "View enforcement proof."
 
-The hosted demo is a demonstration surface only.
+The hosted demo is intentionally scoped as a demonstration surface.
 
-It is not: a production API, an authentication layer, a persistence layer, a policy engine, customer validation, or a production deployment.
+It is not a production API, authentication layer, persistence layer, policy engine, customer validation system, or production deployment.
 
 ---
 
@@ -45,16 +58,6 @@ Start here:
 - Deployment modes: [docs/deployment/deployment-modes.md](docs/deployment/deployment-modes.md)
 
 For the fastest review, open the hosted demo or run `pnpm demo:web` locally.
-
-Current proof state:
-
-- 372 / 372 tests passing (15 test files)
-- REJECT / HOLD / ALLOW runtime demo
-- fail-closed behavior
-- non-forgery protection
-- contextual boundary tests
-- misuse scenario tests
-- domain-agnostic reference workflow
 
 CerbaSeal should be reviewed as a deterministic enforcement primitive.
 
