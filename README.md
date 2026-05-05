@@ -2,14 +2,16 @@
 
 CerbaSeal is an enforcement layer for high-risk AI actions.
 
+A deterministic gate between AI intent and real-world execution.
+
 Most AI systems rely on policy. CerbaSeal enforces it.
 
-It ensures:
+It guarantees:
 - AI systems cannot authorize themselves
 - Required approvals cannot be bypassed
 - Every decision produces verifiable evidence
 
-Current proof state:
+Proven at runtime:
 
 - 372 / 372 tests passing (15 test files)
 - Adversarial audit complete
@@ -18,7 +20,7 @@ Current proof state:
 - Non-forgery protection
 - Misuse + boundary condition tests
 
-Designed for rapid external review — demo, proof, and audit path available without setup.
+Designed for rapid external review — demo, proof, and audit path with zero setup.
 
 ---
 
@@ -118,9 +120,7 @@ The included demo uses a regulated-system reference workflow as an example, but 
 
 ## Why It Matters
 
-Most AI systems rely on policy.
-
-CerbaSeal enforces it.
+CerbaSeal enforces policy at execution time.
 
 CerbaSeal ensures that only properly authorized actions execute.  
 It does not determine whether an action is the correct one to take.
