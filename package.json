@@ -25,6 +25,7 @@
     "demo:all": "pnpm demo && pnpm demo:consumer && pnpm demo:agent && pnpm demo:audit && pnpm demo:support",
     "check:imports": "tsx scripts/check-imports.ts",
     "check:invariants": "tsx scripts/check-invariant-coverage.ts",
+    "export:proof": "tsx scripts/export-proof.ts",
     "audit:repo": "tsx scripts/repo-audit.ts",
     "report:hash": "ts-node scripts/hash-report.ts",
     "report:list": "cat docs/reports/adversarial/index.json"

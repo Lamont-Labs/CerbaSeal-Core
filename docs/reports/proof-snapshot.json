@@ -1,0 +1,34 @@
+{
+  "generatedAt": "2026-05-11T15:35:40.669Z",
+  "gitCommit": "fc2ea93259d69b234981f2dbd32a312a3008b3cf",
+  "gitBranch": "main",
+  "version": "0.1.0",
+  "testSuite": {
+    "passed": 372,
+    "total": 372,
+    "files": 15
+  },
+  "auditChecks": {
+    "passed": 13,
+    "total": 13
+  },
+  "invariants": {
+    "total": 12,
+    "allCovered": true
+  },
+  "validators": {
+    "demo:web:validate": {
+      "passed": true,
+      "assertions": 106
+    },
+    "demo:support:validate": {
+      "passed": true,
+      "assertions": 13
+    },
+    "review:validate": {
+      "passed": true,
+      "assertions": 110
+    }
+  },
+  "manifestChecksum": "0a0aa507bb7937c714da339d5ab7d592410270a5a64aae2f8ca4c94a306469e7"
+}

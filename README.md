@@ -56,6 +56,7 @@ Start here:
 - Agent-gate demo: `pnpm demo:agent`
 - Auditor view: `pnpm demo:audit`
 - Full test suite: `pnpm test`
+- Proof snapshot: `pnpm export:proof` → `docs/reports/proof-snapshot.json`
 - Integration spec: [docs/integration/integration-spec.md](docs/integration/integration-spec.md)
 - Deployment modes: [docs/deployment/deployment-modes.md](docs/deployment/deployment-modes.md)
 
