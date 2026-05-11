@@ -6,7 +6,7 @@
  * All field values are derived from real ExecutionGateService results.
  */
 
-import { renderCertificate } from "../auditor-view/render-certificate.js";
+import { renderCertificate } from "../../src/domain/formatters/certificate.js";
 import type { GateResult } from "../../src/domain/types/core.js";
 
 export type ScenarioId = "reject" | "hold" | "allow";

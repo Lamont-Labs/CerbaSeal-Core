@@ -267,6 +267,18 @@ async function main(): Promise<void> {
     fail("11. review:validate passes", getExecErrorMessage(e));
   }
 
+  // ── Check 12: Import boundary enforcement ────────────────────────────────
+  try {
+    execSync("pnpm check:imports", {
+      cwd: ROOT,
+      encoding: "utf-8",
+      stdio: ["pipe", "pipe", "pipe"],
+    });
+    pass("12. No architectural import boundary violations", "all boundaries clean");
+  } catch (e: unknown) {
+    fail("12. No architectural import boundary violations", getExecErrorMessage(e));
+  }
+
   // ── Summary ───────────────────────────────────────────────────────────────
   console.log("\n" + "=".repeat(52));
   const passed = results.filter((r) => r.pass).length;

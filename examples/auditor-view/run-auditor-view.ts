@@ -1,4 +1,4 @@
-import { getRejectScenario, getHoldScenario, getAllowScenario } from "../browser-demo/scenarios.js";
+import { getRejectScenario, getHoldScenario, getAllowScenario } from "../../src/domain/builders/gate-scenarios.js";
 import { renderCertificate } from "./render-certificate.js";
 
 const scenarios = [
