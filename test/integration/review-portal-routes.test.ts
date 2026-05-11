@@ -346,10 +346,10 @@ describe("/one-page System Brief", () => {
     expect(html).toContain("Not independently security-reviewed");
     expect(html).toContain("Not handling real client data");
   });
-  it("contains current status (review-ready core, 323 tests)", () => {
+  it("contains current status (review-ready core, 372 tests)", () => {
     expect(html).toContain("Review-ready core");
     expect(html).toContain("Not yet client deployed");
-    expect(html).toContain("323 tests passing");
+    expect(html).toContain("372 tests passing");
   });
   it("contains live demo proof URL", () => {
     expect(html).toContain("https://cerbaseal.replit.app/");

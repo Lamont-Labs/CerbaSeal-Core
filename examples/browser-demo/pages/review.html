@@ -5,42 +5,49 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CerbaSeal Review Portal</title>
   <link rel="icon" href="/assets/cerbaseal-favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --bg: #0f0f11; --surface: #18181b; --surface2: #09090b;
-      --border: #27272a; --border2: #3f3f46;
-      --text: #e4e4e7; --muted: #71717a; --dim: #52525b;
-      --red: #f87171; --red-bg: #1c0a0a; --red-border: #7f1d1d;
-      --yellow: #facc15; --yellow-bg: #1a1300; --yellow-bdr: #78350f;
-      --green: #4ade80; --green-bg: #0a1c0e; --green-bdr: #14532d;
-      --blue: #60a5fa; --blue-bg: #0a1220; --blue-bdr: #1e3a5f;
+      --bg: #070C16; --surface: #0C1221; --surface2: #111827;
+      --border: rgba(255,255,255,0.07); --border2: rgba(255,255,255,0.13);
+      --text: #F8FAFC; --muted: #94A3B8; --dim: #64748B;
+      --red: #f87171; --red-bg: rgba(248,113,113,0.08); --red-border: rgba(248,113,113,0.38);
+      --yellow: #FBD15B; --yellow-bg: rgba(251,209,91,0.07); --yellow-bdr: rgba(251,209,91,0.38);
+      --green: #4ade80; --green-bg: rgba(74,222,128,0.07); --green-bdr: rgba(74,222,128,0.28);
+      --blue: #60a5fa; --blue-bg: rgba(96,165,250,0.08); --blue-bdr: rgba(96,165,250,0.38);
     }
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    body { font-family: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
            background: var(--bg); color: var(--text); min-height: 100vh; line-height: 1.6; }
     .page { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem 5rem; }
 
     /* Nav */
-    nav { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 2.5rem;
-          padding-bottom: 1.25rem; border-bottom: 1px solid var(--border); }
-    nav a { font-size: 0.8rem; font-weight: 600; color: var(--muted); text-decoration: none;
-             padding: 0.35rem 0.75rem; border-radius: 5px; border: 1px solid var(--border2); }
-    nav a:hover { color: var(--text); border-color: var(--muted); }
-    nav a.active { color: var(--text); border-color: var(--blue); background: var(--blue-bg); }
+    nav { position: sticky; top: 0; z-index: 100;
+          display: flex; gap: 0.4rem; flex-wrap: wrap; align-items: center;
+          margin: -2rem -1.5rem 2.5rem; padding: 0 1.5rem; height: 52px;
+          background: rgba(7,12,22,0.92); backdrop-filter: blur(16px);
+          border-bottom: 1px solid rgba(255,255,255,0.07); }
+    nav a { font-size: 0.79rem; font-weight: 500; color: #64748B; text-decoration: none;
+             padding: 0.3rem 0.6rem; border-radius: 5px; border: none;
+             transition: color 0.13s, background 0.13s; }
+    nav a:hover { color: #F8FAFC; background: rgba(255,255,255,0.05); }
+    nav a.active { color: #F8FAFC; font-weight: 600; background: rgba(255,255,255,0.07); }
     .nav-brand { padding: 0 !important; border: none !important; background: none !important;
                  margin-right: auto; display: inline-flex !important; align-items: center; gap: 0.45rem; }
-    .nav-brand img { width: 22px; height: 22px; object-fit: contain; filter: brightness(0) invert(1); }
-    .nav-brand span { font-weight: 700; font-size: 0.88rem; color: #fafafa; letter-spacing: -0.02em; }
+    .nav-brand img { width: 24px; height: 24px; object-fit: contain; filter: invert(1) brightness(0.9); }
+    .nav-brand span { font-weight: 700; font-size: 0.9rem; color: #F8FAFC; letter-spacing: -0.02em; }
 
     /* Hero */
     .hero { margin-bottom: 3rem; }
     .hero h1 { font-size: 1.7rem; font-weight: 800; letter-spacing: -0.03em;
-                color: #fafafa; line-height: 1.2; margin-bottom: 0.75rem; }
+                color: #F8FAFC; line-height: 1.2; margin-bottom: 0.75rem; }
     .hero .tagline { font-size: 1rem; color: var(--muted); max-width: 680px; margin-bottom: 1.25rem; }
     .hero .definition {
       padding: 1rem 1.25rem; background: var(--surface); border: 1px solid var(--border2);
       border-left: 3px solid var(--blue); border-radius: 6px;
-      font-size: 0.9rem; color: #a1a1aa; max-width: 720px;
+      font-size: 0.9rem; color: var(--muted); max-width: 720px;
     }
 
     /* Section */
@@ -50,8 +57,8 @@
       color: var(--dim); margin-bottom: 1rem; padding-bottom: 0.5rem;
       border-bottom: 1px solid var(--border);
     }
-    h2 { font-size: 1.1rem; font-weight: 700; color: #fafafa; margin-bottom: 0.5rem; }
-    p { font-size: 0.9rem; color: #a1a1aa; margin-bottom: 0.75rem; max-width: 720px; }
+    h2 { font-size: 1.1rem; font-weight: 700; color: #F8FAFC; margin-bottom: 0.5rem; }
+    p { font-size: 0.9rem; color: var(--muted); margin-bottom: 0.75rem; max-width: 720px; }
 
     /* Two-col */
     .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
@@ -66,7 +73,7 @@
 
     /* Label list */
     .label-list { list-style: none; display: flex; flex-direction: column; gap: 0.4rem; }
-    .label-list li { font-size: 0.85rem; color: #a1a1aa; display: flex; align-items: flex-start; gap: 0.5rem; }
+    .label-list li { font-size: 0.85rem; color: var(--muted); display: flex; align-items: flex-start; gap: 0.5rem; }
     .label-list li::before { content: "—"; color: var(--dim); flex-shrink: 0; }
 
     /* Implemented / not-yet */
@@ -80,7 +87,7 @@
     .status-box.implemented .status-box-title { color: var(--green); }
     .status-box.pending .status-box-title { color: var(--dim); }
     .status-box ul { list-style: none; display: flex; flex-direction: column; gap: 0.3rem; }
-    .status-box ul li { font-size: 0.82rem; color: #a1a1aa; display: flex; gap: 0.5rem; }
+    .status-box ul li { font-size: 0.82rem; color: var(--muted); display: flex; gap: 0.5rem; }
     .status-box.implemented ul li::before { content: "✓"; color: var(--green); flex-shrink: 0; }
     .status-box.pending ul li::before { content: "○"; color: var(--dim); flex-shrink: 0; }
 
@@ -98,7 +105,7 @@
     .sc-title { font-size: 0.82rem; font-weight: 600; color: var(--text); margin-bottom: 0.35rem; line-height: 1.3; }
     .sc-plain { font-size: 0.78rem; color: var(--muted); margin-bottom: 0.5rem; }
     .sc-meta { font-size: 0.72rem; color: var(--dim); margin-bottom: 0.25rem; }
-    .sc-meta strong { color: #71717a; }
+    .sc-meta strong { color: var(--muted); }
     .sc-btn {
       margin-top: 0.75rem; padding: 0.45rem 0.75rem; font-size: 0.78rem; font-weight: 600;
       border-radius: 5px; border: 1px solid; cursor: pointer; font-family: inherit;
@@ -117,13 +124,13 @@
     .badge-ALLOWED { color: var(--green);  background: var(--green-bg);  border: 1px solid var(--green-bdr); }
     .sc-detail-row { display: flex; gap: 0.4rem; margin-top: 0.2rem; flex-wrap: wrap; }
     .sc-detail-key { color: var(--dim); }
-    .sc-detail-val { color: #a1a1aa; }
+    .sc-detail-val { color: var(--muted); }
 
     /* Review path */
     .review-path { counter-reset: step; list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
     .review-path li {
       counter-increment: step; display: flex; align-items: flex-start; gap: 0.75rem;
-      font-size: 0.87rem; color: #a1a1aa; padding: 0.6rem 0.9rem;
+      font-size: 0.87rem; color: var(--muted); padding: 0.6rem 0.9rem;
       background: var(--surface); border: 1px solid var(--border); border-radius: 6px;
     }
     .review-path li::before {
@@ -132,7 +139,7 @@
       min-width: 1.5rem; height: 1.5rem; border-radius: 50%;
       display: flex; align-items: center; justify-content: center; flex-shrink: 0;
     }
-    code { font-family: "SF Mono", "Fira Code", monospace; font-size: 0.82em;
+    code { font-family: "JetBrains Mono", "SF Mono", "Fira Code", monospace; font-size: 0.82em;
             background: var(--surface2); border: 1px solid var(--border); padding: 0.1em 0.35em; border-radius: 3px; }
 
     /* Proof table */
@@ -140,13 +147,13 @@
     .proof-table th { text-align: left; font-size: 0.7rem; text-transform: uppercase;
                        letter-spacing: 0.07em; color: var(--dim); padding: 0.5rem 0.75rem;
                        border-bottom: 1px solid var(--border); font-weight: 700; }
-    .proof-table td { padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--border); color: #a1a1aa; vertical-align: top; }
+    .proof-table td { padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--border); color: var(--muted); vertical-align: top; }
     .proof-table tr:last-child td { border-bottom: none; }
     .tag { display: inline-block; font-size: 0.68rem; font-weight: 700; padding: 0.15em 0.45em;
             border-radius: 3px; text-transform: uppercase; letter-spacing: 0.05em; }
-    .tag-code  { background: #0d2515; color: var(--green); border: 1px solid var(--green-bdr); }
+    .tag-code  { background: rgba(74,222,128,0.08); color: var(--green); border: 1px solid var(--green-bdr); }
     .tag-test  { background: var(--blue-bg); color: var(--blue); border: 1px solid var(--blue-bdr); }
-    .tag-demo  { background: #1a1300; color: var(--yellow); border: 1px solid var(--yellow-bdr); }
+    .tag-demo  { background: var(--yellow-bg); color: var(--yellow); border: 1px solid var(--yellow-bdr); }
 
     /* Limitation banner */
     .limit-banner {
@@ -176,7 +183,7 @@
   </nav>
 
   <!-- Version label -->
-  <div aria-label="Build status" style="margin-bottom:1.5rem;display:flex;align-items:center;gap:0.55rem;flex-wrap:wrap;font-family:'SF Mono','Fira Code',monospace;font-size:0.72rem;letter-spacing:0.05em;color:var(--muted);">
+  <div aria-label="Build status" style="margin-bottom:1.5rem;display:flex;align-items:center;gap:0.55rem;flex-wrap:wrap;font-family:'JetBrains Mono','SF Mono','Fira Code',monospace;font-size:0.72rem;letter-spacing:0.05em;color:var(--muted);">
     <span>Version: 0.1.0</span>
     <span style="color:var(--border2);">·</span>
     <span>Status: Review Candidate</span>
@@ -188,31 +195,31 @@
     <p>Validate the system in under ten minutes without reading full docs. Each button calls the real API route and renders the actual result inline.</p>
     <ol class="r10-steps" style="counter-reset:r10;list-style:none;display:flex;flex-direction:column;gap:0.55rem;">
       <li style="display:flex;gap:0.85rem;padding:0.7rem 0.95rem;background:var(--surface);border:1px solid var(--border);border-radius:6px;align-items:center;flex-wrap:wrap;">
-        <span style="font-family:'SF Mono','Fira Code',monospace;font-size:0.72rem;font-weight:700;color:var(--muted);min-width:1.2rem;">1.</span>
-        <span style="font-size:0.87rem;color:#a1a1aa;flex:1;min-width:200px;">Read definition (30 seconds)</span>
+        <span style="font-family:'JetBrains Mono','SF Mono','Fira Code',monospace;font-size:0.72rem;font-weight:700;color:var(--muted);min-width:1.2rem;">1.</span>
+        <span style="font-size:0.87rem;color:var(--muted);flex:1;min-width:200px;">Read definition (30 seconds)</span>
         <a href="#review-definition" style="font-size:0.78rem;color:var(--blue);text-decoration:none;">go to definition →</a>
       </li>
       <li style="display:flex;gap:0.85rem;padding:0.7rem 0.95rem;background:var(--surface);border:1px solid var(--border);border-radius:6px;align-items:center;flex-wrap:wrap;">
-        <span style="font-family:'SF Mono','Fira Code',monospace;font-size:0.72rem;font-weight:700;color:var(--muted);min-width:1.2rem;">2.</span>
-        <span style="font-size:0.87rem;color:#a1a1aa;flex:1;min-width:200px;">Run "AI attempts action" → expect <strong style="color:var(--red);">REJECT</strong></span>
+        <span style="font-family:'JetBrains Mono','SF Mono','Fira Code',monospace;font-size:0.72rem;font-weight:700;color:var(--muted);min-width:1.2rem;">2.</span>
+        <span style="font-size:0.87rem;color:var(--muted);flex:1;min-width:200px;">Run "AI attempts action" → expect <strong style="color:var(--red);">REJECT</strong></span>
         <button data-r10="reject" style="font-family:inherit;font-size:0.78rem;font-weight:600;padding:0.4rem 0.7rem;border-radius:5px;border:1px solid var(--red-border);background:var(--red-bg);color:var(--red);cursor:pointer;">Run /api/reject</button>
-        <span class="r10-result" id="r10-result-reject" style="font-family:'SF Mono','Fira Code',monospace;font-size:0.74rem;color:var(--muted);width:100%;margin-top:0.3rem;display:none;"></span>
+        <span class="r10-result" id="r10-result-reject" style="font-family:'JetBrains Mono','SF Mono','Fira Code',monospace;font-size:0.74rem;color:var(--muted);width:100%;margin-top:0.3rem;display:none;"></span>
       </li>
       <li style="display:flex;gap:0.85rem;padding:0.7rem 0.95rem;background:var(--surface);border:1px solid var(--border);border-radius:6px;align-items:center;flex-wrap:wrap;">
-        <span style="font-family:'SF Mono','Fira Code',monospace;font-size:0.72rem;font-weight:700;color:var(--muted);min-width:1.2rem;">3.</span>
-        <span style="font-size:0.87rem;color:#a1a1aa;flex:1;min-width:200px;">Run "Missing approval" → expect <strong style="color:var(--yellow);">HOLD</strong></span>
+        <span style="font-family:'JetBrains Mono','SF Mono','Fira Code',monospace;font-size:0.72rem;font-weight:700;color:var(--muted);min-width:1.2rem;">3.</span>
+        <span style="font-size:0.87rem;color:var(--muted);flex:1;min-width:200px;">Run "Missing approval" → expect <strong style="color:var(--yellow);">HOLD</strong></span>
         <button data-r10="hold" style="font-family:inherit;font-size:0.78rem;font-weight:600;padding:0.4rem 0.7rem;border-radius:5px;border:1px solid var(--yellow-bdr);background:var(--yellow-bg);color:var(--yellow);cursor:pointer;">Run /api/hold</button>
-        <span class="r10-result" id="r10-result-hold" style="font-family:'SF Mono','Fira Code',monospace;font-size:0.74rem;color:var(--muted);width:100%;margin-top:0.3rem;display:none;"></span>
+        <span class="r10-result" id="r10-result-hold" style="font-family:'JetBrains Mono','SF Mono','Fira Code',monospace;font-size:0.74rem;color:var(--muted);width:100%;margin-top:0.3rem;display:none;"></span>
       </li>
       <li style="display:flex;gap:0.85rem;padding:0.7rem 0.95rem;background:var(--surface);border:1px solid var(--border);border-radius:6px;align-items:center;flex-wrap:wrap;">
-        <span style="font-family:'SF Mono','Fira Code',monospace;font-size:0.72rem;font-weight:700;color:var(--muted);min-width:1.2rem;">4.</span>
-        <span style="font-size:0.87rem;color:#a1a1aa;flex:1;min-width:200px;">Run "Approved action" → expect <strong style="color:var(--green);">ALLOW</strong></span>
+        <span style="font-family:'JetBrains Mono','SF Mono','Fira Code',monospace;font-size:0.72rem;font-weight:700;color:var(--muted);min-width:1.2rem;">4.</span>
+        <span style="font-size:0.87rem;color:var(--muted);flex:1;min-width:200px;">Run "Approved action" → expect <strong style="color:var(--green);">ALLOW</strong></span>
         <button data-r10="allow" style="font-family:inherit;font-size:0.78rem;font-weight:600;padding:0.4rem 0.7rem;border-radius:5px;border:1px solid var(--green-bdr);background:var(--green-bg);color:var(--green);cursor:pointer;">Run /api/allow</button>
-        <span class="r10-result" id="r10-result-allow" style="font-family:'SF Mono','Fira Code',monospace;font-size:0.74rem;color:var(--muted);width:100%;margin-top:0.3rem;display:none;"></span>
+        <span class="r10-result" id="r10-result-allow" style="font-family:'JetBrains Mono','SF Mono','Fira Code',monospace;font-size:0.74rem;color:var(--muted);width:100%;margin-top:0.3rem;display:none;"></span>
       </li>
       <li style="display:block;padding:0.7rem 0.95rem;background:var(--surface);border:1px solid var(--border);border-radius:6px;">
-        <div><span style="font-family:'SF Mono','Fira Code',monospace;font-size:0.72rem;font-weight:700;color:var(--muted);">5.</span><span style="font-size:0.87rem;color:#a1a1aa;margin-left:0.55rem;">Confirm:</span></div>
-        <ul style="margin-top:0.45rem;padding-left:1.5rem;font-size:0.83rem;color:#a1a1aa;list-style:disc;">
+        <div><span style="font-family:'JetBrains Mono','SF Mono','Fira Code',monospace;font-size:0.72rem;font-weight:700;color:var(--muted);">5.</span><span style="font-size:0.87rem;color:var(--muted);margin-left:0.55rem;">Confirm:</span></div>
+        <ul style="margin-top:0.45rem;padding-left:1.5rem;font-size:0.83rem;color:var(--muted);list-style:disc;">
           <li>execution blocked when required</li>
           <li>execution allowed only with approval</li>
           <li>outcomes are deterministic</li>
@@ -339,7 +346,7 @@
           <li>operator action reports</li>
           <li>system health verification</li>
           <li>browser demo (live)</li>
-          <li>323 passing tests (15 test files)</li>
+          <li>372 passing tests (15 test files)</li>
         </ul>
       </div>
       <div class="status-box pending">
@@ -452,7 +459,7 @@
           <td><span class="tag tag-code">Code</span> <span class="tag tag-test">Tests</span> <span class="tag tag-demo">Demo</span></td>
         </tr>
         <tr>
-          <td>323 tests passing, 0 failing (15 test files)</td>
+          <td>372 tests passing, 0 failing (15 test files)</td>
           <td><span class="tag tag-test">Tests</span></td>
         </tr>
       </tbody>

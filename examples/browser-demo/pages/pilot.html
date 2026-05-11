@@ -5,38 +5,45 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CerbaSeal Pilot Readiness</title>
   <link rel="icon" href="/assets/cerbaseal-favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --bg: #0f0f11; --surface: #18181b; --surface2: #09090b;
-      --border: #27272a; --border2: #3f3f46;
-      --text: #e4e4e7; --muted: #71717a; --dim: #52525b;
-      --red: #f87171; --red-bg: #1c0a0a; --red-border: #7f1d1d;
-      --yellow: #facc15; --yellow-bg: #1a1300; --yellow-bdr: #78350f;
-      --green: #4ade80; --green-bg: #0a1c0e; --green-bdr: #14532d;
-      --blue: #60a5fa; --blue-bg: #0a1220; --blue-bdr: #1e3a5f;
+      --bg: #070C16; --surface: #0C1221; --surface2: #111827;
+      --border: rgba(255,255,255,0.07); --border2: rgba(255,255,255,0.13);
+      --text: #F8FAFC; --muted: #94A3B8; --dim: #64748B;
+      --red: #f87171; --red-bg: rgba(248,113,113,0.08); --red-border: rgba(248,113,113,0.38);
+      --yellow: #FBD15B; --yellow-bg: rgba(251,209,91,0.07); --yellow-bdr: rgba(251,209,91,0.38);
+      --green: #4ade80; --green-bg: rgba(74,222,128,0.07); --green-bdr: rgba(74,222,128,0.28);
+      --blue: #60a5fa; --blue-bg: rgba(96,165,250,0.08); --blue-bdr: rgba(96,165,250,0.38);
     }
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    body { font-family: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
            background: var(--bg); color: var(--text); min-height: 100vh; line-height: 1.6; }
     .page { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem 5rem; }
-    nav { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 2.5rem;
-          padding-bottom: 1.25rem; border-bottom: 1px solid var(--border); }
-    nav a { font-size: 0.8rem; font-weight: 600; color: var(--muted); text-decoration: none;
-             padding: 0.35rem 0.75rem; border-radius: 5px; border: 1px solid var(--border2); }
-    nav a:hover { color: var(--text); border-color: var(--muted); }
-    nav a.active { color: var(--text); border-color: var(--blue); background: var(--blue-bg); }
+    nav { position: sticky; top: 0; z-index: 100;
+          display: flex; gap: 0.4rem; flex-wrap: wrap; align-items: center;
+          margin: -2rem -1.5rem 2.5rem; padding: 0 1.5rem; height: 52px;
+          background: rgba(7,12,22,0.92); backdrop-filter: blur(16px);
+          border-bottom: 1px solid rgba(255,255,255,0.07); }
+    nav a { font-size: 0.79rem; font-weight: 500; color: #64748B; text-decoration: none;
+             padding: 0.3rem 0.6rem; border-radius: 5px; border: none;
+             transition: color 0.13s, background 0.13s; }
+    nav a:hover { color: #F8FAFC; background: rgba(255,255,255,0.05); }
+    nav a.active { color: #F8FAFC; font-weight: 600; background: rgba(255,255,255,0.07); }
     .nav-brand { padding: 0 !important; border: none !important; background: none !important;
                  margin-right: auto; display: inline-flex !important; align-items: center; gap: 0.45rem; }
-    .nav-brand img { width: 22px; height: 22px; object-fit: contain; filter: brightness(0) invert(1); }
-    .nav-brand span { font-weight: 700; font-size: 0.88rem; color: #fafafa; letter-spacing: -0.02em; }
+    .nav-brand img { width: 24px; height: 24px; object-fit: contain; filter: invert(1) brightness(0.9); }
+    .nav-brand span { font-weight: 700; font-size: 0.9rem; color: #F8FAFC; letter-spacing: -0.02em; }
     .hero { margin-bottom: 3rem; }
-    .hero h1 { font-size: 1.7rem; font-weight: 800; letter-spacing: -0.03em; color: #fafafa; margin-bottom: 0.75rem; }
+    .hero h1 { font-size: 1.7rem; font-weight: 800; letter-spacing: -0.03em; color: #F8FAFC; margin-bottom: 0.75rem; }
     .hero .tagline { font-size: 1rem; color: var(--muted); max-width: 680px; }
     .section { margin-bottom: 3rem; }
     .section-title { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em;
                       color: var(--dim); margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); }
-    h2 { font-size: 1.05rem; font-weight: 700; color: #fafafa; margin-bottom: 0.5rem; }
-    p { font-size: 0.9rem; color: #a1a1aa; margin-bottom: 0.75rem; max-width: 720px; }
+    h2 { font-size: 1.05rem; font-weight: 700; color: #F8FAFC; margin-bottom: 0.5rem; }
+    p { font-size: 0.9rem; color: var(--muted); margin-bottom: 0.75rem; max-width: 720px; }
     .thesis {
       padding: 1.25rem 1.5rem; background: var(--surface); border: 1px solid var(--border2);
       border-left: 3px solid var(--blue); border-radius: 6px;
@@ -48,9 +55,9 @@
     .box-title { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
                   color: var(--dim); margin-bottom: 0.75rem; }
     ul.check-list { list-style: none; display: flex; flex-direction: column; gap: 0.35rem; }
-    ul.check-list li { font-size: 0.84rem; color: #a1a1aa; display: flex; gap: 0.5rem; padding: 0.3rem 0.5rem;
+    ul.check-list li { font-size: 0.84rem; color: var(--muted); display: flex; gap: 0.5rem; padding: 0.3rem 0.5rem;
                         border-radius: 4px; }
-    ul.check-list li.ready { background: #0a1c0e; border: 1px solid var(--green-bdr); }
+    ul.check-list li.ready { background: var(--green-bg); border: 1px solid var(--green-bdr); }
     ul.check-list li.ready::before { content: "✓"; color: var(--green); flex-shrink: 0; }
     ul.check-list li.needs::before { content: "○"; color: var(--dim); flex-shrink: 0; }
     ul.check-list li.agreement::before { content: "◇"; color: var(--yellow); flex-shrink: 0; }
@@ -58,7 +65,7 @@
     .intake-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
     @media (max-width: 600px) { .intake-grid { grid-template-columns: 1fr; } }
     .intake-item { background: var(--surface); border: 1px solid var(--border); border-radius: 5px;
-                    padding: 0.6rem 0.9rem; font-size: 0.82rem; color: #a1a1aa;
+                    padding: 0.6rem 0.9rem; font-size: 0.82rem; color: var(--muted);
                     display: flex; gap: 0.5rem; align-items: flex-start; }
     .intake-item::before { content: "□"; color: var(--dim); flex-shrink: 0; }
     .boundary-box { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1.1rem 1.25rem; }
@@ -93,7 +100,7 @@
   <header class="hero">
     <h1>Pilot Readiness</h1>
     <p class="tagline">What is ready now. What requires a client. What requires agreement.</p>
-    <div style="display:inline-block;margin-top:0.75rem;padding:0.3rem 0.7rem;background:var(--blue-bg);border:1px solid var(--blue-bdr);border-radius:4px;font-family:'SF Mono','Fira Code',monospace;font-size:0.7rem;color:var(--blue);">core_ready_client_specifics_required</div>
+    <div style="display:inline-block;margin-top:0.75rem;padding:0.3rem 0.7rem;background:var(--blue-bg);border:1px solid var(--blue-bdr);border-radius:4px;font-family:'JetBrains Mono','SF Mono','Fira Code',monospace;font-size:0.7rem;color:var(--blue);">core_ready_client_specifics_required</div>
   </header>
 
   <!-- Thesis -->
@@ -134,7 +141,7 @@
           <li class="ready">system health verification</li>
           <li class="ready">integrity verification</li>
           <li class="ready">browser demo</li>
-          <li class="ready">323 passing tests (15 test files)</li>
+          <li class="ready">372 passing tests (15 test files)</li>
           <li class="ready">pilot-safe mode documentation</li>
         </ul>
       </div>
