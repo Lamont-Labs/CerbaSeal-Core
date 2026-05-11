@@ -487,7 +487,7 @@ describe("PHASE 3 — Bypass Attempts", () => {
     expect(result.decisionEnvelope.immutable).toBe(true);
 
     // Runtime mutation test — no freeze/seal in current implementation
-    const envelope = result.decisionEnvelope as unknown as Record<string, unknown>;
+    const envelope = result.decisionEnvelope as Record<string, unknown>;
     const originalState = envelope["finalState"];
 
     try {
@@ -574,7 +574,7 @@ describe("PHASE 4 — Audit Chain Integrity", () => {
     // This confirms tamper-resistance of the in-memory state.
     const mutableEntry = snapshot[1];
     if (mutableEntry) {
-      (mutableEntry as unknown as Record<string, unknown>)["entryHash"] = "TAMPERED_HASH";
+      (mutableEntry as Record<string, unknown>)["entryHash"] = "TAMPERED_HASH";
     }
     // Internal chain is still intact
     expect(log.verifyChain()).toBe(true);
@@ -787,7 +787,7 @@ describe("PHASE 6 — Edge Cases", () => {
 
     let result;
     expect(() => { result = gate.evaluate(req); }).not.toThrow();
-    expect((result as unknown as ReturnType<typeof gate.evaluate>).decisionEnvelope).toBeDefined();
+    expect((result as ReturnType<typeof gate.evaluate>).decisionEnvelope).toBeDefined();
   });
 
   // 6.4 — Confidence > 1.0 → system does not validate confidence range; no crash
@@ -799,7 +799,7 @@ describe("PHASE 6 — Edge Cases", () => {
     expect(() => { result = gate.evaluate(req); }).not.toThrow();
     // OBSERVATION: confidence value is never validated — any numeric value passes.
     // Documented in Phase 7.
-    expect((result as unknown as ReturnType<typeof gate.evaluate>).decisionEnvelope.finalState).toBe("ALLOW");
+    expect((result as ReturnType<typeof gate.evaluate>).decisionEnvelope.finalState).toBe("ALLOW");
   });
 
   // 6.5 — Negative confidence → no crash
@@ -809,7 +809,7 @@ describe("PHASE 6 — Edge Cases", () => {
 
     let result;
     expect(() => { result = gate.evaluate(req); }).not.toThrow();
-    expect((result as unknown as ReturnType<typeof gate.evaluate>).decisionEnvelope.finalState).toBe("ALLOW");
+    expect((result as ReturnType<typeof gate.evaluate>).decisionEnvelope.finalState).toBe("ALLOW");
   });
 
   // 6.6 — Extremely long reasonCode strings → no crash
@@ -822,7 +822,7 @@ describe("PHASE 6 — Edge Cases", () => {
 
     let result;
     expect(() => { result = gate.evaluate(req); }).not.toThrow();
-    expect((result as unknown as ReturnType<typeof gate.evaluate>).decisionEnvelope.finalState).toBe("ALLOW");
+    expect((result as ReturnType<typeof gate.evaluate>).decisionEnvelope.finalState).toBe("ALLOW");
   });
 
   // 6.7 — Unicode in identifiers → no crash
@@ -835,7 +835,7 @@ describe("PHASE 6 — Edge Cases", () => {
 
     let result;
     expect(() => { result = gate.evaluate(req); }).not.toThrow();
-    expect((result as unknown as ReturnType<typeof gate.evaluate>).decisionEnvelope.finalState).toBe("ALLOW");
+    expect((result as ReturnType<typeof gate.evaluate>).decisionEnvelope.finalState).toBe("ALLOW");
   });
 
   // 6.8 — Large number of proposal reasonCodes → no crash
@@ -845,7 +845,7 @@ describe("PHASE 6 — Edge Cases", () => {
 
     let result;
     expect(() => { result = gate.evaluate(req); }).not.toThrow();
-    expect((result as unknown as ReturnType<typeof gate.evaluate>).decisionEnvelope.finalState).toBe("ALLOW");
+    expect((result as ReturnType<typeof gate.evaluate>).decisionEnvelope.finalState).toBe("ALLOW");
   });
 
   // 6.9 — approvalRequired=false with null approvalArtifact → ALLOW for non-hardcoded workflows.
