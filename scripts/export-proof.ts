@@ -139,9 +139,16 @@ async function main(): Promise<void> {
     validators,
   };
 
-  // ── 7. Checksum (sha256 of stable enforcement fields — excludes generatedAt
-  //       and manifestChecksum itself, so it is stable across runs on an
-  //       unchanged repo and can be reproduced for tamper detection) ──────────
+  // ── 7a. manifestChecksum — sha256 of the full manifest body excluding only
+  //        the manifestChecksum field itself. Seals this specific export
+  //        against post-generation tampering. Changes each run because
+  //        generatedAt changes. ────────────────────────────────────────────
+  const bodyJson = JSON.stringify(manifestBody, null, 2);
+  const manifestChecksum = createHash("sha256").update(bodyJson, "utf-8").digest("hex");
+
+  // ── 7b. stableChecksum — sha256 of enforcement-state fields only (excludes
+  //        generatedAt). Stable across runs on an unchanged repo; use this to
+  //        confirm enforcement state has not changed between exports. ────────
   const stablePayload = {
     gitCommit: manifestBody.gitCommit,
     gitBranch: manifestBody.gitBranch,
@@ -152,9 +159,9 @@ async function main(): Promise<void> {
     validators: manifestBody.validators,
   };
   const stableJson = JSON.stringify(stablePayload, null, 2);
-  const manifestChecksum = createHash("sha256").update(stableJson, "utf-8").digest("hex");
+  const stableChecksum = createHash("sha256").update(stableJson, "utf-8").digest("hex");
 
-  const manifest = { ...manifestBody, manifestChecksum };
+  const manifest = { ...manifestBody, manifestChecksum, stableChecksum };
 
   // ── 8. Emit ───────────────────────────────────────────────────────────────
   const finalJson = JSON.stringify(manifest, null, 2) + "\n";
@@ -167,7 +174,8 @@ async function main(): Promise<void> {
     writeFileSync(OUT_PATH, finalJson, "utf-8");
     log(`\n  Written to: docs/reports/proof-snapshot.json`);
     log("\n" + "=".repeat(52));
-    log(`  manifestChecksum: ${manifestChecksum}`);
+    log(`  manifestChecksum (full body): ${manifestChecksum}`);
+    log(`  stableChecksum  (state only): ${stableChecksum}`);
     log("  Status: PASS\n");
   }
 }
