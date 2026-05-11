@@ -139,9 +139,20 @@ async function main(): Promise<void> {
     validators,
   };
 
-  // ── 7. Checksum (sha256 of manifest body — self-excluding) ────────────────
-  const bodyJson = JSON.stringify(manifestBody, null, 2);
-  const manifestChecksum = createHash("sha256").update(bodyJson, "utf-8").digest("hex");
+  // ── 7. Checksum (sha256 of stable enforcement fields — excludes generatedAt
+  //       and manifestChecksum itself, so it is stable across runs on an
+  //       unchanged repo and can be reproduced for tamper detection) ──────────
+  const stablePayload = {
+    gitCommit: manifestBody.gitCommit,
+    gitBranch: manifestBody.gitBranch,
+    version: manifestBody.version,
+    testSuite: manifestBody.testSuite,
+    auditChecks: manifestBody.auditChecks,
+    invariants: manifestBody.invariants,
+    validators: manifestBody.validators,
+  };
+  const stableJson = JSON.stringify(stablePayload, null, 2);
+  const manifestChecksum = createHash("sha256").update(stableJson, "utf-8").digest("hex");
 
   const manifest = { ...manifestBody, manifestChecksum };
 
