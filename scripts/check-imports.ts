@@ -23,6 +23,7 @@ function getZone(absPath: string): string {
   if (rel.startsWith("src/")) return "src";
   if (rel.startsWith("test/")) return "test";
   if (rel.startsWith("scripts/")) return "scripts";
+  if (rel.startsWith("artifacts/")) return "artifacts";
   if (rel.startsWith("examples/")) {
     const parts = rel.split("/");
     if (parts.length >= 2 && parts[1] !== undefined) return `examples/${parts[1]}`;
@@ -30,28 +31,33 @@ function getZone(absPath: string): string {
   return "other";
 }
 
-/**
- * Boundary rules enforced:
- *   1. src/ must not import from examples/, test/, or scripts/
- *   2. scripts/ must not import from test/
- *   3. examples/X/ must not import from examples/Y/ (cross-example dependency)
- *
- * Note: test/ importing from examples/ is permitted — integration tests
- * legitimately exercise examples as their subject under test.
- */
+type BoundaryRule = { from: string; forbidden: RegExp[] };
+
+const RULES: BoundaryRule[] = [
+  {
+    from: "src",
+    forbidden: [/^examples\//, /^test$/, /^scripts$/, /^artifacts$/],
+  },
+  {
+    from: "test",
+    forbidden: [/^examples\//, /^scripts$/, /^artifacts$/],
+  },
+  {
+    from: "scripts",
+    forbidden: [/^examples\//, /^test$/, /^artifacts$/],
+  },
+];
+
 function isViolation(fromZone: string, toZone: string): boolean {
-  if (fromZone === "src") {
-    return (
-      toZone.startsWith("examples/") ||
-      toZone === "test" ||
-      toZone === "scripts"
-    );
-  }
-  if (fromZone === "scripts") {
-    return toZone === "test";
-  }
   if (fromZone.startsWith("examples/") && toZone.startsWith("examples/")) {
     return fromZone !== toZone;
+  }
+  for (const rule of RULES) {
+    if (fromZone === rule.from) {
+      for (const pat of rule.forbidden) {
+        if (pat.test(toZone)) return true;
+      }
+    }
   }
   return false;
 }
@@ -80,7 +86,7 @@ type Violation = {
 };
 
 function run(): void {
-  const dirs = ["src", "test", "examples", "scripts"];
+  const dirs = ["src", "test", "examples", "scripts", "artifacts"];
   const files = dirs.flatMap((d) => walkTs(join(ROOT, d)));
 
   const violations: Violation[] = [];
