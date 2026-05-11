@@ -6,10 +6,10 @@
  */
 
 import { describe, test, expect } from "vitest";
-import { runRejectScenario, runHoldScenario, runAllowScenario } from "../../examples/consumer-example/consumer.js";
-import { runAgentRejectScenario, runAgentHoldScenario, runAgentAllowScenario } from "../../examples/agent-gate/agent.js";
-import { renderCertificate } from "../../examples/auditor-view/render-certificate.js";
-import { getRejectScenario, getHoldScenario, getAllowScenario } from "../../examples/browser-demo/scenarios.js";
+import { runRejectScenario, runHoldScenario, runAllowScenario } from "../../src/domain/builders/consumer-scenarios.js";
+import { runAgentRejectScenario, runAgentHoldScenario, runAgentAllowScenario } from "../../src/domain/builders/agent-scenarios.js";
+import { renderCertificate } from "../../src/domain/formatters/certificate.js";
+import { getRejectScenario, getHoldScenario, getAllowScenario } from "../../src/domain/builders/gate-scenarios.js";
 
 describe("Consumer example — execution gating", () => {
   test("REJECT scenario does not execute", () => {

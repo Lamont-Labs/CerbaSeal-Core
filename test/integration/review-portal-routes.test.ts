@@ -10,9 +10,9 @@ import { describe, it, expect } from "vitest";
 import { readFileSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
-import { REVIEW_SUMMARY, PILOT_READINESS, SECURITY_SUMMARY } from "../../examples/browser-demo/review-portal.js";
-import { getRejectScenario, getHoldScenario, getAllowScenario } from "../../examples/browser-demo/scenarios.js";
-import { buildDemoResponse } from "../../examples/browser-demo/response-builder.js";
+import { REVIEW_SUMMARY, PILOT_READINESS, SECURITY_SUMMARY } from "../../src/domain/review-portal-data.js";
+import { getRejectScenario, getHoldScenario, getAllowScenario } from "../../src/domain/builders/gate-scenarios.js";
+import { buildDemoResponse } from "../../src/domain/formatters/demo-response.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname  = dirname(__filename);

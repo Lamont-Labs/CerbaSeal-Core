@@ -8,8 +8,8 @@
  */
 
 import { describe, test, expect } from "vitest";
-import { getRejectScenario, getHoldScenario, getAllowScenario } from "../../examples/browser-demo/scenarios.js";
-import { buildDemoResponse } from "../../examples/browser-demo/response-builder.js";
+import { getRejectScenario, getHoldScenario, getAllowScenario } from "../../src/domain/builders/gate-scenarios.js";
+import { buildDemoResponse } from "../../src/domain/formatters/demo-response.js";
 
 describe("Browser demo scenario handlers — single call", () => {
   test("REJECT scenario returns finalState REJECT", () => {
