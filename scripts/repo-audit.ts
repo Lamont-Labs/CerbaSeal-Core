@@ -225,6 +225,48 @@ async function main(): Promise<void> {
     }
   }
 
+  // ── Check 9: demo:web:validate ───────────────────────────────────────────
+  try {
+    const out = execSync("pnpm demo:web:validate", {
+      cwd: ROOT,
+      encoding: "utf-8",
+      stdio: ["pipe", "pipe", "pipe"],
+    });
+    const m = out.match(/(\d+)\s+passed/i);
+    const count = m ? m[1] : "all";
+    pass("9. demo:web:validate passes", `${count} assertions passed`);
+  } catch (e: unknown) {
+    fail("9. demo:web:validate passes", getExecErrorMessage(e));
+  }
+
+  // ── Check 10: demo:support:validate ──────────────────────────────────────
+  try {
+    const out = execSync("pnpm demo:support:validate", {
+      cwd: ROOT,
+      encoding: "utf-8",
+      stdio: ["pipe", "pipe", "pipe"],
+    });
+    const m = out.match(/(\d+)\s+passed/i);
+    const count = m ? m[1] : "all";
+    pass("10. demo:support:validate passes", `${count} assertions passed`);
+  } catch (e: unknown) {
+    fail("10. demo:support:validate passes", getExecErrorMessage(e));
+  }
+
+  // ── Check 11: review:validate ─────────────────────────────────────────────
+  try {
+    const out = execSync("pnpm review:validate", {
+      cwd: ROOT,
+      encoding: "utf-8",
+      stdio: ["pipe", "pipe", "pipe"],
+    });
+    const m = out.match(/(\d+)\s+passed/i);
+    const count = m ? m[1] : "all";
+    pass("11. review:validate passes", `${count} assertions passed`);
+  } catch (e: unknown) {
+    fail("11. review:validate passes", getExecErrorMessage(e));
+  }
+
   // ── Summary ───────────────────────────────────────────────────────────────
   console.log("\n" + "=".repeat(52));
   const passed = results.filter((r) => r.pass).length;

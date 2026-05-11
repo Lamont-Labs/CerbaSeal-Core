@@ -275,7 +275,7 @@ assert("/one-page contains what-it-is-NOT bullets",
 assert("/one-page contains current status",
   onePageHtml.includes("Review-ready core") &&
   onePageHtml.includes("Not yet client deployed") &&
-  onePageHtml.includes("323 tests passing"));
+  onePageHtml.includes("372 tests passing"));
 assert("/one-page contains live demo proof URL",
   onePageHtml.includes("https://cerbaseal.replit.app/"));
 assert("/one-page contains limitation notice",
