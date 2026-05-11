@@ -12,29 +12,64 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { -webkit-text-size-adjust: 100%; }
+
+    /* ── Screen: dark cinematic theme ── */
+    :root {
+      --bg: #070C16; --surface: #0C1221; --surface2: #111827;
+      --border: rgba(255,255,255,0.07); --border2: rgba(255,255,255,0.13);
+      --text: #F8FAFC; --muted: #94A3B8; --dim: #64748B;
+      --green: #4ade80; --green-bg: rgba(74,222,128,0.07); --green-bdr: rgba(74,222,128,0.28);
+      --yellow: #FBD15B; --yellow-bg: rgba(251,209,91,0.07); --yellow-bdr: rgba(251,209,91,0.38);
+      --blue: #60a5fa;
+    }
+
     body {
       font-family: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #ffffff;
-      color: #18181b;
+      background: var(--bg);
+      color: var(--text);
       line-height: 1.55;
       font-size: 14.5px;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
-    }
-    .page {
-      max-width: 760px;
-      margin: 0 auto;
-      padding: 2.5rem 2rem 3rem;
+      min-height: 100vh;
     }
 
-    /* Print hint — visible on screen, hidden when printing */
+    .page {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 4rem;
+    }
+
+    /* ── Sticky nav ── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      display: flex; gap: 0.4rem; flex-wrap: wrap; align-items: center;
+      margin: -2rem -1.5rem 2.5rem; padding: 0 1.5rem; height: 52px;
+      background: rgba(7,12,22,0.88); backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+    nav a {
+      font-size: 0.79rem; font-weight: 500; color: #64748B; text-decoration: none;
+      padding: 0.3rem 0.6rem; border-radius: 5px; border: none;
+      transition: color 0.13s, background 0.13s;
+    }
+    nav a:hover { color: #F8FAFC; background: rgba(255,255,255,0.05); }
+    nav a.active { color: #F8FAFC; font-weight: 600; background: rgba(255,255,255,0.07); }
+    .nav-brand {
+      padding: 0 !important; border: none !important; background: none !important;
+      margin-right: auto; display: inline-flex !important; align-items: center; gap: 0.45rem;
+    }
+    .nav-brand img { width: 24px; height: 24px; object-fit: contain; filter: invert(1) brightness(0.9); }
+    .nav-brand span { font-weight: 700; font-size: 0.9rem; color: #F8FAFC; letter-spacing: -0.02em; }
+
+    /* ── Print hint bar ── */
     .print-hint {
-      background: #f4f4f5;
-      border: 1px solid #e4e4e7;
+      background: var(--surface);
+      border: 1px solid var(--border2);
       border-radius: 5px;
       padding: 0.6rem 0.9rem;
       font-size: 0.82rem;
-      color: #52525b;
+      color: var(--muted);
       margin-bottom: 1.75rem;
       display: flex;
       align-items: center;
@@ -43,81 +78,71 @@
     .print-hint kbd {
       font-family: "JetBrains Mono", "SF Mono", "Menlo", "Consolas", monospace;
       font-size: 0.78rem;
-      background: #ffffff;
-      border: 1px solid #d4d4d8;
+      background: var(--surface2);
+      border: 1px solid var(--border2);
       border-radius: 3px;
       padding: 0.05rem 0.35rem;
-      color: #18181b;
+      color: var(--text);
     }
     .print-hint a {
       margin-left: auto;
-      color: #2563eb;
+      color: var(--blue);
       text-decoration: none;
       font-weight: 500;
     }
 
-    /* Header */
+    /* ── Header ── */
+    .brief-header {
+      display: flex; align-items: center; gap: 0.85rem; margin-bottom: 1.75rem;
+    }
+    .brief-header img { width: 52px; height: 52px; object-fit: contain; flex-shrink: 0; filter: invert(1) brightness(0.9); }
     h1 {
-      font-size: 1.95rem;
-      font-weight: 700;
-      letter-spacing: -0.025em;
-      color: #09090b;
-      line-height: 1.2;
-      margin-bottom: 0.35rem;
+      font-size: 1.8rem; font-weight: 800; letter-spacing: -0.03em;
+      color: #F8FAFC; line-height: 1.2; margin-bottom: 0.25rem;
     }
-    .subtitle {
-      font-size: 0.92rem;
-      color: #71717a;
-      margin-bottom: 2rem;
-    }
+    .subtitle { font-size: 0.88rem; color: var(--muted); }
 
-    /* Sections */
+    /* ── Sections ── */
     section { margin-bottom: 1.4rem; }
     h2 {
-      font-size: 0.74rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.11em;
-      color: #52525b;
-      padding-bottom: 0.4rem;
-      margin-bottom: 0.7rem;
-      border-bottom: 1px solid #e4e4e7;
+      font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.11em; color: var(--dim);
+      padding-bottom: 0.4rem; margin-bottom: 0.7rem;
+      border-bottom: 1px solid var(--border);
     }
-    h2 .num {
-      display: inline-block;
-      width: 1.5rem;
-      color: #a1a1aa;
-      font-weight: 600;
-    }
+    h2 .num { display: inline-block; width: 1.5rem; color: var(--dim); font-weight: 600; }
 
-    p { color: #27272a; margin-bottom: 0.5rem; }
+    p { color: var(--muted); margin-bottom: 0.5rem; }
     ul { padding-left: 1.3rem; }
-    li { color: #27272a; margin-bottom: 0.2rem; }
+    li { color: var(--muted); margin-bottom: 0.2rem; }
 
     .definition {
       padding: 0.8rem 1rem;
-      background: #f9f9fa;
-      border-left: 3px solid #18181b;
-      border-radius: 3px;
+      background: var(--surface);
+      border-left: 3px solid var(--blue);
+      border: 1px solid var(--border2);
+      border-left: 3px solid var(--blue);
+      border-radius: 4px;
       font-size: 0.95rem;
-      color: #18181b;
+      color: var(--text);
+      font-weight: 600;
     }
 
     .status-line {
       padding: 0.75rem 1rem;
-      background: #f0fdf4;
-      border: 1px solid #bbf7d0;
-      border-left: 3px solid #16a34a;
+      background: var(--green-bg);
+      border: 1px solid var(--green-bdr);
+      border-left: 3px solid var(--green);
       border-radius: 4px;
       font-size: 0.9rem;
-      color: #14532d;
+      color: #F8FAFC;
     }
-    .status-line strong { color: #064e3b; }
+    .status-line strong { color: var(--green); }
 
     .proof-link {
       font-family: "JetBrains Mono", "SF Mono", "Menlo", "Consolas", monospace;
       font-size: 0.88rem;
-      color: #2563eb;
+      color: var(--blue);
       word-break: break-all;
       text-decoration: none;
     }
@@ -125,54 +150,76 @@
 
     .limitation {
       padding: 0.85rem 1rem;
-      background: #fffbeb;
-      border: 1px solid #fde68a;
-      border-left: 3px solid #d97706;
+      background: var(--yellow-bg);
+      border: 1px solid var(--yellow-bdr);
+      border-left: 3px solid var(--yellow);
       border-radius: 4px;
       font-size: 0.88rem;
-      color: #78350f;
+      color: var(--muted);
     }
-    .limitation strong { color: #451a03; }
+    .limitation strong { color: var(--yellow); }
 
     .meta {
       margin-top: 2rem;
       padding-top: 0.95rem;
-      border-top: 1px solid #e4e4e7;
+      border-top: 1px solid var(--border);
       font-size: 0.78rem;
-      color: #71717a;
+      color: var(--dim);
       display: flex;
       justify-content: space-between;
       flex-wrap: wrap;
       gap: 0.5rem;
     }
-    .meta a { color: #52525b; text-decoration: none; }
-    .meta a:hover { color: #18181b; text-decoration: underline; }
+    .meta a { color: var(--dim); text-decoration: none; }
+    .meta a:hover { color: var(--text); }
 
-    /* Print rules */
+    /* ── Print rules: override back to white/readable ── */
     @media print {
-      body { background: #ffffff; }
+      body { background: #ffffff; color: #18181b; }
       .page { padding: 0.5in; max-width: none; }
+      nav { display: none; }
       .print-hint { display: none; }
       a { color: #18181b; text-decoration: none; }
       .proof-link { color: #18181b; }
-      h1 { font-size: 1.7rem; }
+      h1 { font-size: 1.7rem; color: #09090b; }
+      h2 { color: #52525b; border-bottom-color: #e4e4e7; }
+      p, li { color: #27272a; }
+      .definition { background: #f9f9fa; border-color: #18181b; border-left-color: #18181b; color: #18181b; }
+      .status-line { background: #f0fdf4; border-color: #bbf7d0; border-left-color: #16a34a; color: #14532d; }
+      .status-line strong { color: #064e3b; }
+      .limitation { background: #fffbeb; border-color: #fde68a; border-left-color: #d97706; color: #78350f; }
+      .limitation strong { color: #451a03; }
+      .meta { border-top-color: #e4e4e7; color: #71717a; }
+      .meta a { color: #52525b; }
+      .proof-link { color: #2563eb; }
       section { page-break-inside: avoid; }
+      .subtitle { color: #71717a; }
     }
   </style>
 </head>
 <body>
 <div class="page">
 
+  <nav>
+    <a href="/" class="nav-brand"><img src="/assets/cerbaseal-logo-primary.png" alt="CerbaSeal" /><span>CerbaSeal</span></a>
+    <a href="/">Demo</a>
+    <a href="/review">Review</a>
+    <a href="/pilot">Pilot</a>
+    <a href="/security">Security</a>
+    <a href="/deployment">Deployment</a>
+    <a href="/one-page" class="active">Brief</a>
+  </nav>
+
   <div class="print-hint">
     <span>Print this page (<kbd>Ctrl</kbd>/<kbd>⌘</kbd>+<kbd>P</kbd>) and choose <strong>Save as PDF</strong> to export.</span>
     <a href="/">← back to demo</a>
   </div>
 
-  <div style="display:flex;align-items:center;gap:0.85rem;margin-bottom:1.5rem;">
-    <img src="/assets/cerbaseal-logo-primary.png" style="width:52px;height:52px;object-fit:contain;flex-shrink:0;" alt="CerbaSeal" />
+  <div class="brief-header">
+    <img src="/assets/cerbaseal-logo-primary.png" alt="CerbaSeal" />
     <div>
-      <h1 style="margin-bottom:0.2rem;">CerbaSeal — System Brief</h1>
-      <p class="subtitle" style="margin-bottom:0;">v0.1.0 · Review Candidate · A one-page summary for reviewers, pilot decision-makers, and handoff.</p>
+      <h1>CerbaSeal — System Brief</h1>
+      <p class="subtitle">v0.1.0 · Review Candidate · A one-page summary for reviewers, pilot decision-makers, and handoff.</p>
     </div>
   </div>
 
@@ -235,7 +282,7 @@
 
   <div class="meta">
     <span>CerbaSeal v0.1.0 · System Brief · Status: Review Candidate</span>
-    <span class="nav-links" style="display:flex;gap:0.85rem;flex-wrap:wrap;">
+    <span style="display:flex;gap:0.85rem;flex-wrap:wrap;">
       <a href="/">Demo</a>
       <a href="/review">Review</a>
       <a href="/pilot">Pilot</a>
