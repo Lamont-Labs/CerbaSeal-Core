@@ -24,6 +24,7 @@
     "review:validate": "tsx examples/browser-demo/validate-review-portal.ts",
     "demo:all": "pnpm demo && pnpm demo:consumer && pnpm demo:agent && pnpm demo:audit && pnpm demo:support",
     "check:imports": "tsx scripts/check-imports.ts",
+    "check:invariants": "tsx scripts/check-invariant-coverage.ts",
     "audit:repo": "tsx scripts/repo-audit.ts",
     "report:hash": "ts-node scripts/hash-report.ts",
     "report:list": "cat docs/reports/adversarial/index.json"

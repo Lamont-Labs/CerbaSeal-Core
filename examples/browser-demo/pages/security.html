@@ -238,6 +238,83 @@
     </table>
   </section>
 
+  <!-- Invariant Coverage -->
+  <section class="section">
+    <div class="section-title">Invariant coverage</div>
+    <p>Every structural invariant enforced by the gate is linked to at least one covering test file. Verified by <code>pnpm check:invariants</code>.</p>
+    <table class="control-table">
+      <thead>
+        <tr>
+          <th>Invariant</th>
+          <th>Statement</th>
+          <th>Covering tests</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="inv-tag">INV-01</span> no_policy_pack_no_execution</td>
+          <td>No execution without policy pack reference</td>
+          <td class="tested-yes">execution-gate-service.test.ts<br>adversarial-integrity.test.ts</td>
+        </tr>
+        <tr>
+          <td><span class="inv-tag">INV-02</span> no_provenance_no_action</td>
+          <td>No action without complete provenance</td>
+          <td class="tested-yes">execution-gate-service.test.ts<br>adversarial-integrity.test.ts</td>
+        </tr>
+        <tr>
+          <td><span class="inv-tag">INV-03</span> no_required_approval_no_release</td>
+          <td>Valid approval must exist before release</td>
+          <td class="tested-yes">execution-gate-service.test.ts<br>misuse-scenarios.test.ts<br>adversarial-integrity.test.ts<br>contextual-boundary.test.ts</td>
+        </tr>
+        <tr>
+          <td><span class="inv-tag">INV-04</span> no_logging_no_execution</td>
+          <td>Logging precondition must pass before execution</td>
+          <td class="tested-yes">execution-gate-service.test.ts<br>misuse-scenarios.test.ts<br>adversarial-integrity.test.ts</td>
+        </tr>
+        <tr>
+          <td><span class="inv-tag">INV-05</span> ai_non_authoritative</td>
+          <td>AI may propose but may not authorize</td>
+          <td class="tested-yes">execution-gate-service.test.ts<br>non-forgery.test.ts<br>adversarial-integrity.test.ts<br>contextual-boundary.test.ts</td>
+        </tr>
+        <tr>
+          <td><span class="inv-tag">INV-06</span> no_bypass_of_execution_gate</td>
+          <td>All consequential actions must pass through the gate</td>
+          <td class="tested-yes">non-forgery.test.ts<br>misuse-scenarios.test.ts</td>
+        </tr>
+        <tr>
+          <td><span class="inv-tag">INV-07</span> immutable_decision_envelope</td>
+          <td>Decision envelopes are immutable governed artifacts</td>
+          <td class="tested-yes">execution-gate-service.test.ts<br>adversarial-integrity.test.ts</td>
+        </tr>
+        <tr>
+          <td><span class="inv-tag">INV-08</span> stale_controls_block_sensitive_release</td>
+          <td>Stale or invalid controls block sensitive release</td>
+          <td class="tested-yes">execution-gate-service.test.ts<br>misuse-scenarios.test.ts<br>adversarial-integrity.test.ts</td>
+        </tr>
+        <tr>
+          <td><span class="inv-tag">INV-09</span> trust_state_required</td>
+          <td>Trust state must be valid before release</td>
+          <td class="tested-yes">execution-gate-service.test.ts<br>misuse-scenarios.test.ts<br>adversarial-integrity.test.ts</td>
+        </tr>
+        <tr>
+          <td><span class="inv-tag">INV-10</span> prohibited_use_must_block</td>
+          <td>Prohibited requests must not proceed</td>
+          <td class="tested-yes">execution-gate-service.test.ts<br>misuse-scenarios.test.ts<br>adversarial-integrity.test.ts</td>
+        </tr>
+        <tr>
+          <td><span class="inv-tag">INV-11</span> request_schema_and_action_class_valid</td>
+          <td>Malformed requests and unknown action classes fail closed</td>
+          <td class="tested-yes">execution-gate-service.test.ts<br>misuse-scenarios.test.ts<br>adversarial-integrity.test.ts<br>fail-closed.test.ts</td>
+        </tr>
+        <tr>
+          <td><span class="inv-tag">INV-12</span> proposal_and_request_action_must_match</td>
+          <td>Proposal action must match declared request action exactly</td>
+          <td class="tested-yes">execution-gate-service.test.ts<br>misuse-scenarios.test.ts<br>adversarial-integrity.test.ts</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
   <!-- Review questions -->
   <section class="section">
     <div class="section-title">Recommended reviewer questions</div>

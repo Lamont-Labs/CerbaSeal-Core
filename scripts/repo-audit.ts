@@ -279,6 +279,20 @@ async function main(): Promise<void> {
     fail("12. No architectural import boundary violations", getExecErrorMessage(e));
   }
 
+  // ── Check 13: Invariant coverage — all invariants have covering tests ─────
+  try {
+    const out = execSync("pnpm check:invariants", {
+      cwd: ROOT,
+      encoding: "utf-8",
+      stdio: ["pipe", "pipe", "pipe"],
+    });
+    const m = out.match(/(\d+)\s*\/\s*(\d+)\s+invariants?\s+covered/i);
+    const summary = m ? `${m[1]} / ${m[2]} invariants covered` : "all invariants covered";
+    pass("13. All invariants linked to covering tests", summary);
+  } catch (e: unknown) {
+    fail("13. All invariants linked to covering tests", getExecErrorMessage(e));
+  }
+
   // ── Summary ───────────────────────────────────────────────────────────────
   console.log("\n" + "=".repeat(52));
   const passed = results.filter((r) => r.pass).length;
