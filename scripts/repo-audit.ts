@@ -11,13 +11,34 @@ const results: Result[] = [];
 
 function pass(name: string, reason: string): void {
   results.push({ name, pass: true, reason });
-  console.log(`  ✓ PASS  ${name}`);
+  console.log(`  ✓ PASS  ${name} — ${reason}`);
 }
 
 function fail(name: string, reason: string): void {
   results.push({ name, pass: false, reason });
   console.log(`  ✗ FAIL  ${name}`);
   console.log(`         → ${reason}`);
+}
+
+function getErrorMessage(e: unknown): string {
+  if (e instanceof Error) return e.message;
+  return String(e);
+}
+
+function getExecErrorMessage(e: unknown): string {
+  if (
+    e !== null &&
+    typeof e === "object" &&
+    ("stdout" in e || "stderr" in e)
+  ) {
+    const o = e as Record<string, unknown>;
+    const combined = [String(o["stdout"] ?? ""), String(o["stderr"] ?? "")].join("\n");
+    const firstMeaningful =
+      combined.split("\n").find((l) => l.includes("error TS")) ??
+      combined.split("\n").find((l) => l.trim().length > 0);
+    if (firstMeaningful) return firstMeaningful.trim();
+  }
+  return getErrorMessage(e);
 }
 
 function walkTs(dir: string): string[] {
@@ -35,14 +56,14 @@ function httpGet(port: number, path: string): Promise<number> {
   return new Promise((resolve) => {
     const req = http.get(
       { hostname: "127.0.0.1", port, path, timeout: 3000 },
-      (res) => { res.resume(); resolve(res.statusCode ?? 0); }
+      (res) => { res.resume(); resolve(res.statusCode ?? 0); },
     );
     req.on("error", () => resolve(0));
     req.on("timeout", () => { req.destroy(); resolve(0); });
   });
 }
 
-async function waitForServer(port: number, retries = 24): Promise<boolean> {
+async function waitForServer(port: number, retries = 28): Promise<boolean> {
   for (let i = 0; i < retries; i++) {
     if (await httpGet(port, "/") === 200) return true;
     await new Promise((r) => setTimeout(r, 250));
@@ -66,33 +87,30 @@ async function main(): Promise<void> {
       stdio: ["pipe", "pipe", "pipe"],
     });
     const m = out.match(/Tests\s+(\d+)\s+passed/);
-    testCount = m ? parseInt(m[1]) : 0;
+    testCount = m ? parseInt(m[1], 10) : 0;
     pass("1. Full test suite passes", `${testCount} tests passed`);
-  } catch (e: any) {
-    const msg = ((e.stdout ?? "") + (e.message ?? "")).split("\n").find((l: string) => l.trim()) ?? "pnpm test failed";
-    fail("1. Full test suite passes", msg);
+  } catch (e: unknown) {
+    fail("1. Full test suite passes", getExecErrorMessage(e));
   }
 
-  // ── Check 2: TypeScript compiles without errors (src/ only) ─────────────
+  // ── Check 2: TypeScript compiles without errors ───────────────────────────
   try {
-    execSync("npx tsc --noEmit -p tsconfig.src.json", {
+    execSync("npx tsc --noEmit -p tsconfig.json", {
       cwd: ROOT,
       encoding: "utf-8",
       stdio: ["pipe", "pipe", "pipe"],
     });
-    pass("2. TypeScript compiles without errors", "tsc --noEmit (src/) clean");
-  } catch (e: any) {
-    const out = ((e.stdout ?? "") + (e.stderr ?? ""));
-    const firstError = out.split("\n").find((l: string) => l.includes("error TS")) ?? out.split("\n").find((l: string) => l.trim()) ?? "tsc errors found";
-    fail("2. TypeScript compiles without errors", firstError.trim());
+    pass("2. TypeScript compiles without errors", "tsc --noEmit clean");
+  } catch (e: unknown) {
+    fail("2. TypeScript compiles without errors", getExecErrorMessage(e));
   }
 
   // ── Check 3: README anchor strings ───────────────────────────────────────
   const anchors = [
     { label: "enforcement boundary statement", value: "execution enforcement boundary" },
-    { label: "proof section",                 value: "Proven at runtime" },
-    { label: "demo URL",                      value: "https://cerbaseal.replit.app/" },
-    { label: "version string",                value: "0.1.0" },
+    { label: "proof section",                  value: "Proven at runtime" },
+    { label: "demo URL",                       value: "https://cerbaseal.replit.app/" },
+    { label: "version string",                 value: "0.1.0" },
   ];
   const missing = anchors.filter((a) => !readme.includes(a.value));
   if (missing.length === 0) {
@@ -110,13 +128,25 @@ async function main(): Promise<void> {
   {
     const serverProc = spawn("pnpm", ["demo:web"], {
       cwd: ROOT,
+      detached: true,
       env: { ...process.env, PORT: String(AUDIT_PORT) },
       stdio: "pipe",
     });
+    serverProc.unref();
+
+    const killServer = (): void => {
+      try {
+        if (serverProc.pid !== undefined) {
+          process.kill(-serverProc.pid, "SIGTERM");
+        }
+      } catch {
+        try { serverProc.kill("SIGTERM"); } catch { /* already gone */ }
+      }
+    };
 
     const ready = await waitForServer(AUDIT_PORT);
     if (!ready) {
-      serverProc.kill("SIGTERM");
+      killServer();
       fail("4. All portal routes respond 200", "server did not become ready within timeout");
     } else {
       const routeFails: string[] = [];
@@ -124,8 +154,8 @@ async function main(): Promise<void> {
         const code = await httpGet(AUDIT_PORT, route);
         if (code !== 200) routeFails.push(`${route} → HTTP ${code}`);
       }
-      serverProc.kill("SIGTERM");
-      await new Promise((r) => setTimeout(r, 300));
+      killServer();
+      await new Promise((r) => setTimeout(r, 400));
 
       if (routeFails.length === 0) {
         pass("4. All portal routes respond 200", `${ROUTES.length} routes checked`);
@@ -159,7 +189,7 @@ async function main(): Promise<void> {
   {
     const regPath = join(ROOT, "architecture", "invariants", "invariant-registry.yaml");
     if (!existsSync(regPath)) {
-      fail("6. Invariant registry exists and is non-empty", "file not found at architecture/invariants/invariant-registry.yaml");
+      fail("6. Invariant registry exists and is non-empty", "file not found");
     } else {
       const content = readFileSync(regPath, "utf-8").trim();
       if (content.length === 0) {
@@ -182,9 +212,9 @@ async function main(): Promise<void> {
   {
     const m = readme.match(/(\d+)\s*\/\s*\d+\s*tests?\s*passing/i);
     if (!m) {
-      fail("8. Test count in README matches actual", "no test count pattern (N / N tests passing) found in README");
+      fail("8. Test count in README matches actual", 'no "N / N tests passing" pattern found in README');
     } else {
-      const readmeCount = parseInt(m[1]);
+      const readmeCount = parseInt(m[1], 10);
       if (testCount === 0) {
         fail("8. Test count in README matches actual", "actual test count unknown (check 1 failed)");
       } else if (readmeCount === testCount) {
@@ -206,10 +236,11 @@ async function main(): Promise<void> {
     process.exit(1);
   } else {
     console.log("Status: PASS\n");
+    process.exit(0);
   }
 }
 
-main().catch((e) => {
-  console.error("Audit script error:", e);
+main().catch((e: unknown) => {
+  console.error("Audit script error:", getErrorMessage(e));
   process.exit(1);
 });
