@@ -143,7 +143,26 @@ CerbaSeal is designed to be embedded as a deterministic enforcement layer.
 
 ## Status
 
+Version: 0.1.0
+
 - Full test suite passing
 - Audit coverage complete
 - Reviewer & pilot portal live (`pnpm demo:web` → `/review`, `/pilot`, `/security`, `/deployment`)
 - Brand system: CerbaSeal mark integrated across all portal pages (`docs/positioning/cerbaseal-brand-system.md`)
+
+---
+
+## Known Limitations
+
+These are accurate as of v0.1.0 and are stated without softening.
+
+- Audit log is in-memory — not persisted across process restarts
+- No cryptographic signing — evidence is hash-linked, not key-signed or attested
+- No identity provider — actor identity is caller-supplied with no independent attestation
+- No persistent storage — all state exists per process instance
+- No production deployment hardening
+- No third-party security review completed
+- loggingReady is caller-declared — gate does not verify actual log system health
+- Hash chain proves consistency, not origin authenticity
+
+These limitations are documented and visible to reviewers. See `/security` portal page for the full control inventory and known-limitations list.
