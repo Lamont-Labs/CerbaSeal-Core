@@ -1,26 +1,34 @@
 # CerbaSeal
 
-CerbaSeal is an enforcement layer for high-risk AI actions.
+CerbaSeal is deterministic execution governance infrastructure.
 
-A deterministic gate between AI intent and real-world execution.
+It enforces an authorization boundary between AI-generated decisions and real-world execution — ensuring every consequential action is governed, evidenced, and reproducible before it runs.
 
-Most AI systems rely on policy. CerbaSeal enforces it.
+CerbaSeal enforces authority — not judgment.
 
 It guarantees:
-- AI systems cannot authorize themselves
-- Required approvals cannot be bypassed
-- Every decision produces verifiable evidence
+- AI systems cannot authorize their own proposals
+- Required human approvals cannot be bypassed
+- Every decision produces a verifiable, replayable evidence bundle
+- Unexpected failures produce governed outcomes, not uncaught exceptions
 
-Proven at runtime:
+---
 
-- 372 / 372 tests passing (15 test files)
-- Adversarial audit complete
-- Fail-closed behavior validated
-- REJECT / HOLD / ALLOW runtime demo
-- Non-forgery protection
-- Misuse + boundary condition tests
+## Governance Properties
 
-Designed for rapid external review — demo, proof, and audit path with zero setup.
+These are what distinguish CerbaSeal from middleware or policy tooling:
+
+**Invariant enforcement** — 12 hard invariants govern every execution path. Each is linked to its covering tests. None can be silently bypassed.
+
+**Replayability** — every evidence bundle can be re-evaluated through the same gate and will produce the same outcome. Outcomes are not just logged — they are reproducible.
+
+**Proof exportability** — `pnpm export:proof` emits a sealed proof snapshot. The `stableChecksum` field is a SHA-256 hash of all enforcement-state fields (invariants, test results, validators) excluding timestamps. It is stable across runs on an unchanged repo, and changes when enforcement state changes. Reviewers can compare it across time.
+
+**Self-auditing** — `pnpm audit:repo` runs 13 automated checks against the repo's own governance integrity: test suite, type coverage, import boundaries, invariant linkage, validator assertions, and documentation consistency. The repo enforces its own structural constraints.
+
+**Boundary enforcement** — architectural import rules prevent test code from leaking into source, example contamination, and cross-example coupling. Enforced by `pnpm check:imports` at 4 boundary rules.
+
+**Fail-closed model** — unexpected runtime exceptions produce a controlled REJECT outcome, registered in the evidence layer. No unhandled error propagates to the caller.
 
 ---
 
@@ -68,6 +76,27 @@ It is not a dashboard, policy system, or domain application.
 
 ---
 
+## Proven at runtime
+
+Current enforcement state (stable across runs on this commit):
+
+```
+stableChecksum: 7695187faf66906d868c5c4764fd6068e7ddbe0b1f69933e47a85d67c0d08ec0
+```
+
+- 372 / 372 tests passing (15 test files)
+- 13 / 13 audit checks passing
+- 12 / 12 invariants covered and linked to tests
+- Adversarial integrity audit complete (phases 2–7)
+- Fail-closed behavior validated
+- Non-forgery protection verified
+- Misuse + boundary condition tests
+- Import boundary violations: 0
+
+Run `pnpm export:proof` to regenerate. Run `pnpm audit:repo` to verify all 13 checks independently.
+
+---
+
 ## Support Readiness
 
 CerbaSeal includes support-readiness utilities intended to reduce pilot support burden.
@@ -112,9 +141,9 @@ These artifacts are designed to show how CerbaSeal can be reviewed, demonstrated
 ## What It Does
 
 CerbaSeal sits between AI systems and execution layers and determines whether an action is:
-- REJECTED (invalid authority)
-- HELD (missing required conditions)
-- ALLOWED (fully authorized)
+- REJECTED (hard invariant failed)
+- HELD (required approval missing)
+- ALLOWED (all conditions satisfied)
 
 CerbaSeal is domain-agnostic.  
 The included demo uses a regulated-system reference workflow as an example, but the enforcement model applies to any high-risk action system.
@@ -123,6 +152,8 @@ The included demo uses a regulated-system reference workflow as an example, but 
 
 CerbaSeal enforces authorization at execution time.  
 It does not determine whether an action is the correct one to take.
+
+The enforcement boundary is explicit and tested: `test/security/contextual-boundary.test.ts` documents 25 cases where structurally valid, properly authorized requests ALLOW even when the decision might be contextually poor. That precision is intentional.
 
 See: [docs/architecture/enforcement-boundary.md](docs/architecture/enforcement-boundary.md)
 

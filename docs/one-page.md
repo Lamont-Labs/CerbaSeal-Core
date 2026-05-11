@@ -1,10 +1,10 @@
-# CerbaSeal-Core — One Page
+# CerbaSeal — One Page
 
 ## What It Is
 
-CerbaSeal-Core is a deterministic enforcement gate for AI-assisted systems.
+CerbaSeal is deterministic execution governance infrastructure.
 
-It sits between decision-making systems and execution systems, ensuring that consequential actions cannot execute unless they satisfy a complete invariant check set.
+It sits between decision-making systems and execution systems, enforcing an authorization boundary that ensures consequential actions cannot run unless they satisfy a complete invariant check set.
 
 CerbaSeal enforces authority — not judgment.
 
@@ -28,11 +28,11 @@ CerbaSeal evaluates every governed request before execution.
 
 Every request produces exactly one outcome:
 
-- **REJECT** — action refused outright because a hard requirement failed
+- **REJECT** — action refused outright because a hard invariant failed
 - **HOLD** — action paused because required human approval is missing
 - **ALLOW** — action authorized because all required conditions passed
 
-Every outcome produces evidence.
+Every outcome produces a verifiable, replayable evidence bundle.
 
 Nothing is silently discarded.
 
@@ -47,8 +47,22 @@ CerbaSeal guarantees that:
 - required human approval cannot be bypassed
 - approval artifacts must be bound to the request they approve
 - forged gate results cannot enter the evidence layer
-- unexpected runtime errors fail closed
+- unexpected runtime errors fail closed, producing a governed REJECT
 - all outcomes are recorded with hash-linked evidence
+
+---
+
+## Governance Properties
+
+**Invariant enforcement** — 12 hard invariants govern every execution path. Each is linked to its covering tests. None can be silently bypassed.
+
+**Replayability** — every evidence bundle can be re-evaluated and will produce the same outcome. Outcomes are reproducible, not just logged.
+
+**Proof exportability** — `pnpm export:proof` emits a sealed proof snapshot. The `stableChecksum` is a SHA-256 hash of enforcement-state fields stable across runs. Reviewers can compare it across time to detect governance drift.
+
+**Self-auditing** — `pnpm audit:repo` runs 13 automated checks against the repo's own governance integrity: tests, type coverage, import boundaries, invariant linkage, and validator assertions.
+
+**Fail-closed model** — unexpected runtime exceptions produce a controlled REJECT registered in the evidence layer. No exception propagates to the caller unhandled.
 
 ---
 
@@ -62,53 +76,31 @@ pnpm demo:web
 
 Then click:
 
-- AI tries to act without authority
-- Human submits action without approval
-- Approved action
+- AI tries to act without authority → REJECT
+- Human submits action without approval → HOLD
+- Approved action → ALLOW
 
 This shows the full enforcement loop visually in under one minute.
 
----
-
-## What The Demo Shows
-
-The live demo proves the full enforcement loop:
-
-- **REJECT** — AI self-authorization is blocked
-- **HOLD** — missing approval pauses execution
-- **ALLOW** — valid approval produces release authorization
-
-Run:
-
-```
-pnpm demo
-```
-
-Expected output:
-
-```
-REJECT — AI self-authorization blocked
-HOLD — missing approval paused
-ALLOW — valid approved request released
-```
+Or open the hosted demo directly: **https://cerbaseal.replit.app/**
 
 ---
 
-## Current Proof
+## Verified State
 
-Current proof package:
+Current enforcement state (stable across runs on this commit):
 
-- 323 / 323 passing tests (15 test files)
-- adversarial integrity tests
-- misuse scenario tests
-- contextual boundary tests
-- fail-closed tests
-- non-forgery tests
-- full REJECT / HOLD / ALLOW runtime demo
-- documented enforcement boundary
-- domain-agnostic reference workflow
-- integration documentation
-- deployment mode documentation
+```
+stableChecksum: 7695187faf66906d868c5c4764fd6068e7ddbe0b1f69933e47a85d67c0d08ec0
+```
+
+- 372 / 372 tests passing (15 test files)
+- 13 / 13 audit checks passing
+- 12 / 12 invariants covered and linked to tests
+- Adversarial integrity audit complete
+- Fail-closed behavior validated
+- Non-forgery protection verified
+- Import boundary violations: 0
 
 ---
 
@@ -126,7 +118,7 @@ Contextual correctness remains the responsibility of:
 
 A structurally valid and properly authorized request may be allowed even if the decision itself is contextually poor.
 
-This is intentional.
+This is intentional. The boundary is explicit and tested.
 
 CerbaSeal enforces authority — not judgment.
 
