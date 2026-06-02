@@ -92,41 +92,49 @@ To make the model concrete, the following describes how the bounded autonomy mod
 **Workflow class:** `fraud_triage`  
 **Jurisdiction:** EU
 
-**Scope policy:**
-- Permitted actions: `escalate`, `hold`
-- Authority role: proposal only — `authorityBearing: false`
-- Workflows requiring approval: `fraud_triage` (hardcoded — cannot be overridden)
-- Required approver class: `reviewer` or higher
-- Privileged auth required: `true`
-- Prohibited use: unconditional block
-- Control currency: required (sensitive workflow)
-- Trust state: required
-- Policy pack: required (`policy_fraud_v1`)
-- Provenance: required (model version + rule set + source hash)
-- Logging: required
+### Permitted Actions
 
-**What the AI can do:**
-- Propose `escalate` with confidence score and reason codes
-- Propose `hold` with confidence score and reason codes
+The fraud triage agent is scoped to two action classes: `escalate` and `hold`.
 
-**What the AI cannot do:**
-- Approve its own proposal (INV-05)
-- Propose `allow` or `reject` for this workflow (INV-12)
-- Bypass the gate and construct a release authorization directly (INV-06)
-- Omit provenance and expect the gate to fill it in (INV-02)
-- Mark `prohibitedUse: true` and expect any other outcome (INV-10)
+Any proposal naming a different action class (`allow`, `reject`, `account_hold`) is rejected by INV-11 or INV-12 before any other evaluation occurs. The agent cannot propose outside this set regardless of what the caller supplies.
 
-**What must happen before release:**
-- A human reviewer with `reviewer` or higher authority class must supply an approval artifact
-- The approval must be bound to the exact requestId being evaluated (`forRequestId === requestId`)
-- The approval must carry a non-empty `immutableSignature`
-- `privilegedAuthSatisfied: true` must be affirmed
-- `criticalControlsValid: true` and `stale: false` must be present
-- `trustState.trusted: true` must be present
+### Blocked Actions
 
-**Outcome:**
-- ALLOW: release authorization issued, evidence bundle produced, audit chain extended
-- HOLD: approval artifact missing or invalid — action suspended, accountability record created
+The following are unconditionally blocked regardless of proposal content, caller flags, or operator configuration:
+
+- **AI self-authorization** — the agent cannot act as its own approver; `authorityBearing: false` is required. Violation triggers INV-05 → REJECT.
+- **Ungoverned execution** — absent policy pack reference is rejected by INV-01. The agent cannot declare itself ungoverned.
+- **Untraceable proposals** — absent or incomplete provenance (model version, rule set version, source hash) is rejected by INV-02.
+- **Prohibited use requests** — any request with `prohibitedUse: true` is unconditionally rejected by INV-10. No exception path exists.
+- **Execution without audit** — `loggingReady: false` is rejected by INV-04.
+- **Stale controls for this sensitive workflow** — `criticalControlsValid: false` or `stale: true` is rejected by INV-08.
+- **Invalid trust state** — `trustState.trusted: false` is rejected by INV-09.
+
+### Escalation Triggers
+
+The following conditions cause the gate to produce a HOLD rather than a REJECT, suspending execution until the condition is resolved:
+
+- **Approval artifact absent** — `approvalArtifact: null` when `approvalRequired: true` or workflowClass is `fraud_triage`. The gate issues HOLD; the requesting system must obtain approval and resubmit.
+- **Approval bound to wrong request** — `forRequestId !== requestId`. The approval was issued for a different request and cannot be reused. Gate issues HOLD pending a correctly bound approval.
+- **Invalid approver authority class** — approver does not hold `analyst`, `reviewer`, `manager`, or `compliance_officer` authority. Gate issues HOLD pending a qualified approver.
+- **Privileged authorization not satisfied** — `privilegedAuthSatisfied: false`. Gate issues HOLD pending privileged authorization affirmation.
+- **Approval signature absent** — `immutableSignature` is empty. Gate issues HOLD pending a signed approval.
+
+HOLD is not a bypass. The gate does not release on HOLD. The request must be resubmitted with a valid approval artifact.
+
+### Authority Boundaries
+
+| Role | Permitted action | Prohibited action |
+|------|-----------------|-------------------|
+| AI fraud scoring model | Propose `escalate` or `hold` | Authorize, approve, sign, or self-release |
+| Human reviewer (authority class `reviewer` or higher) | Supply a valid approval artifact | None — human authority is the release condition |
+| Caller / application code | Construct and submit a GovernedRequest | Construct a GateResult directly (blocked by INV-06 at evidence layer) |
+
+The AI authority boundary is not a policy setting. It is enforced by INV-05 as a hard invariant that cannot be configured away, overridden by a policy pack, or bypassed by setting caller flags.
+
+**Outcome summary:**
+- ALLOW: all 13 gate checks pass — release authorization issued, evidence bundle produced, audit chain extended
+- HOLD: approval condition not met — action suspended, accountability record created
 - REJECT: any hard invariant failed — action permanently blocked, accountability record created
 
 ---
@@ -145,26 +153,33 @@ To make the model concrete, the following describes how the bounded autonomy mod
 
 ## How CerbaSeal Enforces This
 
-When `ExecutionGateService.evaluate()` receives a `GovernedRequest`, the gate applies its invariant check sequence in order. The sequence is the runtime expression of the Execution Scope Policy:
+When `ExecutionGateService.evaluate()` receives a `GovernedRequest`, the gate applies its invariant checks in the following runtime order. The sequence is the executable expression of the Execution Scope Policy.
 
-| Gate phase | Invariant(s) applied | Scope policy rule enforced |
-|-----------|---------------------|---------------------------|
-| 1. Policy authorization | INV-01 | Policy pack must be present — ungoverned execution rejected |
-| 2. Decision provenance | INV-02 | Decision origin must be traceable — anonymous proposals rejected |
-| 3. Human authorization | INV-03 | Required human approval must be present, bound, and signed |
-| 4. Audit readiness | INV-04 | Logging must be ready before execution proceeds |
-| 5. AI authority boundary | INV-05 | AI actor cannot authorize its own proposal |
-| 6. Gate integrity | INV-06 | Result must originate from this gate — forged artifacts rejected |
-| 7. Decision record integrity | INV-07 | Decision envelope must be treated as immutable |
-| 8. Control currency | INV-08 | Controls must be current for sensitive workflows |
-| 9. Trust state | INV-09 | Trust state must be valid — absent trust blocks release |
-| 10. Prohibited use | INV-10 | Prohibited classification triggers unconditional rejection |
-| 11. Request integrity | INV-11 | Action class must be recognized — unknown classes rejected |
-| 12. Proposal binding | INV-12 | Proposal action must match declared request action |
+**Checks inside `evaluate()`** — applied in sequence; first failure exits with HOLD or REJECT:
 
-Every step must pass. A failure at any step produces HOLD or REJECT. The gate does not proceed past a failure and does not attempt to recover or compensate.
+| Step | Invariant | Scope policy rule enforced |
+|------|-----------|---------------------------|
+| 1 | INV-11 | Request schema must be valid — malformed requests rejected before any other check |
+| 2 | INV-11 | Proposed action class must be recognized — out-of-scope actions rejected |
+| 3 | INV-11 | Proposal action class must be recognized — proposal cannot name an unknown action |
+| 4 | INV-12 | Proposed and proposal action classes must match exactly — drift is rejected |
+| 5 | INV-01 | Policy pack reference must be present — ungoverned execution rejected |
+| 6 | INV-02 | Decision provenance must be complete — untraceable proposals rejected |
+| 7 | INV-04 | Logging must be ready — execution without audit path is rejected |
+| 8 | INV-05 | AI actor may not be authority-bearing — AI cannot authorize its own proposal |
+| 9 | INV-10 | Prohibited use must block — prohibited requests rejected unconditionally |
+| 10 | INV-08 | Controls must be current for sensitive workflows — stale controls block release |
+| 11 | INV-09 | Trust state must be valid — absent or invalid trust state blocks release |
+| 12 | INV-03 | Required human approval must be present, bound to this request, and validly signed |
+| 13 | INV-07 | Decision envelope is marked immutable at creation — treated as a governed artifact |
 
-The full invariant check sequence is the Execution Scope Policy in executable form.
+**Gate integrity check — enforced outside `evaluate()`:**
+
+INV-06 is enforced downstream, not inside `evaluate()`. The `EvidenceBundleService` calls `assertIsGateIssued()`, which checks a module-private `WeakSet` registry that `evaluate()` populates with every `GateResult` it produces. Any `GateResult` not in the registry — including manually constructed objects — is rejected before an evidence bundle can be created. This means INV-06 cannot be satisfied by bypassing the gate; the bypass is detected at the evidence layer.
+
+Every check in `evaluate()` must pass. A failure at any step produces HOLD or REJECT immediately. The gate does not skip checks or attempt recovery.
+
+The full check sequence is the Execution Scope Policy in executable form.
 
 ---
 
