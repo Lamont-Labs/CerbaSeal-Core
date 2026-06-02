@@ -90,3 +90,25 @@ This separation is critical for regulatory mapping. CerbaSeal enforces authority
 Contextual correctness — the judgment of whether an action is good — remains with human reviewers, domain-specific policy systems, and upstream decision logic.
 
 `CerbaSeal enforces authority — not judgment.`
+
+---
+
+## Quick Reference: Technical ↔ Governance Mapping
+
+| If you see this technical term… | Read it as… |
+|----------------------------------|-------------|
+| invariant violation | control failure / policy breach |
+| REJECT outcome | unauthorized execution blocked |
+| HOLD outcome | execution suspended pending approval |
+| ALLOW outcome | authorized execution released |
+| proposal boundary check | AI authority boundary enforcement |
+| forged GateResult rejected | tamper attempt detected and blocked |
+| stableChecksum mismatch | governance state drift detected |
+| replay divergence | auditability failure / non-reproducible outcome |
+| fail-closed on exception | safe failure mode / default-deny execution |
+| evidence bundle | accountability record / governance artifact |
+| hash-linked audit log | tamper-evident audit trail |
+| loggingReady = false | audit readiness requirement unmet |
+| approvalArtifact missing | human oversight requirement unmet |
+| policyPackRef missing | policy authorization requirement unmet |
+| provenanceRef missing | decision provenance requirement unmet |

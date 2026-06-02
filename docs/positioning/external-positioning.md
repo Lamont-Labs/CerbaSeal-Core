@@ -72,7 +72,7 @@ CerbaSeal uses precise technical language internally. Enterprise governance revi
 | AI authority boundary (INV-05) | AI may propose — AI may not authorize |
 | Forged GateResult rejected | Tamper attempt detected and blocked |
 
-Full translation reference: [docs/governance-vocabulary.md](../docs/governance-vocabulary.md)
+Full translation reference: [docs/governance-vocabulary.md](../governance-vocabulary.md)
 
 ---
 
