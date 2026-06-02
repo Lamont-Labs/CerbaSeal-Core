@@ -29,3 +29,9 @@ id = "Eq1YWmtg2AcEN0aSZAlMA"
 uri = "file://CERBASEAL_PILOT_READINESS_BINDER.md"
 type = "text"
 title = "CERBASEAL_PILOT_READINESS_BINDER.md"
+
+[[outputs]]
+id = "vP0mqAskdPgwMQ0N5z5Xz"
+uri = "file://docs/reports/CTO_REVIEW_PACK_LINE_AXIA.pdf"
+type = "pdf"
+title = "CerbaSeal — CTO Review Pack (Line Axia)"
