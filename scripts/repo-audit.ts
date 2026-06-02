@@ -338,6 +338,60 @@ async function main(): Promise<void> {
     }
   }
 
+  // ── Check 15: Pilot documents exist and contain required sections ──────────
+  {
+    type PilotDoc = { file: string; required: string[] };
+    const pilotDocs: PilotDoc[] = [
+      {
+        file: "docs/pilot/pilot-readiness-brief.md",
+        required: [
+          "Required Client Inputs",
+          "Agreement Prerequisites",
+          "Pilot Scope Boundaries",
+          "Support Boundary",
+        ],
+      },
+      {
+        file: "docs/pilot-operations-model.md",
+        required: [
+          "Issue Reporting",
+          "Support Commitment",
+          "Response Times",
+          "Pilot Onboarding",
+        ],
+      },
+      {
+        file: "docs/pilot/pilot-intake-checklist.md",
+        required: [],
+      },
+    ];
+
+    const pilotFails: string[] = [];
+    for (const doc of pilotDocs) {
+      const full = join(ROOT, doc.file);
+      if (!existsSync(full)) {
+        pilotFails.push(`${doc.file} — file missing`);
+        continue;
+      }
+      const content = readFileSync(full, "utf-8");
+      if (content.trim().length === 0) {
+        pilotFails.push(`${doc.file} — file is empty`);
+        continue;
+      }
+      for (const section of doc.required) {
+        if (!content.includes(section)) {
+          pilotFails.push(`${doc.file} — missing section: "${section}"`);
+        }
+      }
+    }
+
+    if (pilotFails.length === 0) {
+      pass("15. Pilot documents exist and contain required sections", `${pilotDocs.length} pilot docs verified`);
+    } else {
+      fail("15. Pilot documents exist and contain required sections", pilotFails.join("; "));
+    }
+  }
+
   // ── Summary ───────────────────────────────────────────────────────────────
   console.log("\n" + "=".repeat(52));
   const passed = results.filter((r) => r.pass).length;

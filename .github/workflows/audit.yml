@@ -8,7 +8,7 @@ on:
 
 jobs:
   audit:
-    name: Full repo audit (13 checks)
+    name: Full repo audit (15 checks)
     runs-on: ubuntu-latest
     timeout-minutes: 15
 

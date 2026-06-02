@@ -535,6 +535,114 @@
     </div>
   </section>
 
+  <!-- Section: Governance Vocabulary -->
+  <section class="section" aria-label="Governance Vocabulary">
+    <div class="section-title">Governance vocabulary — invariant → enterprise mapping</div>
+    <p>CerbaSeal's 12 enforcement invariants map directly to enterprise governance control categories. Use this table when mapping CerbaSeal to a regulatory framework, audit program, or governance committee requirement.</p>
+
+    <style>
+      .gov-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin-bottom: 1.5rem; }
+      .gov-table th { text-align: left; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.07em;
+                      color: var(--dim); padding: 0.45rem 0.7rem; border-bottom: 1px solid var(--border); font-weight: 700; }
+      .gov-table td { padding: 0.45rem 0.7rem; border-bottom: 1px solid var(--border); color: var(--muted); vertical-align: top; }
+      .gov-table tr:last-child td { border-bottom: none; }
+      .gov-table td:first-child { font-family: "JetBrains Mono","SF Mono","Fira Code",monospace; font-size: 0.74rem; color: var(--text); white-space: nowrap; }
+      .gov-table td:nth-child(2) { color: var(--blue); font-weight: 600; font-size: 0.78rem; }
+      .gov-subsection { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.09em;
+                         color: var(--dim); margin: 1.5rem 0 0.6rem; padding-bottom: 0.4rem; border-bottom: 1px solid var(--border); }
+      .rc-table { width: 100%; border-collapse: collapse; font-size: 0.79rem; margin-bottom: 1rem; }
+      .rc-table th { text-align: left; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.07em;
+                     color: var(--dim); padding: 0.4rem 0.65rem; border-bottom: 1px solid var(--border); font-weight: 700; }
+      .rc-table td { padding: 0.4rem 0.65rem; border-bottom: 1px solid var(--border); color: var(--muted); vertical-align: top; }
+      .rc-table tr:last-child td { border-bottom: none; }
+      .rc-table td:first-child { font-family: "JetBrains Mono","SF Mono","Fira Code",monospace; font-size: 0.72rem; color: var(--text); white-space: nowrap; }
+      .enforces-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 0.5rem; }
+      @media (max-width: 640px) { .enforces-grid { grid-template-columns: 1fr; } }
+      .enforces-box { background: var(--surface); border: 1px solid var(--border); border-radius: 7px; padding: 0.9rem 1.1rem; }
+      .enforces-box-title { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.6rem; }
+      .enforces-box.does .enforces-box-title { color: var(--green); }
+      .enforces-box.doesnt .enforces-box-title { color: var(--dim); }
+      .enforces-box ul { list-style: none; display: flex; flex-direction: column; gap: 0.3rem; }
+      .enforces-box ul li { font-size: 0.8rem; color: var(--muted); display: flex; gap: 0.5rem; }
+      .enforces-box.does ul li::before { content: "✓"; color: var(--green); flex-shrink: 0; }
+      .enforces-box.doesnt ul li::before { content: "✗"; color: var(--dim); flex-shrink: 0; }
+    </style>
+
+    <table class="gov-table">
+      <thead>
+        <tr><th>Invariant</th><th>Governance Category</th><th>Control Obligation</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>INV-01</td><td>Policy Gating</td><td>Every consequential action must operate under an identified, versioned policy authority. Ungoverned execution is not permitted.</td></tr>
+        <tr><td>INV-02</td><td>Provenance Assurance</td><td>Every action must carry a complete, traceable reference to the decision source — including model version, rule set, and source hash.</td></tr>
+        <tr><td>INV-03</td><td>Human Authority Gate</td><td>Where human authorization is required, it must be present, bound to the specific request, issued by an authorized authority class, and affirmed. Missing or invalid approvals block release.</td></tr>
+        <tr><td>INV-04</td><td>Audit Readiness Obligation</td><td>Consequential actions may not proceed unless the audit logging precondition is satisfied.</td></tr>
+        <tr><td>INV-05</td><td>AI Authority Boundary</td><td>AI systems are permitted to propose actions. They are prohibited from authorizing or approving their own proposals.</td></tr>
+        <tr><td>INV-06</td><td>Gate Integrity</td><td>All consequential actions must route through the governed enforcement gate. Fabricated governance artifacts are rejected.</td></tr>
+        <tr><td>INV-07</td><td>Decision Record Integrity</td><td>Governance decisions, once issued, must be treated as immutable governed artifacts.</td></tr>
+        <tr><td>INV-08</td><td>Control Currency Requirement</td><td>For sensitive workflows, critical controls must be current and valid at the time of release.</td></tr>
+        <tr><td>INV-09</td><td>Trust Validation Gate</td><td>Execution may not proceed without a valid, current trust state declaration.</td></tr>
+        <tr><td>INV-10</td><td>Prohibited Use Enforcement</td><td>Requests classified as prohibited use must be rejected immediately. No exception path. No escalation path.</td></tr>
+        <tr><td>INV-11</td><td>Input Integrity</td><td>Malformed requests and unrecognized action classes fail closed. The system does not guess intent or apply defaults for unknown inputs.</td></tr>
+        <tr><td>INV-12</td><td>Proposal Binding</td><td>The action class in the governing request must exactly match the action class in the underlying proposal. Mismatches are rejected.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="gov-subsection">Reason code → governance meaning</div>
+    <table class="rc-table">
+      <thead>
+        <tr><th>Reason Code</th><th>Governance Meaning</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>DECISION_ALLOWED</td><td>All governance conditions satisfied. Release authorized. Evidence bundle produced.</td></tr>
+        <tr><td>DECISION_HELD</td><td>Required human authorization absent. Action suspended pending approval.</td></tr>
+        <tr><td>DECISION_REJECTED</td><td>Governance condition failed. Action blocked. No release issued.</td></tr>
+        <tr><td>NO_POLICY_PACK</td><td>No policy authority on record for this action. Ungoverned execution rejected.</td></tr>
+        <tr><td>NO_PROVENANCE</td><td>Decision origin is untraceable. Action rejected on provenance grounds.</td></tr>
+        <tr><td>REQUIRED_APPROVAL_MISSING</td><td>Human authorization required but not presented.</td></tr>
+        <tr><td>INVALID_APPROVAL_AUTHORITY</td><td>Approver does not hold the required authority class for this action.</td></tr>
+        <tr><td>PRIVILEGED_AUTH_NOT_SATISFIED</td><td>Privileged authorization flag not affirmed by the approval artifact.</td></tr>
+        <tr><td>APPROVAL_SIGNATURE_MISSING</td><td>Approval artifact is unsigned. Unsigned approvals are not binding.</td></tr>
+        <tr><td>LOGGING_NOT_READY</td><td>Audit logging precondition not met. Execution without audit is not permitted.</td></tr>
+        <tr><td>AI_CANNOT_AUTHORIZE</td><td>AI system attempted to authorize its own proposal. Authority boundary violated.</td></tr>
+        <tr><td>PROHIBITED_USE</td><td>Request classified as prohibited. Unconditional rejection.</td></tr>
+        <tr><td>CONTROL_STALE_OR_INVALID</td><td>Governing controls are not current. Release blocked for sensitive workflow.</td></tr>
+        <tr><td>TRUST_STATE_INVALID</td><td>Trust state not valid. Release precondition not met.</td></tr>
+        <tr><td>UNKNOWN_ACTION_CLASS</td><td>Requested action is not a recognized governance category. Rejected.</td></tr>
+        <tr><td>MALFORMED_REQUEST</td><td>Request does not meet the minimum structural requirements. Rejected.</td></tr>
+        <tr><td>INVALID_PROPOSAL</td><td>Action class in proposal does not match action class in governing request. Rejected.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="gov-subsection">What CerbaSeal enforces vs. what it does not</div>
+    <p style="font-size:0.83rem;color:var(--muted);margin-bottom:0.75rem;">CerbaSeal enforces authority and process — not correctness, safety, or intent. This separation is critical for regulatory mapping.</p>
+    <div class="enforces-grid">
+      <div class="enforces-box does">
+        <div class="enforces-box-title">Enforces</div>
+        <ul>
+          <li>Whether the required authority is present</li>
+          <li>Whether the request is structurally sound</li>
+          <li>Whether audit readiness is declared</li>
+          <li>Whether the action class is recognized</li>
+          <li>Whether prohibitions are applied</li>
+          <li>Whether AI systems stay within their authority role</li>
+        </ul>
+      </div>
+      <div class="enforces-box doesnt">
+        <div class="enforces-box-title">Does Not Enforce</div>
+        <ul>
+          <li>Whether the action is the right one to take</li>
+          <li>Whether the reasoning is sufficient</li>
+          <li>Whether the approver was appropriately senior</li>
+          <li>Whether harm could result from an allowed action</li>
+          <li>Whether policy content is appropriate for context</li>
+          <li>Whether the AI's proposal was accurate or safe</li>
+        </ul>
+      </div>
+    </div>
+    <p style="margin-top:0.9rem;font-size:0.82rem;color:var(--dim);">Full vocabulary reference: <code>docs/governance-vocabulary.md</code></p>
+  </section>
+
   <!-- Limitation banner -->
   <div class="limit-banner">
     <strong>Current limitation notice:</strong>
