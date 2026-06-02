@@ -4,7 +4,7 @@ Deterministic execution enforcement spine for AI-assisted workflows. Sits betwee
 
 ## Current State
 
-- 358 / 358 tests passing, 0 failing, 15 test files (`pnpm test`)
+- 372 / 372 tests passing, 0 failing, 15 test files (`pnpm test`)
 - 97 / 97 portal validation assertions passing (`pnpm review:validate`)
 - External Reviewer & Pilot Readiness Portal live at `pnpm demo:web`
 - Adversarial integrity audit complete
@@ -16,7 +16,7 @@ Deterministic execution enforcement spine for AI-assisted workflows. Sits betwee
 - `src/` — core enforcement engine (do not modify without explicit request)
 - `test/` — vitest test suites (15 files)
 - `examples/browser-demo/` — demo server, portal pages, validation script
-  - `server.ts` — express-style server, 10 routes total
+  - `server.ts` — http server, 12 named routes
   - `review-portal.ts` — exported `REVIEW_SUMMARY`, `PILOT_READINESS`, `SECURITY_SUMMARY` data
   - `pages/` — `review.html`, `pilot.html`, `security.html`, `deployment.html`
   - `validate-review-portal.ts` — headless validation
@@ -42,7 +42,7 @@ Deterministic execution enforcement spine for AI-assisted workflows. Sits betwee
 
 ## Scripts
 
-- `pnpm test` — full vitest suite (358 tests)
+- `pnpm test` — full vitest suite (372 tests)
 - `pnpm demo:web` — start browser demo + portal on port 3001
 - `pnpm demo:review` — alias for the portal
 - `pnpm review:validate` — headless 97-point portal validation

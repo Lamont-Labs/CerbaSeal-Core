@@ -46,7 +46,7 @@ pnpm install
 pnpm test
 ```
 
-All 88 tests pass against the current implementation. No network access, no environment setup, and no external services are required.
+All 372 tests pass against the current implementation. No network access, no environment setup, and no external services are required.
 
 ---
 

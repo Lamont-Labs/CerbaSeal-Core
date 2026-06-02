@@ -20,7 +20,7 @@ Test counts:
 PHASE 1 — BASELINE EXECUTION
 ───────────────────────────────────────────────────────────────────────────────
   pnpm install  →  clean, no errors
-  pnpm test     →  25/25 tests pass, no TypeScript errors, no runtime errors
+  pnpm test     →  25/25 tests pass (count at time of this audit; current suite: 372), no TypeScript errors, no runtime errors
 
 STATUS: PASS
 

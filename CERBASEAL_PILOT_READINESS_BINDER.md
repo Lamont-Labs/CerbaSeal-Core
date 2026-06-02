@@ -51,7 +51,7 @@ CerbaSeal does not determine whether an action is *correct*. It determines wheth
 |-----------|-------|
 | Version | 0.1.0 |
 | Test suite | **[IMPLEMENTED]** 372/372 passing (15 test files) |
-| Audit checks | **[IMPLEMENTED]** 14/14 passing |
+| Audit checks | **[IMPLEMENTED]** 15/15 passing |
 | Invariant coverage | **[IMPLEMENTED]** 12/12 invariants, all linked to tests |
 | Validator assertions | **[IMPLEMENTED]** 229 assertions (106 + 13 + 110 across 3 validators) |
 | stableChecksum | `3df8af668ab4a619be4521754fa79b0a0ef9eb51d2f8697c204648eadeea44d0` |
@@ -1020,7 +1020,7 @@ The following are **[OUT OF SCOPE]** from this repository and must come from Lin
 
 **Q24. How do we know you haven't changed the enforcement logic since sending us the snapshot?**
 
-*Honest Answer:* Run `git log` to see all commits since the snapshot. Run `pnpm verify:proof` — if enforcement state changed, the stableChecksum will not match. Run `pnpm audit:repo` to confirm 14/14 checks pass.
+*Honest Answer:* Run `git log` to see all commits since the snapshot. Run `pnpm verify:proof` — if enforcement state changed, the stableChecksum will not match. Run `pnpm audit:repo` to confirm 15/15 checks pass.
 
 *Repository Evidence:* `scripts/verify-proof.ts`, `scripts/repo-audit.ts`, `.github/workflows/audit.yml`
 
@@ -1225,7 +1225,7 @@ The three most significant operational risks are: (1) in-memory audit log lost o
 
 **Verification (IMPLEMENTED):**
 - 372/372 tests passing (15 test files)
-- 14/14 audit checks passing
+- 15/15 audit checks passing
 - 12/12 invariants covered
 - 229 validator assertions (106 + 13 + 110)
 - stableChecksum: `3df8af668ab4a619be4521754fa79b0a0ef9eb51d2f8697c204648eadeea44d0`

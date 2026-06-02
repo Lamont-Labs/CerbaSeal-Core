@@ -44,7 +44,7 @@ What is implemented and working:
 - Evidence bundle generation and export
 - Replay consistency verification
 - Diagnostic report generation with invariant-level tracing
-- 323 passing tests across 15 test files including adversarial,
+- 372 passing tests across 15 test files including adversarial,
   security, and boundary probes
 - Browser-accessible Review & Pilot Readiness Portal (/review,
   /pilot, /security, /deployment routes)
@@ -619,7 +619,7 @@ Pilot risks:
 
 TEST MATURITY
 
-323 passing tests, 0 failing, across 15 test files.
+372 passing tests, 0 failing, across 15 test files.
 
 | Test File | Count | Coverage Area |
 |---|---|---|
@@ -1116,7 +1116,7 @@ WHAT IS GENUINELY PILOT-READY
 - The enforcement core: fully implemented. All 12 invariants work.
   Fail-closed is real. AI cannot authorize its own proposals —
   this is a hard rule, not a policy flag.
-- The test suite: 323 tests passing, including 122 tests specifically
+- The test suite: 372 tests passing, including 122 tests specifically
   designed to probe security boundaries and bypass attempts.
 - The documentation: unusually honest. The security review brief,
   the maturity document, and the trust boundary document all say

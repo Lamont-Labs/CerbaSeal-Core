@@ -30,7 +30,7 @@ A browser-accessible Review & Pilot Readiness Portal is live at `/review`, `/pil
 | integration/full-flow.test.ts | 1 | Passing |
 | integration/system-integration.test.ts | 1 | Passing |
 
-**Total: 323 passing. 0 failing. 15 test files.**
+**Total: 372 passing. 0 failing. 15 test files.**
 
 All tests pass. No invariant violations. No incorrect execution outcomes.
 

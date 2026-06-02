@@ -88,7 +88,7 @@ stableChecksum: 7695187faf66906d868c5c4764fd6068e7ddbe0b1f69933e47a85d67c0d08ec0
 ```
 
 - 372 / 372 tests passing (15 test files)
-- 14 / 14 audit checks passing
+- 15 / 15 audit checks passing
 - 12 / 12 invariants covered and linked to tests
 - 229 validator assertions (106 + 13 + 110 across 3 validators)
 - Adversarial integrity audit complete (phases 2–7)
@@ -97,7 +97,7 @@ stableChecksum: 7695187faf66906d868c5c4764fd6068e7ddbe0b1f69933e47a85d67c0d08ec0
 - Misuse + boundary condition tests
 - Import boundary violations: 0
 
-Run `pnpm export:proof` to regenerate. Run `pnpm audit:repo` to verify all 13 checks independently. Run `pnpm verify:proof` to verify the exported snapshot has not been tampered with.
+Run `pnpm export:proof` to regenerate. Run `pnpm audit:repo` to verify all 15 checks independently. Run `pnpm verify:proof` to verify the exported snapshot has not been tampered with.
 
 ---
 

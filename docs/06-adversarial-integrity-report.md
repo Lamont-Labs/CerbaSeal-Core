@@ -17,7 +17,7 @@
 | 4 | Audit chain integrity | 4 | ✅ PASS |
 | 5 | Replay consistency | 6 | ✅ PASS |
 | 6 | Edge cases | 15 | ✅ PASS |
-| **Total** | | **87** | **83/83 new + 25/25 baseline** |
+| **Total** | | **87** | **83/83 new + 25/25 baseline (count at time of this audit)** |
 
 **No invariant violation found. No incorrect ALLOW result produced. No unauthorized release authorization issued. No runtime crash observed.**
 
@@ -27,7 +27,7 @@
 
 ```
 pnpm install   → clean (no errors)
-pnpm test      → 25/25 tests passed
+pnpm test      → 25/25 tests passed (count at time of this audit; current suite: 372)
 ```
 
 All 25 existing tests pass without modification.

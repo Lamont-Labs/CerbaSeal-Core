@@ -95,7 +95,7 @@ stableChecksum: 7695187faf66906d868c5c4764fd6068e7ddbe0b1f69933e47a85d67c0d08ec0
 ```
 
 - 372 / 372 tests passing (15 test files)
-- 13 / 13 audit checks passing
+- 15 / 15 audit checks passing
 - 12 / 12 invariants covered and linked to tests
 - Adversarial integrity audit complete
 - Fail-closed behavior validated

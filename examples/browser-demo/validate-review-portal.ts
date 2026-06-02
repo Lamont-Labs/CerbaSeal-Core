@@ -159,7 +159,7 @@ assert("review-summary has notYetImplemented array",
 assert("review-summary has coreClaims array",
   Array.isArray(REVIEW_SUMMARY.coreClaims) && REVIEW_SUMMARY.coreClaims.length > 0);
 assert("review-summary testStatus has passing count",
-  REVIEW_SUMMARY.testStatus.reportedPassing >= 323);
+  REVIEW_SUMMARY.testStatus.reportedPassing >= 372);
 assert("review-summary has limitationNotice",
   REVIEW_SUMMARY.limitationNotice.includes("not a production client deployment"));
 assert("review-summary serializes to valid JSON",
