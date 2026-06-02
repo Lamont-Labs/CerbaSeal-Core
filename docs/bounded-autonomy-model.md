@@ -105,29 +105,31 @@ The following are unconditionally blocked regardless of proposal content, caller
 - **AI self-authorization** — the agent cannot act as its own approver; `authorityBearing: false` is required. Violation triggers INV-05 → REJECT.
 - **Ungoverned execution** — absent policy pack reference is rejected by INV-01. The agent cannot declare itself ungoverned.
 - **Untraceable proposals** — absent or incomplete provenance (model version, rule set version, source hash) is rejected by INV-02.
-- **Prohibited use requests** — any request with `prohibitedUse: true` is unconditionally rejected by INV-10. No exception path exists.
+- **Prohibited use requests** — any request with `prohibitedUse: true` is rejected by INV-10. No exception path exists. (INV-10 is step 9 in the gate sequence — see "How CerbaSeal Enforces This" for the full order.)
 - **Execution without audit** — `loggingReady: false` is rejected by INV-04.
 - **Stale controls for this sensitive workflow** — `criticalControlsValid: false` or `stale: true` is rejected by INV-08.
 - **Invalid trust state** — `trustState.trusted: false` is rejected by INV-09.
+- **Approval bound to wrong request** — `forRequestId !== requestId` is rejected by INV-03 → REJECT (not recoverable for this submission).
+- **Invalid approver authority class** — approver does not hold a recognized authority class (`analyst`, `reviewer`, `manager`, `compliance_officer`) is rejected by INV-03 → REJECT.
+- **Privileged authorization not satisfied** — `privilegedAuthSatisfied: false` is rejected by INV-03 → REJECT.
+- **Approval signature absent** — empty `immutableSignature` is rejected by INV-03 → REJECT.
 
 ### Escalation Triggers
 
-The following conditions cause the gate to produce a HOLD rather than a REJECT, suspending execution until the condition is resolved:
+Exactly one condition causes the gate to produce HOLD — suspending execution pending approval — rather than an outright REJECT:
 
-- **Approval artifact absent** — `approvalArtifact: null` when `approvalRequired: true` or workflowClass is `fraud_triage`. The gate issues HOLD; the requesting system must obtain approval and resubmit.
-- **Approval bound to wrong request** — `forRequestId !== requestId`. The approval was issued for a different request and cannot be reused. Gate issues HOLD pending a correctly bound approval.
-- **Invalid approver authority class** — approver does not hold `analyst`, `reviewer`, `manager`, or `compliance_officer` authority. Gate issues HOLD pending a qualified approver.
-- **Privileged authorization not satisfied** — `privilegedAuthSatisfied: false`. Gate issues HOLD pending privileged authorization affirmation.
-- **Approval signature absent** — `immutableSignature` is empty. Gate issues HOLD pending a signed approval.
+- **Approval artifact absent** — `approvalArtifact: null` when `approvalRequired: true` or workflowClass is `fraud_triage`. The gate issues HOLD; the requesting system must obtain a valid approval artifact and resubmit the governed request.
 
-HOLD is not a bypass. The gate does not release on HOLD. The request must be resubmitted with a valid approval artifact.
+All other approval failures (wrong requestId binding, invalid authority class, missing privileged auth, absent signature) produce REJECT, not HOLD. These indicate a defective approval artifact, not a missing one, and require correction and resubmission.
+
+HOLD is not a bypass. The gate does not release on HOLD. The original request must be resubmitted with a valid approval artifact.
 
 ### Authority Boundaries
 
 | Role | Permitted action | Prohibited action |
 |------|-----------------|-------------------|
 | AI fraud scoring model | Propose `escalate` or `hold` | Authorize, approve, sign, or self-release |
-| Human reviewer (authority class `reviewer` or higher) | Supply a valid approval artifact | None — human authority is the release condition |
+| Human approver (authority class `analyst`, `reviewer`, `manager`, or `compliance_officer`) | Supply a valid approval artifact bound to this requestId | None — human authority is the release condition |
 | Caller / application code | Construct and submit a GovernedRequest | Construct a GateResult directly (blocked by INV-06 at evidence layer) |
 
 The AI authority boundary is not a policy setting. It is enforced by INV-05 as a hard invariant that cannot be configured away, overridden by a policy pack, or bypassed by setting caller flags.
