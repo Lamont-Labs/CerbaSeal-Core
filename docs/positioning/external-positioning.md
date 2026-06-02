@@ -55,17 +55,41 @@ If AI can trigger actions, organizations need a deterministic layer that separat
 
 CerbaSeal is built for that separation.
 
+## Governance Vocabulary
+
+CerbaSeal uses precise technical language internally. Enterprise governance reviewers can map that language to familiar control semantics:
+
+| Technical term | Governance meaning |
+|---------------|-------------------|
+| Invariant violation | Control failure / policy breach |
+| REJECT outcome | Unauthorized execution blocked |
+| HOLD outcome | Execution suspended pending approval |
+| ALLOW outcome | Authorized execution released |
+| Evidence bundle | Accountability record / governance artifact |
+| Hash-linked audit log | Tamper-evident audit trail |
+| stableChecksum | Governance state attestation |
+| Fail-closed on exception | Safe failure mode / default-deny execution |
+| AI authority boundary (INV-05) | AI may propose — AI may not authorize |
+| Forged GateResult rejected | Tamper attempt detected and blocked |
+
+Full translation reference: [docs/governance-vocabulary.md](../docs/governance-vocabulary.md)
+
+---
+
 ## Proof Points
 
 Current proof points:
 
 - live REJECT / HOLD / ALLOW demo
 - browser demo
-- 202 passing tests
+- 372 passing tests (15 test files)
+- 14 / 14 audit checks passing
+- 12 / 12 invariants covered and linked to tests
 - adversarial misuse testing
 - non-forgery protection
 - fail-closed behavior
 - contextual boundary testing
+- governance state attestation (stableChecksum)
 - integration and deployment documentation
 
 ## Best First Use Cases
