@@ -117,6 +117,8 @@ const server = createServer((req, res) => {
       svg: "image/svg+xml",
       ico: "image/x-icon",
       webp: "image/webp",
+      css: "text/css",
+      js:  "text/javascript",
     };
     const ct = contentTypes[ext] ?? "application/octet-stream";
     serveBinary(res, join(__dirname, "assets", assetName), ct);

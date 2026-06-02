@@ -85,15 +85,16 @@ stableChecksum: 7695187faf66906d868c5c4764fd6068e7ddbe0b1f69933e47a85d67c0d08ec0
 ```
 
 - 372 / 372 tests passing (15 test files)
-- 13 / 13 audit checks passing
+- 14 / 14 audit checks passing
 - 12 / 12 invariants covered and linked to tests
+- 229 validator assertions (106 + 13 + 110 across 3 validators)
 - Adversarial integrity audit complete (phases 2–7)
 - Fail-closed behavior validated
 - Non-forgery protection verified
 - Misuse + boundary condition tests
 - Import boundary violations: 0
 
-Run `pnpm export:proof` to regenerate. Run `pnpm audit:repo` to verify all 13 checks independently.
+Run `pnpm export:proof` to regenerate. Run `pnpm audit:repo` to verify all 13 checks independently. Run `pnpm verify:proof` to verify the exported snapshot has not been tampered with.
 
 ---
 
@@ -131,6 +132,16 @@ These artifacts are designed to show how CerbaSeal can be reviewed, demonstrated
 - Agent-gate demo: [examples/agent-gate/](examples/agent-gate/)
 - Auditor view: [examples/auditor-view/](examples/auditor-view/)
 - Browser demo: [examples/browser-demo/](examples/browser-demo/)
+
+## Governance Reference
+
+- Governance vocabulary: [docs/governance-vocabulary.md](docs/governance-vocabulary.md) — translates all invariants and reason codes into enterprise governance semantics
+- Bounded autonomy model: [docs/bounded-autonomy-model.md](docs/bounded-autonomy-model.md) — formalizes Execution Scope Policy and the AI authority boundary
+- Trust boundary and limitations: [docs/09-trust-boundary-and-limitations.md](docs/09-trust-boundary-and-limitations.md) — stated limitations without softening
+
+## Pilot Operations
+
+- Pilot operations model: [docs/pilot-operations-model.md](docs/pilot-operations-model.md) — how a pilot engagement operates: onboarding, issue tracking, support commitment, response times, documentation requirements, founder availability, and exit deliverables
 
 ---
 

@@ -1,0 +1,134 @@
+/* CerbaSeal shared site styles — linked by all portal pages */
+/* Page-specific styles remain inline; this file provides shared base + animations */
+
+/* ── Root variables ── */
+:root {
+  --bg: #070C16;
+  --surface: #0C1221;
+  --surface2: #111827;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.13);
+  --text: #F8FAFC;
+  --muted: #94A3B8;
+  --dim: #64748B;
+  --red: #f87171;
+  --red-bg: rgba(248,113,113,0.08);
+  --red-border: rgba(248,113,113,0.38);
+  --yellow: #FBD15B;
+  --yellow-bg: rgba(251,209,91,0.07);
+  --yellow-bdr: rgba(251,209,91,0.38);
+  --green: #4ade80;
+  --green-bg: rgba(74,222,128,0.07);
+  --green-bdr: rgba(74,222,128,0.28);
+  --blue: #60a5fa;
+  --blue-bg: rgba(96,165,250,0.08);
+  --blue-bdr: rgba(96,165,250,0.38);
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", "SF Mono", "Fira Code", monospace;
+}
+
+/* ── Base reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font-family: var(--font-sans);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Shared nav ── */
+nav {
+  position: sticky; top: 0; z-index: 100;
+  display: flex; gap: 0.4rem; flex-wrap: wrap; align-items: center;
+  padding: 0 1.5rem; height: 52px;
+  background: rgba(7,12,22,0.88);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+nav a {
+  font-size: 0.79rem; font-weight: 500; color: #64748B;
+  text-decoration: none; padding: 0.3rem 0.6rem;
+  border-radius: 5px; border: none;
+  transition: color 0.13s, background 0.13s;
+}
+nav a:hover { color: #F8FAFC; background: rgba(255,255,255,0.05); }
+nav a.active { color: #F8FAFC; font-weight: 600; background: rgba(255,255,255,0.07); }
+.nav-brand {
+  padding: 0 !important; border: none !important; background: none !important;
+  margin-right: auto; display: inline-flex !important; align-items: center; gap: 0.45rem;
+}
+.nav-brand img { width: 24px; height: 24px; object-fit: contain; filter: invert(1) brightness(0.9); }
+.nav-brand span { font-weight: 700; font-size: 0.9rem; color: #F8FAFC; letter-spacing: -0.02em; }
+
+/* ── Shared footer ── */
+footer {
+  margin-top: 3rem; padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.78rem; color: var(--dim); line-height: 1.7;
+}
+footer strong { color: var(--muted); }
+
+/* ── Shared code ── */
+code {
+  font-family: var(--font-mono);
+  font-size: 0.82em;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  padding: 0.1em 0.35em;
+  border-radius: 3px;
+}
+
+/* ── Entrance animations ── */
+@keyframes cs-fade-up {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes cs-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Hero entrance — applies to h1, tagline, and hero status badges */
+.hero h1 {
+  animation: cs-fade-up 0.45s cubic-bezier(0.22,1,0.36,1) both;
+  animation-delay: 0.05s;
+}
+.hero .tagline {
+  animation: cs-fade-up 0.45s cubic-bezier(0.22,1,0.36,1) both;
+  animation-delay: 0.12s;
+}
+.hero .definition,
+.hero .thesis,
+.hero [style*="inline-block"] {
+  animation: cs-fade-up 0.45s cubic-bezier(0.22,1,0.36,1) both;
+  animation-delay: 0.20s;
+}
+
+/* Section entrance — subtle fade-in as content appears */
+.section {
+  animation: cs-fade-in 0.4s ease both;
+  animation-delay: 0.08s;
+}
+
+/* Nav fade-in */
+nav {
+  animation: cs-fade-in 0.3s ease both;
+}
+
+/* Limit banner slide-up */
+.limit-banner {
+  animation: cs-fade-up 0.4s cubic-bezier(0.22,1,0.36,1) both;
+  animation-delay: 0.15s;
+}
+
+/* ── Focus states (accessibility) ── */
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+  border-radius: 3px;
+}

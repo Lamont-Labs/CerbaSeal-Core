@@ -293,6 +293,51 @@ async function main(): Promise<void> {
     fail("13. All invariants linked to covering tests", getExecErrorMessage(e));
   }
 
+  // ── Check 14: No stale test-count references in documentation ─────────────
+  {
+    const docsDir = join(ROOT, "docs");
+    const mdPattern = /(\d+)\s*\/\s*\d+\s*tests?\s*passing/gi;
+    const staleRefs: string[] = [];
+
+    function scanMdDir(dir: string): void {
+      if (!existsSync(dir)) return;
+      for (const entry of readdirSync(dir, { withFileTypes: true })) {
+        const full = join(dir, entry.name);
+        if (entry.isDirectory()) { scanMdDir(full); continue; }
+        if (!entry.name.endsWith(".md")) continue;
+        const content = readFileSync(full, "utf-8");
+        let m2: RegExpExecArray | null;
+        mdPattern.lastIndex = 0;
+        while ((m2 = mdPattern.exec(content)) !== null) {
+          const n = parseInt(m2[1]!, 10);
+          if (testCount > 0 && n !== testCount) {
+            const rel = full.replace(ROOT + "/", "");
+            staleRefs.push(`${rel}: found ${n}, actual ${testCount}`);
+          }
+        }
+      }
+    }
+
+    scanMdDir(docsDir);
+
+    // Also check root README
+    const readmeRef = readme.match(/(\d+)\s*\/\s*\d+\s*tests?\s*passing/gi);
+    if (readmeRef) {
+      for (const ref of readmeRef) {
+        const n = parseInt(ref.match(/(\d+)/)?.[1] ?? "0", 10);
+        if (testCount > 0 && n !== testCount) {
+          staleRefs.push(`README.md: found ${n}, actual ${testCount}`);
+        }
+      }
+    }
+
+    if (staleRefs.length === 0) {
+      pass("14. No stale test-count references in documentation", "all references match actual count");
+    } else {
+      fail("14. No stale test-count references in documentation", staleRefs.join("; "));
+    }
+  }
+
   // ── Summary ───────────────────────────────────────────────────────────────
   console.log("\n" + "=".repeat(52));
   const passed = results.filter((r) => r.pass).length;
