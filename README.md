@@ -28,6 +28,8 @@ These are what distinguish CerbaSeal from middleware or policy tooling:
 
 **Boundary enforcement** — architectural import rules prevent test code from leaking into source, example contamination, and cross-example coupling. Enforced by `pnpm check:imports` at 4 boundary rules.
 
+**Bounded autonomy** — every governed AI system operates within an explicit Execution Scope Policy: a defined permitted action set, authority boundary (AI may propose, never authorize), required authorization conditions, and a prohibited use envelope. These are not advisory guidelines — they are enforced by the invariant check sequence on every request. See [docs/bounded-autonomy-model.md](docs/bounded-autonomy-model.md).
+
 **Fail-closed model** — unexpected runtime exceptions produce a controlled REJECT outcome, registered in the evidence layer. No unhandled error propagates to the caller.
 
 ---
@@ -58,6 +60,7 @@ Start here:
 
 - One-page overview: [docs/one-page.md](docs/one-page.md)
 - Enforcement boundary: [docs/architecture/enforcement-boundary.md](docs/architecture/enforcement-boundary.md)
+- Bounded autonomy model: [docs/bounded-autonomy-model.md](docs/bounded-autonomy-model.md)
 - Browser demo: `pnpm demo:web` → [docs/demo/browser-demo.md](docs/demo/browser-demo.md)
 - Terminal demo: `pnpm demo`
 - Consumer example: `pnpm demo:consumer`

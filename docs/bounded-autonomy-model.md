@@ -143,6 +143,31 @@ To make the model concrete, the following describes how the bounded autonomy mod
 
 ---
 
+## How CerbaSeal Enforces This
+
+When `ExecutionGateService.evaluate()` receives a `GovernedRequest`, the gate applies its invariant check sequence in order. The sequence is the runtime expression of the Execution Scope Policy:
+
+| Gate phase | Invariant(s) applied | Scope policy rule enforced |
+|-----------|---------------------|---------------------------|
+| 1. Policy authorization | INV-01 | Policy pack must be present — ungoverned execution rejected |
+| 2. Decision provenance | INV-02 | Decision origin must be traceable — anonymous proposals rejected |
+| 3. Human authorization | INV-03 | Required human approval must be present, bound, and signed |
+| 4. Audit readiness | INV-04 | Logging must be ready before execution proceeds |
+| 5. AI authority boundary | INV-05 | AI actor cannot authorize its own proposal |
+| 6. Gate integrity | INV-06 | Result must originate from this gate — forged artifacts rejected |
+| 7. Decision record integrity | INV-07 | Decision envelope must be treated as immutable |
+| 8. Control currency | INV-08 | Controls must be current for sensitive workflows |
+| 9. Trust state | INV-09 | Trust state must be valid — absent trust blocks release |
+| 10. Prohibited use | INV-10 | Prohibited classification triggers unconditional rejection |
+| 11. Request integrity | INV-11 | Action class must be recognized — unknown classes rejected |
+| 12. Proposal binding | INV-12 | Proposal action must match declared request action |
+
+Every step must pass. A failure at any step produces HOLD or REJECT. The gate does not proceed past a failure and does not attempt to recover or compensate.
+
+The full invariant check sequence is the Execution Scope Policy in executable form.
+
+---
+
 ## Summary
 
 CerbaSeal implements bounded autonomy by enforcing that:
