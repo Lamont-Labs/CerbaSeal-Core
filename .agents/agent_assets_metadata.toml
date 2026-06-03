@@ -35,3 +35,9 @@ id = "vP0mqAskdPgwMQ0N5z5Xz"
 uri = "file://docs/reports/CTO_REVIEW_PACK_LINE_AXIA.pdf"
 type = "pdf"
 title = "CerbaSeal — CTO Review Pack (Line Axia)"
+
+[[outputs]]
+id = "Mk1w-Bj-ZH0J4MRMZL1Y5"
+uri = "file://docs/reports/CTO_CALL_PREP_BINDER_LINE_AXIA.pdf"
+type = "pdf"
+title = "CTO Call Preparation Binder — Line Axia"
