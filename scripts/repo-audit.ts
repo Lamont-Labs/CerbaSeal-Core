@@ -1,4 +1,4 @@
-import { execSync, spawn } from "node:child_process";
+import { execSync, spawn, spawnSync } from "node:child_process";
 import { readFileSync, existsSync, readdirSync } from "node:fs";
 import { join, basename, extname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -41,6 +41,25 @@ function getExecErrorMessage(e: unknown): string {
   return getErrorMessage(e);
 }
 
+function runAndCapture(cmd: string, args: string[]): { output: string; ok: boolean } {
+  const result = spawnSync(cmd, args, {
+    cwd: ROOT,
+    encoding: "utf-8",
+    stdio: ["ignore", "pipe", "pipe"],
+    shell: false,
+  });
+  const output = (result.stdout ?? "") + (result.stderr ?? "");
+  const ok = result.status === 0 && result.error === undefined;
+  if (result.error) throw result.error;
+  if (!ok) {
+    const err = new Error(output.trim().split("\n").find(l => l.trim()) ?? "command failed");
+    (err as NodeJS.ErrnoException & { stdout?: string; stderr?: string }).stdout = result.stdout ?? "";
+    (err as NodeJS.ErrnoException & { stdout?: string; stderr?: string }).stderr = result.stderr ?? "";
+    throw err;
+  }
+  return { output, ok };
+}
+
 function walkTs(dir: string): string[] {
   if (!existsSync(dir)) return [];
   const out: string[] = [];
@@ -81,12 +100,8 @@ async function main(): Promise<void> {
   // ── Check 1: Full test suite ──────────────────────────────────────────────
   let testCount = 0;
   try {
-    const out = execSync("pnpm test 2>&1", {
-      cwd: ROOT,
-      encoding: "utf-8",
-      stdio: ["pipe", "pipe", "pipe"],
-    });
-    const m = out.match(/Tests\s+(\d+)\s+passed/);
+    const { output } = runAndCapture("pnpm", ["test"]);
+    const m = output.match(/Tests\s+(\d+)\s+passed/);
     testCount = m ? parseInt(m[1], 10) : 0;
     pass("1. Full test suite passes", `${testCount} tests passed`);
   } catch (e: unknown) {
@@ -95,11 +110,7 @@ async function main(): Promise<void> {
 
   // ── Check 2: TypeScript compiles without errors ───────────────────────────
   try {
-    execSync("npx tsc --noEmit -p tsconfig.json 2>&1", {
-      cwd: ROOT,
-      encoding: "utf-8",
-      stdio: ["pipe", "pipe", "pipe"],
-    });
+    runAndCapture("npx", ["tsc", "--noEmit", "-p", "tsconfig.json"]);
     pass("2. TypeScript compiles without errors", "tsc --noEmit clean");
   } catch (e: unknown) {
     fail("2. TypeScript compiles without errors", getExecErrorMessage(e));
@@ -227,13 +238,9 @@ async function main(): Promise<void> {
 
   // ── Check 9: demo:web:validate ───────────────────────────────────────────
   try {
-    const out = execSync("pnpm demo:web:validate 2>&1", {
-      cwd: ROOT,
-      encoding: "utf-8",
-      stdio: ["pipe", "pipe", "pipe"],
-    });
-    const m = out.match(/(\d+)\s+passed/i);
-    const count = m ? m[1] : "all";
+    const { output: out9 } = runAndCapture("pnpm", ["demo:web:validate"]);
+    const m9 = out9.match(/(\d+)\s+passed/i);
+    const count = m9 ? m9[1] : "all";
     pass("9. demo:web:validate passes", `${count} assertions passed`);
   } catch (e: unknown) {
     fail("9. demo:web:validate passes", getExecErrorMessage(e));
@@ -241,39 +248,27 @@ async function main(): Promise<void> {
 
   // ── Check 10: demo:support:validate ──────────────────────────────────────
   try {
-    const out = execSync("pnpm demo:support:validate 2>&1", {
-      cwd: ROOT,
-      encoding: "utf-8",
-      stdio: ["pipe", "pipe", "pipe"],
-    });
-    const m = out.match(/(\d+)\s+passed/i);
-    const count = m ? m[1] : "all";
-    pass("10. demo:support:validate passes", `${count} assertions passed`);
+    const { output: out10 } = runAndCapture("pnpm", ["demo:support:validate"]);
+    const m10 = out10.match(/(\d+)\s+passed/i);
+    const count10 = m10 ? m10[1] : "all";
+    pass("10. demo:support:validate passes", `${count10} assertions passed`);
   } catch (e: unknown) {
     fail("10. demo:support:validate passes", getExecErrorMessage(e));
   }
 
   // ── Check 11: review:validate ─────────────────────────────────────────────
   try {
-    const out = execSync("pnpm review:validate 2>&1", {
-      cwd: ROOT,
-      encoding: "utf-8",
-      stdio: ["pipe", "pipe", "pipe"],
-    });
-    const m = out.match(/(\d+)\s+passed/i);
-    const count = m ? m[1] : "all";
-    pass("11. review:validate passes", `${count} assertions passed`);
+    const { output: out11 } = runAndCapture("pnpm", ["review:validate"]);
+    const m11 = out11.match(/(\d+)\s+passed/i);
+    const count11 = m11 ? m11[1] : "all";
+    pass("11. review:validate passes", `${count11} assertions passed`);
   } catch (e: unknown) {
     fail("11. review:validate passes", getExecErrorMessage(e));
   }
 
   // ── Check 12: Import boundary enforcement ────────────────────────────────
   try {
-    execSync("pnpm check:imports 2>&1", {
-      cwd: ROOT,
-      encoding: "utf-8",
-      stdio: ["pipe", "pipe", "pipe"],
-    });
+    runAndCapture("pnpm", ["check:imports"]);
     pass("12. No architectural import boundary violations", "all boundaries clean");
   } catch (e: unknown) {
     fail("12. No architectural import boundary violations", getExecErrorMessage(e));
@@ -281,13 +276,9 @@ async function main(): Promise<void> {
 
   // ── Check 13: Invariant coverage — all invariants have covering tests ─────
   try {
-    const out = execSync("pnpm check:invariants 2>&1", {
-      cwd: ROOT,
-      encoding: "utf-8",
-      stdio: ["pipe", "pipe", "pipe"],
-    });
-    const m = out.match(/(\d+)\s*\/\s*(\d+)\s+invariants?\s+covered/i);
-    const summary = m ? `${m[1]} / ${m[2]} invariants covered` : "all invariants covered";
+    const { output: out13 } = runAndCapture("pnpm", ["check:invariants"]);
+    const m13 = out13.match(/(\d+)\s*\/\s*(\d+)\s+invariants?\s+covered/i);
+    const summary = m13 ? `${m13[1]} / ${m13[2]} invariants covered` : "all invariants covered";
     pass("13. All invariants linked to covering tests", summary);
   } catch (e: unknown) {
     fail("13. All invariants linked to covering tests", getExecErrorMessage(e));
