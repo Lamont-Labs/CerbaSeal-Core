@@ -7,7 +7,7 @@
  */
 
 import type { EvidenceBundle, ExportManifest } from "../../domain/types/audit.js";
-import { AppendOnlyLogService } from "../audit/append-only-log-service.js";
+import type { IAuditLogService } from "../audit/append-only-log-service.js";
 
 function nowIso(): string {
   return new Date().toISOString();
@@ -18,7 +18,7 @@ function deepClone<T>(value: T): T {
 }
 
 export class ExportManifestService {
-  constructor(private readonly logService: AppendOnlyLogService) {}
+  constructor(private readonly logService: IAuditLogService) {}
 
   createAuthorityPackageManifest(bundle: EvidenceBundle): ExportManifest {
     const manifest: ExportManifest = {

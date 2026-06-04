@@ -84,10 +84,10 @@ It is not a dashboard, policy system, or domain application.
 Current enforcement state (stable across runs on this commit):
 
 ```
-stableChecksum: 1e9dae1454004ffa70e079863320428726b9aa081ee4af8fbac32659deaf627c
+stableChecksum: a33c892ee4ceb6809feec90fe5f3bab425c25955fba34d51c4fb2ee0b942c587
 ```
 
-- 372 / 372 tests passing (15 test files)
+- 391 / 391 tests passing (16 test files)
 - 15 / 15 audit checks passing
 - 12 / 12 invariants covered and linked to tests
 - 229 validator assertions (106 + 13 + 110 across 3 validators)

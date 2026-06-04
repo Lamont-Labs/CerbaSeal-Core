@@ -26,34 +26,34 @@ function makeGate() {
 // ─────────────────────────────────────────────────────────────────────────────
 // CASE 1 — Unknown actorAuthorityClass
 //
-// Caller supplies an authority class not defined in the type system.
-// Known gap: the gate only checks actorAuthorityClass === "ai".
-// Unknown non-AI values are not explicitly rejected.
-// Safety property tested: unknown classes do NOT produce a silent ALLOW
-// without satisfying all other invariants (approval, trust, etc.).
+// Phase 5 hardening: unknown actorAuthorityClass values are now explicitly
+// rejected as MALFORMED_REQUEST (INV-11). Any runtime value not in the defined
+// AuthorityClass union is refused before any other invariant check runs.
+//
+// Previous behavior (documented gap): unknown non-AI values were not rejected
+// and would fall through to later checks (e.g., approval). That gap is closed.
 // ─────────────────────────────────────────────────────────────────────────────
 describe("Case 1 — Unknown actorAuthorityClass", () => {
 
-  it("'external_bot' on fraud_triage without approval produces HOLD, not ALLOW", () => {
+  it("'external_bot' produces REJECT with MALFORMED_REQUEST", () => {
     const gate = makeGate();
     const request: GovernedRequest = {
       ...buildValidGovernedRequest(),
       requestId: "misuse_001_no_approval",
       actorAuthorityClass: "external_bot" as unknown as "analyst",
-      approvalRequired: false,    // caller tries to opt out
-      approvalArtifact: null      // and provides no artifact
+      approvalRequired: false,
+      approvalArtifact: null
     };
 
     const result = gate.evaluate(request);
 
-    // fraud_triage hardcodes approval — HOLD, not ALLOW
-    expect(result.decisionEnvelope.finalState).not.toBe("ALLOW");
-    expect(result.decisionEnvelope.finalState).toBe("HOLD");
-    expect(result.decisionEnvelope.trace.reasonCodes).toContain("REQUIRED_APPROVAL_MISSING");
+    expect(result.decisionEnvelope.finalState).toBe("REJECT");
+    expect(result.decisionEnvelope.trace.reasonCodes).toContain("MALFORMED_REQUEST");
     expect(result.releaseAuthorization).toBeNull();
+    expect(result.blockedActionRecord).not.toBeNull();
   });
 
-  it("'admin_override' on fraud_triage without approval produces HOLD, not ALLOW", () => {
+  it("'admin_override' produces REJECT with MALFORMED_REQUEST", () => {
     const gate = makeGate();
     const request: GovernedRequest = {
       ...buildValidGovernedRequest(),
@@ -65,22 +65,20 @@ describe("Case 1 — Unknown actorAuthorityClass", () => {
 
     const result = gate.evaluate(request);
 
-    expect(result.decisionEnvelope.finalState).not.toBe("ALLOW");
-    expect(result.decisionEnvelope.finalState).toBe("HOLD");
+    expect(result.decisionEnvelope.finalState).toBe("REJECT");
+    expect(result.decisionEnvelope.trace.reasonCodes).toContain("MALFORMED_REQUEST");
     expect(result.releaseAuthorization).toBeNull();
   });
 
-  it("KNOWN GAP — 'external_bot' with a structurally valid approval passes all checks and produces ALLOW", () => {
-    // This test documents a known limitation: the gate does not validate that
-    // actorAuthorityClass is within the defined AuthorityClass union at runtime.
-    // Only the approvalArtifact.approverAuthorityClass is enforced. An actor
-    // declaring an unknown authority class that is not "ai" bypasses the AI
-    // block and, if it supplies a structurally valid approval, reaches ALLOW.
-    // This is documented in docs/status/current-state.md under Known Gaps.
+  it("'external_bot' with a structurally valid approval produces REJECT — gap closed", () => {
+    // Previously documented as a known gap: unknown actor class with a valid
+    // approval artifact would reach ALLOW. Phase 5 closes this: the actor
+    // authority class is now validated before any other check, so ALLOW is
+    // impossible for an unknown class regardless of approval state.
     const gate = makeGate();
     const request: GovernedRequest = {
       ...buildValidGovernedRequest(),
-      requestId: "misuse_001c_known_gap",
+      requestId: "misuse_001c_gap_closed",
       actorAuthorityClass: "external_bot" as unknown as "analyst",
       proposal: {
         ...buildValidGovernedRequest().proposal,
@@ -92,7 +90,7 @@ describe("Case 1 — Unknown actorAuthorityClass", () => {
       approvalArtifact: {
         approvalId: "approval_gap_001",
         approverId: "compliance_officer_001",
-        forRequestId: "misuse_001c_known_gap",
+        forRequestId: "misuse_001c_gap_closed",
         approverAuthorityClass: "compliance_officer",
         privilegedAuthSatisfied: true,
         immutableSignature: "sig_gap_001",
@@ -102,11 +100,38 @@ describe("Case 1 — Unknown actorAuthorityClass", () => {
 
     const result = gate.evaluate(request);
 
-    // Document the actual (gap) behavior — do not assert it should be REJECT.
-    // The important thing is the system is honest about its limitation.
-    expect(result.decisionEnvelope.finalState).toBe("ALLOW");
-    // Verification: this is why actorAuthorityClass runtime validation is listed
-    // as a known gap and must be addressed before production hardening.
+    expect(result.decisionEnvelope.finalState).toBe("REJECT");
+    expect(result.decisionEnvelope.trace.reasonCodes).toContain("MALFORMED_REQUEST");
+    expect(result.releaseAuthorization).toBeNull();
+  });
+
+  it("all six defined actor authority classes are accepted", () => {
+    const gate = makeGate();
+    const validClasses = [
+      "system", "ai", "analyst", "reviewer", "manager", "compliance_officer"
+    ] as const;
+
+    for (const cls of validClasses) {
+      const base = buildValidGovernedRequest();
+      const request: GovernedRequest = {
+        ...base,
+        requestId: `misuse_001d_${cls}`,
+        actorAuthorityClass: cls,
+        proposal: {
+          ...base.proposal,
+          proposalSourceKind: cls === "ai" ? "ai" : "deterministic_rule",
+          requestedActionClass: "escalate"
+        }
+      };
+      const result = gate.evaluate(request);
+      if (cls === "ai") {
+        // AI actor with AI proposal is still blocked by INV-05
+        expect(result.decisionEnvelope.finalState).toBe("REJECT");
+      } else {
+        // All other defined classes pass the authority check
+        expect(result.decisionEnvelope.trace.reasonCodes).not.toContain("MALFORMED_REQUEST");
+      }
+    }
   });
 
 });
@@ -173,6 +198,98 @@ describe("Case 2 — ApprovalArtifact with bad requestId binding", () => {
 
     expect(result.decisionEnvelope.finalState).toBe("REJECT");
     expect(result.decisionEnvelope.trace.reasonCodes).toContain("INVALID_APPROVAL_AUTHORITY");
+    expect(result.releaseAuthorization).toBeNull();
+  });
+
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CASE 2b — Approval timestamp predates request (Phase 6)
+//
+// An approval that was recorded before the request was created is impossible
+// and indicates a forged or replayed artifact. The gate now rejects these.
+// ─────────────────────────────────────────────────────────────────────────────
+describe("Case 2b — Approval timestamp predates request (Phase 6)", () => {
+
+  it("approvedAt before createdAt produces REJECT with INVALID_APPROVAL_AUTHORITY", () => {
+    const gate = makeGate();
+    const base = buildValidGovernedRequest();
+    const request: GovernedRequest = {
+      ...base,
+      requestId: "misuse_002d_timestamp",
+      createdAt: "2026-04-18T12:00:00.000Z",
+      approvalArtifact: {
+        ...base.approvalArtifact!,
+        forRequestId: "misuse_002d_timestamp",
+        approvedAt: "2026-04-18T11:59:59.999Z"   // 1 ms before request
+      }
+    };
+
+    const result = gate.evaluate(request);
+
+    expect(result.decisionEnvelope.finalState).toBe("REJECT");
+    expect(result.decisionEnvelope.trace.reasonCodes).toContain("INVALID_APPROVAL_AUTHORITY");
+    expect(result.releaseAuthorization).toBeNull();
+  });
+
+  it("approvedAt equal to createdAt is accepted (same-millisecond approval)", () => {
+    const gate = makeGate();
+    const base = buildValidGovernedRequest();
+    const ts = "2026-04-18T12:00:00.000Z";
+    const request: GovernedRequest = {
+      ...base,
+      requestId: "misuse_002e_same_ts",
+      createdAt: ts,
+      approvalArtifact: {
+        ...base.approvalArtifact!,
+        forRequestId: "misuse_002e_same_ts",
+        approvedAt: ts
+      }
+    };
+
+    const result = gate.evaluate(request);
+
+    expect(result.decisionEnvelope.finalState).toBe("ALLOW");
+    expect(result.releaseAuthorization).not.toBeNull();
+  });
+
+  it("approvedAt well after createdAt is accepted", () => {
+    const gate = makeGate();
+    const base = buildValidGovernedRequest();
+    const request: GovernedRequest = {
+      ...base,
+      requestId: "misuse_002f_after_ts",
+      createdAt: "2026-04-18T00:00:00.000Z",
+      approvalArtifact: {
+        ...base.approvalArtifact!,
+        forRequestId: "misuse_002f_after_ts",
+        approvedAt: "2026-04-18T00:01:00.000Z"   // 1 minute after
+      }
+    };
+
+    const result = gate.evaluate(request);
+
+    expect(result.decisionEnvelope.finalState).toBe("ALLOW");
+    expect(result.releaseAuthorization).not.toBeNull();
+  });
+
+  it("non-parseable approvedAt produces REJECT with MALFORMED_REQUEST", () => {
+    const gate = makeGate();
+    const base = buildValidGovernedRequest();
+    const request: GovernedRequest = {
+      ...base,
+      requestId: "misuse_002g_bad_ts",
+      approvalArtifact: {
+        ...base.approvalArtifact!,
+        forRequestId: "misuse_002g_bad_ts",
+        approvedAt: "not-a-date"
+      }
+    };
+
+    const result = gate.evaluate(request);
+
+    expect(result.decisionEnvelope.finalState).toBe("REJECT");
+    expect(result.decisionEnvelope.trace.reasonCodes).toContain("MALFORMED_REQUEST");
     expect(result.releaseAuthorization).toBeNull();
   });
 
@@ -534,6 +651,31 @@ describe("Final guard — exhaustive ALLOW check", () => {
       }
     },
     {
+      label: "unknown actorAuthorityClass with valid approval",
+      expectAllow: false,
+      request: {
+        ...buildValidGovernedRequest(),
+        requestId: "guard_001b",
+        actorAuthorityClass: "external_bot" as unknown as "analyst",
+        proposal: {
+          ...buildValidGovernedRequest().proposal,
+          proposalSourceKind: "deterministic_rule",
+          requestedActionClass: "escalate"
+        },
+        proposedActionClass: "escalate",
+        approvalRequired: true,
+        approvalArtifact: {
+          approvalId: "approval_guard_001b",
+          approverId: "compliance_officer_001",
+          forRequestId: "guard_001b",
+          approverAuthorityClass: "compliance_officer",
+          privilegedAuthSatisfied: true,
+          immutableSignature: "sig_guard_001b",
+          approvedAt: "2026-04-23T00:00:00.000Z"
+        }
+      }
+    },
+    {
       label: "approval with mismatched forRequestId",
       expectAllow: false,
       request: {
@@ -604,6 +746,20 @@ describe("Final guard — exhaustive ALLOW check", () => {
         requestId: "guard_006c",
         proposedActionClass: "escalate",
         proposal: { ...buildValidGovernedRequest().proposal, requestedActionClass: "account_hold" }
+      }
+    },
+    {
+      label: "approval timestamp predates request",
+      expectAllow: false,
+      request: {
+        ...buildValidGovernedRequest(),
+        requestId: "guard_007_ts",
+        createdAt: "2026-04-18T12:00:00.000Z",
+        approvalArtifact: {
+          ...buildValidGovernedRequest().approvalArtifact!,
+          forRequestId: "guard_007_ts",
+          approvedAt: "2026-04-18T11:00:00.000Z"
+        }
       }
     }
   ];

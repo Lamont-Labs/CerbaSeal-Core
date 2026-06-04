@@ -2,7 +2,7 @@ import { execSync } from "node:child_process";
 import { readFileSync, existsSync, mkdirSync, writeFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { createHash } from "node:crypto";
+import { createHash, createHmac } from "node:crypto";
 
 const ROOT = join(fileURLToPath(import.meta.url), "..", "..");
 const STDOUT_MODE = process.argv.includes("--stdout");
@@ -161,7 +161,29 @@ async function main(): Promise<void> {
   const stableJson = JSON.stringify(stablePayload, null, 2);
   const stableChecksum = createHash("sha256").update(stableJson, "utf-8").digest("hex");
 
-  const manifest = { ...manifestBody, manifestChecksum, stableChecksum };
+  // ── 7c. Optional HMAC signature over stableChecksum ──────────────────────
+  // If CERBASEAL_SIGNING_KEY is set, produce an HMAC-SHA256 over the
+  // stableChecksum. This proves the snapshot was produced by a system
+  // holding the key and has not been altered since export.
+  // Without the key, the snapshot is unsigned; all checksum verification
+  // continues to work.
+  const signingKey = process.env["CERBASEAL_SIGNING_KEY"];
+  let hmacSignature: string | undefined;
+  if (signingKey && signingKey.length >= 32) {
+    hmacSignature = createHmac("sha256", signingKey)
+      .update(stableChecksum, "utf-8")
+      .digest("hex");
+    log("  ✓ HMAC signature generated (CERBASEAL_SIGNING_KEY is set)");
+  } else if (signingKey) {
+    log("  ⚠ CERBASEAL_SIGNING_KEY is set but too short (< 32 chars) — snapshot will be unsigned");
+  }
+
+  const manifest = {
+    ...manifestBody,
+    manifestChecksum,
+    stableChecksum,
+    ...(hmacSignature !== undefined ? { hmacSignature } : {})
+  };
 
   // ── 8. Emit ───────────────────────────────────────────────────────────────
   const finalJson = JSON.stringify(manifest, null, 2) + "\n";
@@ -176,6 +198,9 @@ async function main(): Promise<void> {
     log("\n" + "=".repeat(52));
     log(`  manifestChecksum (full body): ${manifestChecksum}`);
     log(`  stableChecksum  (state only): ${stableChecksum}`);
+    if (hmacSignature) {
+      log(`  hmacSignature   (HMAC-SHA256): ${hmacSignature}`);
+    }
     log("  Status: PASS\n");
   }
 }

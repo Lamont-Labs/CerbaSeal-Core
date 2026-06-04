@@ -276,29 +276,31 @@ describe("Case 4 — Repeated approvals across unrelated actions", () => {
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-// CASE 5 — Valid approval with significantly earlier approvedAt timestamp
+// CASE 5 — Approval timestamp at exactly the moment of request creation
 //
-// The approvalArtifact.approvedAt predates the request.createdAt by a large
-// margin. This could indicate a stale or pre-signed approval. CerbaSeal
-// records both timestamps but does not compare them. Timestamp semantics are
-// a documented known gap.
+// Phase 6 closed the known gap: approvedAt is now validated against createdAt.
+// Approval before the request REJECTS. This case tests the boundary condition:
+// approvedAt === createdAt (same millisecond). This must still produce ALLOW —
+// same-moment approval is structurally valid (e.g., automated instant approvals
+// in non-fraud workflows where human interaction is synchronous).
 // ─────────────────────────────────────────────────────────────────────────────
-describe("Case 5 — Valid approval with earlier approvedAt timestamp", () => {
+describe("Case 5 — Approval timestamp at exactly the request creation time", () => {
   const { gate, evidence } = makeServices();
+  const sharedTs = "2026-04-23T09:00:00.000Z";
 
   const request = baseRequest("ctx_boundary_005", {
-    createdAt: "2026-04-23T09:00:00.000Z",
+    createdAt: sharedTs,
     approvalArtifact: {
       ...baseApproval("ctx_boundary_005"),
-      // Approval issued 30 days before the request was created
-      approvedAt: "2026-03-24T09:00:00.000Z"
+      // approvedAt exactly equals createdAt — boundary condition, must ALLOW
+      approvedAt: sharedTs
     }
   });
 
   const result = gate.evaluate(request);
   const bundle = evidence.createBundle({ request, gateResult: result });
 
-  it("produces ALLOW despite approval predating the request by 30 days", () => {
+  it("produces ALLOW when approvedAt === createdAt (boundary condition)", () => {
     expect(result.decisionEnvelope.finalState).toBe("ALLOW");
   });
 
@@ -311,9 +313,9 @@ describe("Case 5 — Valid approval with earlier approvedAt timestamp", () => {
     expect(bundle.eventChain[1]!.eventType).toBe("RELEASE_AUTHORIZED");
   });
 
-  it("system does not compare approvedAt against createdAt (documented known gap)", () => {
-    // approvedAt is recorded in the approval artifact but is not read by the gate.
-    // Expiry enforcement is a known gap documented in docs/status/current-state.md.
+  it("system accepts same-millisecond approval timestamps (approvedAt >= createdAt enforced)", () => {
+    // Phase 6: approvedAt is now validated. approvedAt === createdAt is valid.
+    // approvedAt < createdAt produces REJECT (tested in misuse-scenarios.test.ts Case 2b).
     expect(result.decisionEnvelope.finalState).not.toBe("REJECT");
     expect(result.decisionEnvelope.finalState).not.toBe("HOLD");
   });
@@ -425,11 +427,12 @@ describe("Global assertions — all contextual boundary cases produce ALLOW", ()
       })
     },
     {
-      label: "approval predating request by 30 days",
+      label: "approval at exactly request creation time (same-ms boundary)",
       request: baseRequest("global_ctx_005", {
+        createdAt: "2026-04-23T09:00:00.000Z",
         approvalArtifact: {
           ...baseApproval("global_ctx_005"),
-          approvedAt: "2026-03-24T09:00:00.000Z"
+          approvedAt: "2026-04-23T09:00:00.000Z"
         }
       })
     },

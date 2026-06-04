@@ -8,7 +8,7 @@
 
 import type { GateResult, GovernedRequest } from "../../domain/types/core.js";
 import type { EvidenceBundle } from "../../domain/types/audit.js";
-import { AppendOnlyLogService } from "../audit/append-only-log-service.js";
+import type { IAuditLogService } from "../audit/append-only-log-service.js";
 import { assertIsGateIssued } from "../execution/execution-gate-service.js";
 
 function nowIso(): string {
@@ -20,7 +20,7 @@ function deepClone<T>(value: T): T {
 }
 
 export class EvidenceBundleService {
-  constructor(private readonly logService: AppendOnlyLogService) {}
+  constructor(private readonly logService: IAuditLogService) {}
 
   createBundle(args: {
     request: GovernedRequest;

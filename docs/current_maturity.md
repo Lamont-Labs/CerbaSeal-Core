@@ -23,7 +23,7 @@ The following are fully implemented and tested in this proof slice:
 
 Current governance state:
 
-- 372 passing tests across 15 test files, including adversarial and hostile boundary probes
+- 391 passing tests across 16 test files, including adversarial and hostile boundary probes
 - 15 / 15 repo audit checks passing
 - 12 / 12 invariants covered and linked to tests
 - 229 validator assertions (106 + 13 + 110 across 3 validators)
@@ -79,13 +79,12 @@ The `immutable: true` field on `DecisionEnvelope` is a TypeScript type annotatio
 
 The following are not yet implemented and are not claimed to be:
 
-- cryptographic signing of decision envelopes
-- HMAC-anchored audit chains
-- persistent storage layer
-- access control on the enforcement services
-- rate limiting or abuse prevention
+- cryptographic signing of decision envelopes (roadmap: docs/security/artifact-signing-roadmap.md)
+- HMAC-anchored audit chains (optional HMAC-SHA256 signing of proof snapshots available via `CERBASEAL_SIGNING_KEY`)
+- production-grade access control and rate limiting (design: docs/security/access-control-and-rate-limiting.md)
 - external attestation of gate invocation
 - production monitoring and alerting
+- production deployment hardening beyond the enforcement library (runbook: docs/deployment/runbook.md)
 
 ---
 

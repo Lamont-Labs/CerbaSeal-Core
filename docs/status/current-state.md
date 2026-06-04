@@ -30,7 +30,7 @@ A browser-accessible Review & Pilot Readiness Portal is live at `/review`, `/pil
 | integration/full-flow.test.ts | 1 | Passing |
 | integration/system-integration.test.ts | 1 | Passing |
 
-**Total: 372 passing. 0 failing. 15 test files.**
+**Total: 391 passing. 0 failing. 16 test files.**
 
 All tests pass. No invariant violations. No incorrect execution outcomes.
 
@@ -88,10 +88,10 @@ The following are documented, intentionally accepted limitations for this proof 
 - Contextual correctness is not evaluated by design.
 
 **Not validated at runtime:**
-- `approvedAt` — no expiry check, no timestamp format validation
+- `approvedAt` — expiry check and timestamp format validation now enforced (Phase 6); non-parseable dates and approval predating request both REJECT
 - `immutableSignature` content — any non-empty string passes; no cryptographic verification
 - `approvalId` and `approverId` — present on the type, never read by the gate
-- `actorAuthorityClass` range — only "ai" is specifically matched; unknown values are not explicitly rejected
+- `actorAuthorityClass` range — now fully validated at runtime (Phase 5); all 6 valid values enforced; unknown values produce REJECT with MALFORMED_REQUEST
 - `controlStatus.verificationRunId` and `trustState.trustStateId` — recorded but not validated
 - `proposal.confidence` — not gated; null, negative, or values above 1.0 all pass
 - `createdAt` and `sourceHash` format — non-empty check only

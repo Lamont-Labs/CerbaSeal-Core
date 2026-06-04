@@ -1,7 +1,7 @@
 import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { createHash } from "node:crypto";
+import { createHash, createHmac } from "node:crypto";
 
 const ROOT = join(fileURLToPath(import.meta.url), "..", "..");
 const SNAPSHOT_PATH = join(ROOT, "docs", "reports", "proof-snapshot.json");
@@ -22,6 +22,7 @@ interface ProofSnapshot {
   validators: Record<string, { passed: boolean; assertions: number }>;
   manifestChecksum: string;
   stableChecksum: string;
+  hmacSignature?: string;
 }
 
 async function main(): Promise<void> {
@@ -52,7 +53,7 @@ async function main(): Promise<void> {
   // stableChecksum = sha256(JSON.stringify(stablePayload, null, 2))
   // stablePayload  = { gitCommit, gitBranch, version, testSuite,
   //                    auditChecks, invariants, validators }
-  // (excludes generatedAt, manifestChecksum, stableChecksum)
+  // (excludes generatedAt, manifestChecksum, stableChecksum, hmacSignature)
   //
   const stablePayload = {
     gitCommit:    snapshot.gitCommit,
@@ -81,7 +82,8 @@ async function main(): Promise<void> {
   // ── 2. Verify manifestChecksum ─────────────────────────────────────────────
   //
   // manifestChecksum = sha256(JSON.stringify(manifestBody, null, 2))
-  // manifestBody     = all fields EXCEPT manifestChecksum and stableChecksum
+  // manifestBody     = all fields EXCEPT manifestChecksum, stableChecksum,
+  //                    and hmacSignature
   //
   const manifestBody = {
     generatedAt:  snapshot.generatedAt,
@@ -108,7 +110,40 @@ async function main(): Promise<void> {
     pass = false;
   }
 
-  // ── 3. Print snapshot summary ─────────────────────────────────────────────
+  // ── 3. Optional HMAC verification ─────────────────────────────────────────
+  //
+  // If CERBASEAL_SIGNING_KEY is set and the snapshot contains an hmacSignature,
+  // verify that the HMAC over stableChecksum matches.
+  // If the key is set but the snapshot has no hmacSignature, warn (unsigned).
+  // If the snapshot has hmacSignature but no key, warn (cannot verify).
+  //
+  const signingKey = process.env["CERBASEAL_SIGNING_KEY"];
+
+  if (signingKey && signingKey.length >= 32) {
+    if (snapshot.hmacSignature) {
+      const computedHmac = createHmac("sha256", signingKey)
+        .update(snapshot.stableChecksum, "utf-8")
+        .digest("hex");
+
+      if (computedHmac === snapshot.hmacSignature) {
+        log(`  ✓ hmacSignature verified (HMAC-SHA256 over stableChecksum)`);
+        log(`    ${snapshot.hmacSignature}`);
+      } else {
+        console.error("  ✗ hmacSignature MISMATCH");
+        console.error("    The snapshot was not produced by a system holding the current CERBASEAL_SIGNING_KEY,");
+        console.error("    or the stableChecksum was altered after signing.");
+        pass = false;
+      }
+    } else {
+      log("  ⚠ Snapshot has no hmacSignature — it was exported without a signing key");
+      log("    (This is acceptable for unsigned snapshots; re-export with the key to add a signature)");
+    }
+  } else if (snapshot.hmacSignature) {
+    log("  ⚠ Snapshot has hmacSignature but CERBASEAL_SIGNING_KEY is not set — HMAC not verified");
+    log("    Set CERBASEAL_SIGNING_KEY to verify the signature");
+  }
+
+  // ── 4. Print snapshot summary ─────────────────────────────────────────────
   log("");
   log(`  Snapshot generated: ${snapshot.generatedAt}`);
   log(`  Git commit:         ${snapshot.gitCommit.slice(0, 12)}`);

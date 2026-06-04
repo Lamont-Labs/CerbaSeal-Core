@@ -33,6 +33,18 @@ const ALLOWED_ACTION_CLASSES = new Set<ActionClass>([
 // Adding a workflowClass here means no caller can opt out of approval enforcement.
 const WORKFLOWS_REQUIRING_APPROVAL = new Set<WorkflowClass>(["fraud_triage"]);
 
+// Phase 5: Complete set of valid actor authority classes (INV-11).
+// Any runtime value outside this set is rejected as MALFORMED_REQUEST.
+// This closes the known gap documented in docs/status/current-state.md.
+const ALLOWED_ACTOR_AUTHORITY_CLASSES: ReadonlySet<string> = new Set([
+  "system",
+  "ai",
+  "analyst",
+  "reviewer",
+  "manager",
+  "compliance_officer"
+]);
+
 // Fix 3: Module-private registry of gate-issued GateResult objects.
 // Only results returned by ExecutionGateService.evaluate() are registered.
 // EvidenceBundleService rejects any GateResult not present in this set.
@@ -96,6 +108,26 @@ function assertRequestShape(
   ) {
     throw new CerbaSealError({
       message: "Governed request is malformed",
+      invariant: INVARIANTS.REQUEST_SCHEMA_AND_ACTION_CLASS_VALID,
+      reasonCode: REASON_CODES.MALFORMED_REQUEST,
+      finalState: "REJECT"
+    });
+  }
+}
+
+// Phase 5: Validate actorAuthorityClass at runtime.
+// TypeScript enforces the AuthorityClass union at compile time, but callers
+// integrating via untyped boundaries (JavaScript, JSON deserialization) can
+// supply arbitrary strings. This check closes that gap at the enforcement layer.
+function assertActorAuthorityClass(
+  request: GovernedRequest,
+  invariantChecks: InvariantCode[]
+): void {
+  invariantChecks.push(INVARIANTS.REQUEST_SCHEMA_AND_ACTION_CLASS_VALID);
+
+  if (!ALLOWED_ACTOR_AUTHORITY_CLASSES.has(request.actorAuthorityClass)) {
+    throw new CerbaSealError({
+      message: `Unknown actor authority class: "${request.actorAuthorityClass}"`,
       invariant: INVARIANTS.REQUEST_SCHEMA_AND_ACTION_CLASS_VALID,
       reasonCode: REASON_CODES.MALFORMED_REQUEST,
       finalState: "REJECT"
@@ -280,6 +312,30 @@ function assertApprovalState(
     });
   }
 
+  // Phase 6: Approval timestamp must not predate the request creation time.
+  // An approval recorded before the request was created is impossible and
+  // indicates a forged or replayed artifact.
+  const requestDate = new Date(request.createdAt);
+  const approvedDate = new Date(request.approvalArtifact.approvedAt);
+
+  if (isNaN(requestDate.getTime()) || isNaN(approvedDate.getTime())) {
+    throw new CerbaSealError({
+      message: "Approval or request timestamp is not a valid ISO date",
+      invariant: INVARIANTS.NO_REQUIRED_APPROVAL_NO_RELEASE,
+      reasonCode: REASON_CODES.MALFORMED_REQUEST,
+      finalState: "REJECT"
+    });
+  }
+
+  if (approvedDate < requestDate) {
+    throw new CerbaSealError({
+      message: "Approval timestamp predates the request creation time",
+      invariant: INVARIANTS.NO_REQUIRED_APPROVAL_NO_RELEASE,
+      reasonCode: REASON_CODES.INVALID_APPROVAL_AUTHORITY,
+      finalState: "REJECT"
+    });
+  }
+
   if (
     request.approvalArtifact.approverAuthorityClass !== "analyst" &&
     request.approvalArtifact.approverAuthorityClass !== "reviewer" &&
@@ -377,6 +433,7 @@ export class ExecutionGateService {
 
     try {
       assertRequestShape(request, checkedInvariants);
+      assertActorAuthorityClass(request, checkedInvariants);
       assertKnownActionClass(request.proposedActionClass, checkedInvariants);
       assertKnownActionClass(request.proposal.requestedActionClass, checkedInvariants);
 

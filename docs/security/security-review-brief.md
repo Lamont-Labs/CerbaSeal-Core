@@ -43,18 +43,18 @@ Security review should focus on:
 
 These are accurately documented limitations, not implementation oversights:
 
-- Audit log is in-memory — not persisted across process restarts
-- No cryptographic signing — evidence is hash-linked, not key-signed or attested
+- Audit log persists across restarts via FileBackedAppendOnlyLogService (JSONL, hash-chain integrity preserved); in-memory default still available
+- No cryptographic signing — evidence is hash-linked, not key-signed or attested (see docs/security/artifact-signing-roadmap.md)
 - No identity provider — actor identity is caller-supplied with no independent attestation
-- No persistent storage — all state exists per process instance
-- No production deployment hardening
+- No production deployment hardening beyond the enforcement library
 - No third-party security review completed yet
 - loggingReady is caller-declared — gate does not verify actual log system health
 - immutableSignature content is not cryptographically verified — any non-empty string passes
 - SHA-256 hash chain proves consistency, not origin — fabricated chain with recomputed hashes passes verifyChain()
 - Multiple AppendOnlyLogService instances have no coordination
-- approvedAt has no expiry check or timestamp format validation
-- actorAuthorityClass range — only "ai" is specifically matched; unknown values are not explicitly rejected
+- approvedAt is now validated: must parse as a valid ISO date and must not predate request.createdAt (Phase 6)
+- actorAuthorityClass range is now fully enforced at runtime: all 6 valid values accepted; any other value REJECTS (Phase 5)
+- Audit log is in-memory by default — use FileBackedAppendOnlyLogService for pilot persistence
 
 ## Reviewer Questions
 
