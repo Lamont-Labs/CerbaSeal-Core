@@ -41,3 +41,9 @@ id = "Mk1w-Bj-ZH0J4MRMZL1Y5"
 uri = "file://docs/reports/CTO_CALL_PREP_BINDER_LINE_AXIA.pdf"
 type = "pdf"
 title = "CTO Call Preparation Binder — Line Axia (Revised)"
+
+[[outputs]]
+id = "JEU9OtRdJQ7i8gJauPh1m"
+uri = "file://docs/reports/LINE_AXIA_CALL_QA_BRIEF.pdf"
+type = "pdf"
+title = "Technical Q&A Call Brief — Line Axia"
