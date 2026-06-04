@@ -83,7 +83,7 @@ Current proof points:
 - live REJECT / HOLD / ALLOW demo
 - browser demo
 - 372 passing tests (15 test files)
-- 14 / 14 audit checks passing
+- 15 / 15 audit checks passing
 - 12 / 12 invariants covered and linked to tests
 - adversarial misuse testing
 - non-forgery protection

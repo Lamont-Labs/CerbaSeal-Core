@@ -24,7 +24,7 @@ A browser-accessible Review & Pilot Readiness Portal is live at `/review`, `/pil
 | audit-evidence-export.test.ts | 6 | Passing |
 | diagnostic-report-service.test.ts | 5 | Passing |
 | integration/browser-demo-routes.test.ts | 28 | Passing |
-| integration/review-portal-routes.test.ts | 61 | Passing |
+| integration/review-portal-routes.test.ts | 110 | Passing |
 | integration/support-readiness.test.ts | 23 | Passing |
 | integration/external-signal-examples.test.ts | 16 | Passing |
 | integration/full-flow.test.ts | 1 | Passing |

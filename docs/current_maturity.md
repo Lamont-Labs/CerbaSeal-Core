@@ -24,7 +24,7 @@ The following are fully implemented and tested in this proof slice:
 Current governance state:
 
 - 372 passing tests across 15 test files, including adversarial and hostile boundary probes
-- 14 / 14 repo audit checks passing
+- 15 / 15 repo audit checks passing
 - 12 / 12 invariants covered and linked to tests
 - 229 validator assertions (106 + 13 + 110 across 3 validators)
 - Governance state attested via stableChecksum (`pnpm export:proof`, `pnpm verify:proof`)

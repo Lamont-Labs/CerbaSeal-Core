@@ -1,3 +1,7 @@
+// NOTE: This is a non-operational reference implementation showing Mode 2 (Internal HTTP Service) deployment.
+// express is not installed in this repository. To use this wrapper, run:
+//   pnpm add express && pnpm add -D @types/express
+// then remove this comment block.
 import express from "express";
 import { ExecutionGateService } from "../src/services/execution/execution-gate-service.js";
 import type { GovernedRequest } from "../src/domain/types/core.js";

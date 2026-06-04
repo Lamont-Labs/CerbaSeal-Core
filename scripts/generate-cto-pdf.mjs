@@ -117,7 +117,7 @@ sectionDivider('PART 1 — OLIVIA\'S QUESTIONS');
 
 questionBlock(
   'Q1 — Where is CerbaSeal relative to external deployment? What is the gap to pilot-ready?',
-  `"VeraSeal" does not appear anywhere in this repository. There is no component, module, file, or reference using that name. The enforcement core is CerbaSeal itself — specifically ExecutionGateService (src/services/execution/execution-gate-service.ts). There is no sub-component called VeraSeal.\n\nCerbaSeal-Core v0.1.0 is a deterministic enforcement library and browser demo. Its own documentation states it is "a minimal reviewable enforcement proof package" and "not a finished standalone deployable product." It runs on Node.js/TypeScript with a single runtime dependency (tsx).\n\nImplemented and working: 12-invariant execution gate, ALLOW/HOLD/REJECT outcomes, fail-closed behavior, SHA-256 hash-chained audit log, evidence bundle generation, replay verification, diagnostic reports, 323 passing tests across 15 test files, browser portal (/review, /pilot, /security, /deployment), 15/15 audit checks in CI.\n\nNot implemented: persistent storage (in-memory, lost on restart), cryptographic signing, identity attestation, policy content evaluation, client-specific workflow binding, production infrastructure hardening, no third-party security review.`,
+  `"VeraSeal" does not appear anywhere in this repository. There is no component, module, file, or reference using that name. The enforcement core is CerbaSeal itself — specifically ExecutionGateService (src/services/execution/execution-gate-service.ts). There is no sub-component called VeraSeal.\n\nCerbaSeal-Core v0.1.0 is a deterministic enforcement library and browser demo. Its own documentation states it is "a minimal reviewable enforcement proof package" and "not a finished standalone deployable product." It runs on Node.js/TypeScript with a single runtime dependency (tsx).\n\nImplemented and working: 12-invariant execution gate, ALLOW/HOLD/REJECT outcomes, fail-closed behavior, SHA-256 hash-chained audit log, evidence bundle generation, replay verification, diagnostic reports, 372 passing tests across 15 test files, browser portal (/review, /pilot, /security, /deployment), 15/15 audit checks (local, pnpm audit:repo).\n\nNot implemented: persistent storage (in-memory, lost on restart), cryptographic signing, identity attestation, policy content evaluation, client-specific workflow binding, production infrastructure hardening, no third-party security review.`,
   'docs/current_maturity.md · docs/pilot/pilot-readiness-brief.md · docs/status/current-state.md · docs/deployment/eu-pilot-deployment-posture.md · src/services/execution/execution-gate-service.ts · package.json (v0.1.0, tsx only). No file in the repository contains the string "VeraSeal."',
   'VeraSeal as a named component: No evidence found — does not exist. Production deployment: No evidence found. Signed pilot client: No evidence found. Third-party security review: No evidence found.',
   '"CerbaSeal is the enforcement core — there is no separate component called VeraSeal in the current build. The core enforcement logic is implemented, adversarially tested, and documented. What we have today is a controlled technical proof, not a production deployment. Pilot-ready means: one workflow, one client, controlled environment, no production execution. The gap is the working agreement, the deployment environment, and persistent storage."',
@@ -237,7 +237,7 @@ bullet([
   'Caller-declared fields create dependency on upstream caller trustworthiness — manageable in controlled pilot, requires architecture review in production',
 ], '#d97706');
 
-subSection('Test Maturity — 323 passing tests, 0 failing, 15 test files');
+subSection('Test Maturity — 372 passing tests, 0 failing, 15 test files');
 const testCols = ['Test File', 'Count', 'Coverage Area'];
 const testWidths = [220, 50, PAGE_WIDTH - 270];
 tableRow(testCols, testWidths, true);
@@ -247,7 +247,7 @@ tableRow(testCols, testWidths, true);
   ['enforcement-loop.snapshot.test.ts', '41', 'Snapshot regression'],
   ['security/misuse-scenarios.test.ts', '27', 'Real-world misuse patterns'],
   ['security/contextual-boundary.test.ts', '25', 'Enforcement limits'],
-  ['integration/review-portal-routes.test.ts', '61', 'Portal route coverage'],
+  ['integration/review-portal-routes.test.ts', '110', 'Portal route coverage'],
   ['integration/browser-demo-routes.test.ts', '28', 'Demo server routes'],
   ['integration/support-readiness.test.ts', '23', 'Support layer'],
   ['integration/external-signal-examples.test.ts', '16', 'Signal examples'],
@@ -283,8 +283,8 @@ bullet([
   'docs/09-trust-boundary-and-limitations.md: documents structural trust model limits with precision',
 ], '#16a34a');
 bullet([
-  'INCONSISTENCY: docs/current_maturity.md states 372 passing tests; docs/status/current-state.md per-file totals = 323. Must be corrected before external sharing.',
   'No deployment runbook. No SBOM produced.',
+  'GitHub Actions CI not yet configured — pnpm audit:repo provides local equivalent.',
 ], '#b91c1c');
 
 // ─── SECTION 2 — DEPLOYMENT PLAN ─────────────────────────────────────────────
@@ -304,7 +304,7 @@ tableRow(depCols, depWidths, true);
 doc.moveDown(0.5);
 
 subSection('What can be reused from today');
-bullet(['Full enforcement core (ExecutionGateService + all 12 invariants)', 'Evidence bundle generation and audit log (in-memory)', 'Diagnostic report generation and operator action guidance', 'All 323 tests, 15 audit checks, proof snapshot', 'Portal documentation (/review, /pilot, /security, /deployment)']);
+bullet(['Full enforcement core (ExecutionGateService + all 12 invariants)', 'Evidence bundle generation and audit log (in-memory)', 'Diagnostic report generation and operator action guidance', 'All 372 tests, 15 audit checks, proof snapshot', 'Portal documentation (/review, /pilot, /security, /deployment)']);
 
 subSection('What must be built for first pilot');
 bullet(['Persistent audit log integration (evidence must survive process restart)', 'GovernedRequest construction for the specific client workflow (client-specific — not included)', 'Deployment environment: container, VM, or embedding choice', 'API surface if deploying as Mode B (internal HTTP service)'], '#d97706');
@@ -395,7 +395,7 @@ tableRow(riskCols, riskWidths, true);
   ['Caller-supplied field trust', 'High', 'Med', 'Well-documented; caller assumed trusted', 'No runtime verification; depends on integration architecture'],
   ['First-ever client deployment', 'High', 'Certain', 'Deployment modes documented; no external calls simplify', 'First real deployment adds unknowns; no runbook'],
   ['Cryptographic signing absent', 'Med', 'Certain', 'Hash-chaining provides structural integrity', 'Legal-weight evidence requires signing; not yet built'],
-  ['Test count inconsistency', 'Low', 'Certain', 'Both docs readable', 'current_maturity.md (372) vs current-state.md (323) — correct before sharing externally'],
+  ['No GitHub Actions CI', 'Low', 'Certain', 'pnpm audit:repo runs 15 checks locally', 'GitHub Actions CI not yet configured — pre-pilot requirement'],
   ['No LICENSE file', 'Med', 'Certain', 'IP understood informally', 'Formal declaration absent; remedy before any agreement'],
   ['Scope creep', 'Med', 'High', 'Boundaries documented; out-of-scope explicit', 'Agreement must reproduce scope verbatim; none signed'],
   ['Evidence chain fabrication', 'Med', 'Low', 'Documented; hash chain proves consistency not origin', 'Requires HMAC or external attestation to close'],
@@ -434,7 +434,7 @@ subSection('WHAT CERBASEAL ACTUALLY IS TODAY');
 body('CerbaSeal is a working enforcement engine for AI-assisted workflows. When a system asks "should this AI action be allowed to execute?" — CerbaSeal answers that question and produces a verifiable record of the answer. The enforcement logic is real, adversarially tested, and honest about where it stops. One runtime dependency. No external APIs, no database, no cloud vendor lock-in. Currently hosted as a demonstration on Replit — not connected to any client system.');
 
 subSection('WHAT IS GENUINELY PILOT-READY');
-bullet(['Enforcement core: 12 invariants, fully implemented. Fail-closed is real. AI cannot authorize its own proposals — hard rule, not a policy flag.', '323 tests passing including 122 security-focused tests probing bypass attempts and boundary conditions.', 'Documentation: unusually honest — security review brief, maturity doc, and trust boundary doc say clearly what works and what does not.', 'Pilot shape defined: one client, one workflow, one decision path. Operations model fully documented.', 'Audit trail: every outcome produces verifiable evidence; proof snapshot independently verifiable by anyone.'], '#16a34a');
+bullet(['Enforcement core: 12 invariants, fully implemented. Fail-closed is real. AI cannot authorize its own proposals — hard rule, not a policy flag.', '372 tests passing including 122 security-focused tests probing bypass attempts and boundary conditions.', 'Documentation: unusually honest — security review brief, maturity doc, and trust boundary doc say clearly what works and what does not.', 'Pilot shape defined: one client, one workflow, one decision path. Operations model fully documented.', 'Audit trail: every outcome produces verifiable evidence; proof snapshot independently verifiable by anyone.'], '#16a34a');
 
 subSection('WHAT IS NOT PILOT-READY');
 bullet(['Persistent storage: audit log disappears on server restart. Fine for a demo. Not fine for a client pilot.', 'Cryptographic signing: evidence chain proves internal consistency, not origin. Not legal-weight evidence yet.', 'Deployment: CerbaSeal has never been deployed outside Replit. The first client deployment is a first.', 'Third-party security review: has not happened. All security review to date is internal.', 'Signed agreement with any client: does not exist.'], '#b91c1c');

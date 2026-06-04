@@ -628,7 +628,7 @@ TEST MATURITY
 | enforcement-loop.snapshot.test.ts | 41 | Snapshot regression |
 | security/misuse-scenarios.test.ts | 27 | Real-world misuse patterns |
 | security/contextual-boundary.test.ts | 25 | Enforcement limits |
-| integration/review-portal-routes.test.ts | 61 | Portal route coverage |
+| integration/review-portal-routes.test.ts | 110 | Portal route coverage |
 | integration/browser-demo-routes.test.ts | 28 | Demo server routes |
 | integration/support-readiness.test.ts | 23 | Support layer |
 | integration/external-signal-examples.test.ts | 16 | Signal examples |
@@ -645,8 +645,7 @@ Strengths:
   security-focused tests
 - Snapshot tests provide regression protection for enforcement
   behavior changes
-- CI pipeline (15 checks) runs on every push and pull request
-  against main
+- Automated audit suite (15 checks) is available locally via `pnpm audit:repo`; GitHub Actions CI not yet configured
 
 Weaknesses:
 - full-flow.test.ts and system-integration.test.ts each have 1 test
@@ -717,9 +716,6 @@ Strengths:
   explicitly defined
 
 Weaknesses:
-- docs/current_maturity.md states "372 passing tests" while
-  docs/status/current-state.md shows a per-file breakdown totaling
-  323. These figures are inconsistent within the same repository.
 - No deployment runbook exists
 - SBOM not produced
 
@@ -931,7 +927,7 @@ INFRASTRUCTURE DEPENDENCIES
 |---|---|---|---|
 | Node.js | Runtime (version not pinned in package.json) | Medium — version should be pinned for reproducibility | Required in all deployments |
 | pnpm | Package manager | Low | Build/install time |
-| GitHub Actions | CI/CD (audit.yml) | Low | Runs on github infrastructure — no client data involved |
+| GitHub Actions | CI/CD not yet configured — audit suite runs locally via pnpm audit:repo | Low | Pre-pilot requirement |
 
 HOSTING ASSUMPTIONS
 Current: Replit (demo only, no client data)
@@ -1019,7 +1015,7 @@ SECTION 7 — PILOT RISK REGISTER
 | Caller-supplied field trust | High | Medium | Well-documented; caller is assumed trusted application | No runtime verification; dependent on integration architecture |
 | First-ever client deployment | High | Certain | Deployment modes documented; no external calls simplify deployment | First real deployment adds unknown unknowns; no runbook exists |
 | Cryptographic signing absent | Medium | Certain | Hash-chaining provides structural integrity; documented clearly | Legal-weight evidence claims require signing; not yet built |
-| Test count inconsistency | Low | Certain | Both documents (current_maturity.md vs. status/current-state.md) exist and are readable | Inconsistency (372 vs. 323) should be corrected before external review |
+| No GitHub Actions CI | Low | Certain | pnpm audit:repo runs 15 checks locally and passes | GitHub Actions CI not yet configured — pre-pilot requirement |
 | No LICENSE file | Medium | Certain | IP ownership understood informally | Formal IP declaration absent; should be remedied before any agreement |
 | Scope creep | Medium | High | Pilot scope boundaries documented; out-of-scope explicitly defined | Agreement must reproduce scope language verbatim; no signed agreement yet |
 | Evidence chain fabrication | Medium | Low | Documented honestly; hash chain proves consistency not origin | Requires HMAC or external attestation to close fully |
