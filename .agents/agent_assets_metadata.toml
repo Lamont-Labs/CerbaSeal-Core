@@ -47,3 +47,9 @@ id = "JEU9OtRdJQ7i8gJauPh1m"
 uri = "file://docs/reports/LINE_AXIA_CALL_QA_BRIEF.pdf"
 type = "pdf"
 title = "Call Prep Guide — Line Axia"
+
+[[outputs]]
+id = "_DK3GzA2zRPEkhDiGFHUk"
+uri = "file://docs/reports/LINE_AXIA_DEPENDENCY_INVENTORY.pdf"
+type = "pdf"
+title = "Dependency & Supply Chain Inventory — CerbaSeal"
