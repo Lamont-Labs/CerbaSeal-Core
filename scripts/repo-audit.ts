@@ -101,7 +101,9 @@ async function main(): Promise<void> {
   let testCount = 0;
   try {
     const { output } = runAndCapture("pnpm", ["test"]);
-    const m = output.match(/Tests\s+(\d+)\s+passed/);
+    // Strip ANSI escape codes — vitest emits colour even in non-TTY CI pipes
+    const clean = output.replace(/\x1b\[[0-9;]*m/g, "");
+    const m = clean.match(/Tests\s+(\d+)\s+passed/);
     testCount = m ? parseInt(m[1], 10) : 0;
     pass("1. Full test suite passes", `${testCount} tests passed`);
   } catch (e: unknown) {
