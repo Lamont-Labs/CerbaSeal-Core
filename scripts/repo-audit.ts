@@ -81,7 +81,7 @@ async function main(): Promise<void> {
   // ── Check 1: Full test suite ──────────────────────────────────────────────
   let testCount = 0;
   try {
-    const out = execSync("pnpm test", {
+    const out = execSync("pnpm test 2>&1", {
       cwd: ROOT,
       encoding: "utf-8",
       stdio: ["pipe", "pipe", "pipe"],
@@ -95,7 +95,7 @@ async function main(): Promise<void> {
 
   // ── Check 2: TypeScript compiles without errors ───────────────────────────
   try {
-    execSync("npx tsc --noEmit -p tsconfig.json", {
+    execSync("npx tsc --noEmit -p tsconfig.json 2>&1", {
       cwd: ROOT,
       encoding: "utf-8",
       stdio: ["pipe", "pipe", "pipe"],
@@ -227,7 +227,7 @@ async function main(): Promise<void> {
 
   // ── Check 9: demo:web:validate ───────────────────────────────────────────
   try {
-    const out = execSync("pnpm demo:web:validate", {
+    const out = execSync("pnpm demo:web:validate 2>&1", {
       cwd: ROOT,
       encoding: "utf-8",
       stdio: ["pipe", "pipe", "pipe"],
@@ -241,7 +241,7 @@ async function main(): Promise<void> {
 
   // ── Check 10: demo:support:validate ──────────────────────────────────────
   try {
-    const out = execSync("pnpm demo:support:validate", {
+    const out = execSync("pnpm demo:support:validate 2>&1", {
       cwd: ROOT,
       encoding: "utf-8",
       stdio: ["pipe", "pipe", "pipe"],
@@ -255,7 +255,7 @@ async function main(): Promise<void> {
 
   // ── Check 11: review:validate ─────────────────────────────────────────────
   try {
-    const out = execSync("pnpm review:validate", {
+    const out = execSync("pnpm review:validate 2>&1", {
       cwd: ROOT,
       encoding: "utf-8",
       stdio: ["pipe", "pipe", "pipe"],
@@ -269,7 +269,7 @@ async function main(): Promise<void> {
 
   // ── Check 12: Import boundary enforcement ────────────────────────────────
   try {
-    execSync("pnpm check:imports", {
+    execSync("pnpm check:imports 2>&1", {
       cwd: ROOT,
       encoding: "utf-8",
       stdio: ["pipe", "pipe", "pipe"],
@@ -281,7 +281,7 @@ async function main(): Promise<void> {
 
   // ── Check 13: Invariant coverage — all invariants have covering tests ─────
   try {
-    const out = execSync("pnpm check:invariants", {
+    const out = execSync("pnpm check:invariants 2>&1", {
       cwd: ROOT,
       encoding: "utf-8",
       stdio: ["pipe", "pipe", "pipe"],
