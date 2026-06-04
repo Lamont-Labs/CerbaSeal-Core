@@ -63,10 +63,10 @@ function httpGet(port: number, path: string): Promise<number> {
   });
 }
 
-async function waitForServer(port: number, retries = 28): Promise<boolean> {
+async function waitForServer(port: number, retries = 80): Promise<boolean> {
   for (let i = 0; i < retries; i++) {
     if (await httpGet(port, "/") === 200) return true;
-    await new Promise((r) => setTimeout(r, 250));
+    await new Promise((r) => setTimeout(r, 500));
   }
   return false;
 }
