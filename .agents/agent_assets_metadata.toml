@@ -65,3 +65,9 @@ id = "RI-xGhqHsJTtiGZiwdF7z"
 uri = "file://cerbaseal-pricing-brief.pdf"
 type = "pdf"
 title = "CerbaSeal — Pilot Pricing Model (Partner Brief)"
+
+[[outputs]]
+id = "2m0RMWyqW0U3UVKgOcZ3c"
+uri = "file://cerbaseal-commercial-framework.pdf"
+type = "pdf"
+title = "CerbaSeal — Commercial Framework (Three-Model Partner Brief)"

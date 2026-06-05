@@ -33,7 +33,8 @@
     "generate:system-pdf": "tsx scripts/generate-system-pdf.ts",
     "report:hash": "ts-node scripts/hash-report.ts",
     "report:list": "cat docs/reports/adversarial/index.json",
-    "generate:pricing-pdf": "tsx scripts/generate-pricing-pdf.ts"
+    "generate:pricing-pdf": "tsx scripts/generate-pricing-pdf.ts",
+    "generate:commercial-pdf": "tsx scripts/generate-commercial-framework-pdf.ts"
   },
   "dependencies": {
     "tsx": "^4.21.0"
