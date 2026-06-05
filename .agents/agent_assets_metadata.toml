@@ -53,3 +53,9 @@ id = "_DK3GzA2zRPEkhDiGFHUk"
 uri = "file://docs/reports/LINE_AXIA_DEPENDENCY_INVENTORY.pdf"
 type = "pdf"
 title = "Dependency & Supply Chain Inventory — CerbaSeal"
+
+[[outputs]]
+id = "cqBlQ7-dzkDikjuhn2D92"
+uri = "file://cerbaseal-system-breakdown.pdf"
+type = "pdf"
+title = "CerbaSeal-Core v0.1.0 — System & Repo Breakdown"
