@@ -1,0 +1,15 @@
+{
+  "_comment": "CerbaSeal runtime configuration. Edit 'extended' arrays to add client-specific classes without modifying TypeScript source code.",
+  "authorityClasses": {
+    "core": ["system", "ai", "analyst", "reviewer", "manager", "compliance_officer"],
+    "extended": []
+  },
+  "workflowClasses": {
+    "core": ["fraud_triage", "transaction_escalation", "account_hold_recommendation"],
+    "extended": []
+  },
+  "actionClasses": {
+    "core": ["allow", "hold", "reject", "escalate", "account_hold"],
+    "extended": []
+  }
+}

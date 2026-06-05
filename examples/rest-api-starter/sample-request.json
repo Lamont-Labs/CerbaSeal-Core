@@ -1,0 +1,41 @@
+{
+  "_comment": "Sample governed request for CerbaSeal REST API. This will produce HOLD (approval required but missing).",
+  "requestId": "req_sample_001",
+  "workflowClass": "fraud_triage",
+  "jurisdiction": "EU",
+  "actorId": "analyst-001",
+  "actorAuthorityClass": "analyst",
+  "proposedActionClass": "escalate",
+  "proposal": {
+    "proposalSourceKind": "ai",
+    "authorityBearing": false,
+    "requestedActionClass": "escalate",
+    "confidence": 0.91,
+    "reasonCodes": ["velocity_spike", "unusual_merchant"],
+    "proposalCreatedAt": "2026-04-18T00:00:00.000Z"
+  },
+  "sensitive": true,
+  "prohibitedUse": false,
+  "policyPackRef": {
+    "id": "policy_fraud_v1",
+    "version": "1.0.0"
+  },
+  "provenanceRef": {
+    "modelVersion": "fraud-model-v2.1",
+    "ruleSetVersion": "rules_4.5.6",
+    "sourceHash": "sha256:abc123def456"
+  },
+  "approvalRequired": true,
+  "approvalArtifact": null,
+  "loggingReady": true,
+  "controlStatus": {
+    "criticalControlsValid": true,
+    "stale": false,
+    "verificationRunId": "vr_2026_001"
+  },
+  "trustState": {
+    "trusted": true,
+    "trustStateId": "ts_2026_001"
+  },
+  "createdAt": "2026-04-18T00:00:00.000Z"
+}

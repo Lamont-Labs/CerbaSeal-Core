@@ -19,6 +19,10 @@ import type {
   WorkflowClass
 } from "../../domain/types/core.js";
 import { CerbaSealError } from "../../domain/errors/cerbaseal-error.js";
+import {
+  buildAllowedAuthorityClasses,
+  type GateConfig
+} from "../../config/cerbaseal-config.js";
 
 const ALLOWED_ACTION_CLASSES = new Set<ActionClass>([
   "allow",
@@ -32,18 +36,6 @@ const ALLOWED_ACTION_CLASSES = new Set<ActionClass>([
 // The caller-supplied approvalRequired flag is treated as advisory for these classes.
 // Adding a workflowClass here means no caller can opt out of approval enforcement.
 const WORKFLOWS_REQUIRING_APPROVAL = new Set<WorkflowClass>(["fraud_triage"]);
-
-// Phase 5: Complete set of valid actor authority classes (INV-11).
-// Any runtime value outside this set is rejected as MALFORMED_REQUEST.
-// This closes the known gap documented in docs/status/current-state.md.
-const ALLOWED_ACTOR_AUTHORITY_CLASSES: ReadonlySet<string> = new Set([
-  "system",
-  "ai",
-  "analyst",
-  "reviewer",
-  "manager",
-  "compliance_officer"
-]);
 
 // Fix 3: Module-private registry of gate-issued GateResult objects.
 // Only results returned by ExecutionGateService.evaluate() are registered.
@@ -119,13 +111,19 @@ function assertRequestShape(
 // TypeScript enforces the AuthorityClass union at compile time, but callers
 // integrating via untyped boundaries (JavaScript, JSON deserialization) can
 // supply arbitrary strings. This check closes that gap at the enforcement layer.
+//
+// Authority Classes — extensible via constructor config (cerbaseal.config.json).
+// Core classes: system, ai, analyst, reviewer, manager, compliance_officer.
+// Extended classes: pass additionalAuthorityClasses to ExecutionGateService()
+// or add them to cerbaseal.config.json — no TypeScript changes required.
 function assertActorAuthorityClass(
   request: GovernedRequest,
-  invariantChecks: InvariantCode[]
+  invariantChecks: InvariantCode[],
+  allowedClasses: ReadonlySet<string>
 ): void {
   invariantChecks.push(INVARIANTS.REQUEST_SCHEMA_AND_ACTION_CLASS_VALID);
 
-  if (!ALLOWED_ACTOR_AUTHORITY_CLASSES.has(request.actorAuthorityClass)) {
+  if (!allowedClasses.has(request.actorAuthorityClass)) {
     throw new CerbaSealError({
       message: `Unknown actor authority class: "${request.actorAuthorityClass}"`,
       invariant: INVARIANTS.REQUEST_SCHEMA_AND_ACTION_CLASS_VALID,
@@ -428,12 +426,31 @@ function buildReleaseAuthorization(
 }
 
 export class ExecutionGateService {
+  private readonly allowedAuthorityClasses: ReadonlySet<string>;
+
+  /**
+   * @param config — optional configuration. Pass to extend authority classes beyond
+   * the core set (system, ai, analyst, reviewer, manager, compliance_officer).
+   *
+   * Inline usage:
+   *   new ExecutionGateService({ additionalAuthorityClasses: ["risk_officer", "supervisor"] })
+   *
+   * From cerbaseal.config.json:
+   *   import { loadCerbaSealConfig } from "../../config/cerbaseal-config.js";
+   *   new ExecutionGateService(loadCerbaSealConfig())
+   *
+   * Default (no args): uses core authority classes only. All existing tests pass unchanged.
+   */
+  constructor(config?: GateConfig) {
+    this.allowedAuthorityClasses = buildAllowedAuthorityClasses(config);
+  }
+
   evaluate(request: GovernedRequest): GateResult {
     const checkedInvariants: InvariantCode[] = [];
 
     try {
       assertRequestShape(request, checkedInvariants);
-      assertActorAuthorityClass(request, checkedInvariants);
+      assertActorAuthorityClass(request, checkedInvariants, this.allowedAuthorityClasses);
       assertKnownActionClass(request.proposedActionClass, checkedInvariants);
       assertKnownActionClass(request.proposal.requestedActionClass, checkedInvariants);
 

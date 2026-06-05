@@ -1,0 +1,23 @@
+node_modules/
+
+# Generated pilot configuration packages (client-specific, do not commit)
+wizard-input.json
+pilot-config/
+
+# Generated evidence packages (regenerate with pnpm generate:evidence-report)
+evidence-package/
+
+# Generated audit logs (file-backed log output from fraud-workflow-starter and tests)
+audit/
+
+# TypeScript build output
+dist/
+*.js.map
+
+# Environment
+.env
+.env.local
+
+# OS
+.DS_Store
+Thumbs.db

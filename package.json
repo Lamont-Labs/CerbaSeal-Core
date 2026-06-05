@@ -28,6 +28,8 @@
     "export:proof": "tsx scripts/export-proof.ts",
     "verify:proof": "tsx scripts/verify-proof.ts",
     "audit:repo": "tsx scripts/repo-audit.ts",
+    "generate:pilot-config": "tsx scripts/generate-pilot-config.ts",
+    "generate:evidence-report": "tsx scripts/generate-evidence-report.ts",
     "report:hash": "ts-node scripts/hash-report.ts",
     "report:list": "cat docs/reports/adversarial/index.json"
   },

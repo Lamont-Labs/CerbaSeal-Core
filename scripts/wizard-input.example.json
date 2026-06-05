@@ -1,0 +1,68 @@
+{
+  "_comment": "CerbaSeal Pilot Configuration Wizard — Example Input. Copy this file, rename it to wizard-input.json, fill in your values, then run: pnpm generate:pilot-config",
+  "workflow": {
+    "name": "Transaction Fraud Review",
+    "description": "Reviews flagged transactions for potential fraud before escalating to a senior analyst. AI system scores each transaction and proposes an action. A human analyst must approve any consequential action.",
+    "frequency": "continuous",
+    "environment": "production",
+    "industry": "financial_services"
+  },
+  "actions": [
+    {
+      "name": "escalate",
+      "description": "Escalate the transaction to a senior analyst for manual review",
+      "consequential": true,
+      "reversible": "yes"
+    },
+    {
+      "name": "hold",
+      "description": "Temporarily hold the transaction pending additional verification",
+      "consequential": true,
+      "reversible": "yes"
+    },
+    {
+      "name": "allow",
+      "description": "Allow the transaction to proceed without further review",
+      "consequential": true,
+      "reversible": "no"
+    }
+  ],
+  "aiSystem": {
+    "description": "A fraud scoring model that assigns a risk score (0–100) and recommends an action for each flagged transaction",
+    "modelVersion": "fraud-model-v2.1",
+    "hostingLocation": "cloud_provider",
+    "canSelfAuthorize": false
+  },
+  "approvers": [
+    {
+      "clientRoleName": "Senior Fraud Analyst",
+      "authorityClass": "analyst",
+      "description": "Reviews AI-proposed escalations and approves or overrides them"
+    },
+    {
+      "clientRoleName": "Compliance Manager",
+      "authorityClass": "compliance_officer",
+      "description": "Approves account hold recommendations and regulatory escalations"
+    }
+  ],
+  "approval": {
+    "required": true,
+    "actionsRequiringApproval": ["escalate", "hold"],
+    "method": "system_click",
+    "holdBehavior": "hold_and_notify"
+  },
+  "evidence": {
+    "auditLogPath": "/data/cerbaseal/audit/fraud-review.jsonl",
+    "retentionPeriod": "7_years",
+    "owner": "client",
+    "accessRoles": ["Senior Fraud Analyst", "Compliance Manager", "CTO"],
+    "hmacSigning": false
+  },
+  "deployment": {
+    "mode": "mode_c",
+    "os": "linux",
+    "nodeInstalled": true,
+    "pnpmInstalled": true,
+    "writeAccessToAuditLogPath": true
+  }
+}

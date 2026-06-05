@@ -148,6 +148,50 @@ These artifacts are designed to show how CerbaSeal can be reviewed, demonstrated
 
 ---
 
+## Adoption Layer
+
+The enforcement core is complete. The adoption layer is now also complete.
+
+**[Founder Independence Kit](docs/FOUNDER-INDEPENDENCE-KIT.md)** — single entry point for complete self-service deployment, from qualification to evidence reporting.
+
+**[Client Onboarding Sequence](docs/client-adoption/onboarding-sequence.md)** — exact phase-by-phase sequence a new client follows without Jesse.
+
+**Authority Class Registry** — clients add custom authority classes (e.g., `risk_officer`, `supervisor`) via `cerbaseal.config.json` with no TypeScript changes:
+```json
+{ "authorityClasses": { "core": [...], "extended": ["risk_officer", "supervisor"] } }
+```
+```typescript
+import { loadCerbaSealConfig } from "./src/config/cerbaseal-config.js";
+const gate = new ExecutionGateService(loadCerbaSealConfig());
+```
+
+**Integration Starter Kits** — working code for the four most common integration patterns:
+- [REST API Starter](examples/rest-api-starter/) — HTTP wrapper, all endpoints
+- [Financial Approval Starter](examples/financial-approval-starter/) — manager approves analyst recommendation
+- [Fraud Workflow Starter](examples/fraud-workflow-starter/) — AI-scored triage with file-backed audit
+- [Agent Integration Starter](examples/agent-integration-starter/) — AI proposes, human approves
+
+**Pilot Config Generator** — from wizard input to complete pilot package in one command:
+```bash
+cp scripts/wizard-input.example.json wizard-input.json
+# fill in your values
+pnpm generate:pilot-config
+# → pilot-config/cerbaseal-config.json
+# → pilot-config/pilot-checklist.md
+# → pilot-config/scenario-test.ts
+# → pilot-config/deployment-summary.md
+```
+
+**Evidence Package Generator** — one command produces the governance evidence package:
+```bash
+pnpm export:proof && pnpm generate:evidence-report
+# → evidence-package/governance-summary.md
+# → evidence-package/decision-summary.json
+# → evidence-package/audit-integrity-summary.md
+```
+
+---
+
 ## Client Adoption Pack
 
 Materials for Line Axia and pilot clients to qualify, onboard, deploy, and operate CerbaSeal without depending on Jesse for every step.
