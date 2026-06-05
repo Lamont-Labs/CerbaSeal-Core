@@ -59,3 +59,9 @@ id = "cqBlQ7-dzkDikjuhn2D92"
 uri = "file://cerbaseal-system-breakdown.pdf"
 type = "pdf"
 title = "CerbaSeal-Core v0.1.0 — System & Repo Breakdown (clean)"
+
+[[outputs]]
+id = "RI-xGhqHsJTtiGZiwdF7z"
+uri = "file://cerbaseal-pricing-brief.pdf"
+type = "pdf"
+title = "CerbaSeal — Pilot Pricing Model (Partner Brief)"

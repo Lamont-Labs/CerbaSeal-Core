@@ -32,7 +32,8 @@
     "generate:evidence-report": "tsx scripts/generate-evidence-report.ts",
     "generate:system-pdf": "tsx scripts/generate-system-pdf.ts",
     "report:hash": "ts-node scripts/hash-report.ts",
-    "report:list": "cat docs/reports/adversarial/index.json"
+    "report:list": "cat docs/reports/adversarial/index.json",
+    "generate:pricing-pdf": "tsx scripts/generate-pricing-pdf.ts"
   },
   "dependencies": {
     "tsx": "^4.21.0"
