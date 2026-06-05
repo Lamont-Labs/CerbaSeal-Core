@@ -61,8 +61,8 @@ const tools = [
 
 const metrics = [
   { icon: CheckCircle, color: "text-emerald-400", label: "Evidence generation", value: "READY", sub: "Fully automated · zero founder involvement" },
-  { icon: Clock, color: "text-amber-400", label: "Founder hours / pilot target", value: "< 5h", sub: "Current: unknown · tracking required" },
-  { icon: TrendingDown, color: "text-blue-400", label: "Self-service troubleshooting target", value: "80%", sub: "Support chain: docs → FAQ → troubleshooter → partner → Jesse" },
+  { icon: Clock, color: "text-amber-400", label: "Founder hours / pilot", value: "15–29h", sub: "Current per pilot (audit Jun 2026) · Target: 3–8h" },
+  { icon: TrendingDown, color: "text-blue-400", label: "Client adoption score", value: "55/100", sub: "Audit Jun 2026 · Configure 28/100 is the gap · Target: 80/100" },
 ];
 
 export default function Home() {
@@ -127,7 +127,7 @@ export default function Home() {
           "The actual tool itself is honestly the thing I'm least concerned about. I'm concerned about support, onboarding, operationalization, and deployment."
         </blockquote>
         <p className="text-slate-400 text-sm">
-          Technical credibility gate: passed. The question is now delivery confidence. Reducing founder hours per pilot from 8 → 2 with the same product, same gate, same invariants — multiplies revenue capacity 4×. That's why this center exists.
+          Technical credibility gate: passed. The question is now delivery confidence. Reducing founder hours per pilot from 15–29 → 3–8 with the same product, same gate, same invariants — multiplies revenue capacity 4–5×. That's why this center exists.
         </p>
       </div>
     </main>

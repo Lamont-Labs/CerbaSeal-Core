@@ -70,9 +70,13 @@ const resources = [
   { title: "Workflow Config Generator", path: "pnpm generate:pilot-config", desc: "Client fills wizard-input.json → generates 4-file pilot config package." },
   { title: "Evidence Report Generator", path: "pnpm generate:evidence-report", desc: "Reads proof-snapshot.json → produces 3-file compliance evidence package." },
   { title: "Founder Independence Kit", path: "docs/FOUNDER-INDEPENDENCE-KIT.md", desc: "Master index: 7 adoption stages from client qualification to compliance review." },
-  { title: "Client Onboarding Sequence", path: "docs/client-adoption/onboarding-sequence.md", desc: "8-phase sequence (Phase 0–8) runnable by a client or partner without Jesse." },
   { title: "Deployment Checklist", path: "docs/deployment/pilot-deployment-checklist.md", desc: "Step-by-step deployment verification. Confirmed to pass all 15 audit checks." },
   { title: "Troubleshooting Guide", path: "docs/client-adoption/troubleshooting-guide.md", desc: "Self-serve resolution for the most common deployment and integration issues." },
+  { title: "Workflow Mapping Workbook", path: "docs/client-adoption/workflow-mapping-workbook.md", desc: "Structured workbook for mapping a client workflow to CerbaSeal enforcement points before pilot begins." },
+  { title: "Pilot Delivery Audit (Jun 2026)", path: "docs/repo-audit/pilot-delivery-audit.md", desc: "Full friction analysis of every pilot step. Founder-hours by phase: current 15–29h → target 3–8h." },
+  { title: "Partner Readiness Scorecard (Jun 2026)", path: "docs/repo-audit/partner-readiness-scorecard.md", desc: "Current partner readiness scored 0–100 across 6 categories. Identifies the critical path to independent delivery." },
+  { title: "Founder Dependency Audit (Jun 2026)", path: "docs/repo-audit/founder-dependency-audit.md", desc: "Every workflow where Jesse is required today, with AUTOMATE / DOCUMENT / WIZARD recommendations and priority scores." },
+  { title: "Repository Audit — Executive Summary", path: "docs/repo-audit/executive-summary.md", desc: "Top risks, quick wins, strategic priorities, and founder-hours reduction roadmap from the June 2026 full audit." },
 ];
 
 const agreementItems = [

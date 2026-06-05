@@ -160,7 +160,7 @@ function computeResult(answers: Record<string, number>): {
   const pct = Math.round((score / max) * 100);
 
   const verdict: Verdict = pct >= 70 ? "READY" : pct >= 45 ? "READY_WITH_SUPPORT" : "NOT_READY";
-  const hours = pct >= 70 ? "2–4 hours" : pct >= 45 ? "5–10 hours" : "12+ hours (discovery phase recommended first)";
+  const hours = pct >= 70 ? "5–8 hours" : pct >= 45 ? "10–16 hours" : "18+ hours (discovery engagement first)";
 
   const tierScore = answers["regulation"] ?? 3;
   const stakeScore = answers["stakeholders"] ?? 3;
@@ -222,7 +222,7 @@ export default function Assess() {
         <p className="text-slate-400 mb-8">16 questions · 4 categories · ~8 minutes · instant verdict</p>
         <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 mb-6">
           <h2 className="text-white font-semibold mb-3">What you'll get</h2>
-          {["A READY / READY WITH SUPPORT / NOT READY verdict", "Estimated founder onboarding hours for your specific situation", "Recommended pilot tier (Tier 0 → Tier 4)", "Specific gaps to address before the pilot begins"].map((item) => (
+          {["A READY / READY WITH SUPPORT / NOT READY verdict", "Estimated founder hours your engagement will require", "Recommended pilot tier (Tier 0 → Tier 4)", "Specific gaps to address before the pilot begins"].map((item) => (
             <div key={item} className="flex items-center gap-2 text-slate-300 text-sm mb-2">
               <CheckCircle className="w-4 h-4 text-emerald-400 flex-shrink-0" />
               {item}
