@@ -84,7 +84,7 @@ It is not a dashboard, policy system, or domain application.
 Current enforcement state (stable across runs on this commit):
 
 ```
-stableChecksum: 82fa1380edf2f7540d1c73d89fa314d8f80d169c7d14309716b63bec6c917b61
+stableChecksum: e6b9765095b9ae4c93722a83b6fc8bd61ca753c16efcaeadc56c0794333695a3
 ```
 
 - 391 / 391 tests passing (16 test files)
@@ -240,11 +240,10 @@ Version: 0.1.0
 
 These are accurate as of v0.1.0 and are stated without softening.
 
-- Audit log is in-memory — not persisted across process restarts
-- No cryptographic signing — evidence is hash-linked, not key-signed or attested
+- Audit log default is in-memory (`AppendOnlyLogService`) — entries are lost on process restart. Persistent audit is available via `FileBackedAppendOnlyLogService` (JSONL, hash-chain integrity preserved across restarts) — the caller must configure it explicitly.
+- No cryptographic signing — evidence is hash-linked, not key-signed or attested (optional HMAC-SHA256 snapshot signing available via `CERBASEAL_SIGNING_KEY`)
 - No identity provider — actor identity is caller-supplied with no independent attestation
-- No persistent storage — all state exists per process instance
-- No production deployment hardening
+- No production deployment hardening beyond the enforcement library
 - No third-party security review completed
 - loggingReady is caller-declared — gate does not verify actual log system health
 - Hash chain proves consistency, not origin authenticity
