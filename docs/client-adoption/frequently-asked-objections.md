@@ -231,7 +231,7 @@ This guide goes deeper than the quick objection table in the partner enablement 
 
 ### Can Make
 - Adjusting pilot timeline within reason
-- Discussing pricing flexibility for a first pilot (no final prices set anyway)
+- Discussing pricing flexibility within the working ranges (Tier 2 is €35K–€75K; adjustments are justified by scope factors)
 - Answering technical questions in writing with Jesse's input
 - Offering the 30-minute onboarding session as a free discovery demo
 

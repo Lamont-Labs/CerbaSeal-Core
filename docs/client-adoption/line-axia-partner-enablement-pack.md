@@ -164,7 +164,7 @@ The pilot is a **controlled technical evaluation** — not a production deployme
 
 ### "What does this cost?"
 
-> "We're in the pricing research phase. The pilot engagement is priced differently from ongoing production use. What I can tell you is that it's structured as a defined-scope engagement — not an open-ended subscription or a large enterprise contract. We'll have specific numbers before we ask you to commit to anything."
+> "For a first CerbaSeal pilot, I would treat €35K–€75K as the realistic working range, with €45K–€60K as the likely starting target. Anything below €25K should be treated as discovery or validation only, not a full pilot. The exact number depends on workflow complexity, your team's technical maturity, and the support window — we scope that before we agree anything."
 
 ---
 

@@ -173,7 +173,7 @@ HMAC signing uses `CERBASEAL_SIGNING_KEY` GitHub repository secret. Without the 
 |---|---|
 | Third-party security review | Post-pilot hardening — mentioned in all security docs |
 | Pilot 1 working agreement | Commercial agreement, support terms, IP, data handling |
-| Pricing finalization | Framework exists; actual numbers require commercial discussion |
+| Pricing finalization | ✓ Working ranges established: Tier 2 (first real pilot) €35K–€75K; recommended starting target €45K–€60K; full 5-tier matrix in pilot-sizing-and-pricing-framework.md |
 | Exclusivity terms | Olivia asked — needs Jesse's position |
 | Pilot 1 client | Line Axia's pipeline — Jesse awaits their candidate |
 | Knowledge accumulation after Pilot 1 | Add every new question to FAQ/troubleshooting; measure Jesse hours by layer |

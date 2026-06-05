@@ -1,9 +1,9 @@
 # CerbaSeal — Pilot Sizing and Pricing Framework
 
 **Audience:** Line Axia (commercial planning) and Lamont Labs  
-**Purpose:** Support pricing discussions without locking final numbers. Define pilot tiers, scope, and pricing factors.  
+**Purpose:** Support pricing discussions with working ranges. Define pilot tiers, scope, and pricing factors.  
 **Version:** 0.1.0  
-**Status:** Working framework. No prices are set. This document is for internal planning only.
+**Status:** Working price ranges established — for commercial planning. No prices are committed. Final pricing requires agreement between Line Axia, Lamont Labs, and the client in a signed working agreement.
 
 ---
 
@@ -22,11 +22,90 @@ Pilot pricing differs from post-pilot production pricing. The pilot is an evalua
 
 ---
 
-## Pilot Tiers
+## Quick Reference — Pilot Pricing Matrix
 
-### Tier 1 — Discovery Pilot
+*These are client-facing fees — the total the client pays Line Axia for the pilot engagement.*
 
-**Who it's for:** A technically able prospect who wants to verify CerbaSeal works for their context before committing to a full engagement. Or a Line Axia client where Line Axia leads the technical integration.
+| Tier | Pilot Type | Best Fit | Duration | Client Fee (EUR) |
+|---|---|---|---|---|
+| 0 | Discovery / Readiness Assessment | Interested but unclear | 1–2 weeks | €5K–€12K |
+| 1 | Validation Pilot | Early-stage, low complexity | 30 days | €15K–€30K |
+| **2** | **Controlled Workflow Pilot** | **Most likely first real pilot** | **45–90 days** | **€35K–€75K** |
+| 3 | Regulated Evidence Pilot | Fintech / health / legal / insurance | 60–90 days | €75K–€150K |
+| 4 | Strategic Anchor Pilot | Larger client or high-value reference | 90+ days | €150K–€250K+ |
+
+---
+
+## Recommended First Offer Range
+
+For Line Axia's likely first pilot, anchor around:
+
+**€45K–€75K total client fee**
+
+That is high enough to cover advisory, implementation, training, support, and learning cost, but not so high that it forces full enterprise procurement.
+
+Use this phrasing with prospects:
+
+> "For a first CerbaSeal pilot, I would treat €35K–€75K as the realistic working range, with €45K–€60K as the likely starting target. Anything below €25K should be treated as discovery or validation only, not a full pilot."
+
+---
+
+## Pricing Adjustment Factors
+
+### Add to price when:
+
+- Client needs self-hosting help (deployment assistance beyond documentation)
+- Client has a weak technical team (more support hours required)
+- Workflow is poorly defined (mapping work is significant)
+- More than one team needs training
+- Evidence pack must support investor or procurement review (custom format)
+- Security or legal review is required
+- Support window exceeds 10–20 hours
+
+### Discount only when:
+
+- Client is a strategic reference (named case study, co-marketing, or testimonial)
+- Workflow is extremely clean and well-documented (minimal mapping effort)
+- Client has a strong technical team (self-directed, minimal hand-holding)
+- Pilot is synthetic-only (no real production data or deployment)
+- A strong follow-on agreement is likely and contractually scoped
+
+---
+
+## Pilot Tiers — Detail
+
+### Tier 0 — Discovery / Readiness Assessment
+
+**Who it's for:** A prospect who is interested but doesn't yet have a clear picture of which workflow to govern, whether CerbaSeal fits their context, or whether their team is ready for a deployment.
+
+**Scope:**
+- Workflow discovery session (using client-discovery-script.md)
+- Readiness scoring against the qualification scorecard
+- Deployment fit assessment
+- Summary report: which tier is appropriate and what they'd need to proceed
+- No live CerbaSeal deployment
+
+**What is included:**
+- 60-minute discovery call
+- Readiness assessment report
+- Tier recommendation with rationale
+- Summary of open questions before a pilot can proceed
+
+**What is excluded:**
+- CerbaSeal deployment of any kind
+- Evidence generation
+- Training
+- Ongoing support
+
+**Duration:** 1–2 weeks  
+**Client fee:** €5K–€12K  
+**Conversion path:** Tier 1 Validation or Tier 2 Controlled Workflow Pilot
+
+---
+
+### Tier 1 — Validation Pilot
+
+**Who it's for:** An early-stage client with low deployment complexity who wants to validate that CerbaSeal produces the right outcomes for their context before committing to a full engagement. Or a Line Axia client where Line Axia leads the technical integration.
 
 **Scope:**
 - One workflow, defined and agreed
@@ -41,7 +120,7 @@ Pilot pricing differs from post-pilot production pricing. The pilot is an evalua
 - CerbaSeal-Core deployment assistance
 - Defined test scenario execution (minimum: REJECT, HOLD, ALLOW)
 - Evidence bundle review
-- Defined support hours (placeholder: [X] hours over [Y] weeks)
+- Defined support hours
 - Pilot closeout summary
 
 **What is excluded:**
@@ -52,23 +131,18 @@ Pilot pricing differs from post-pilot production pricing. The pilot is an evalua
 - Training beyond the defined onboarding session
 - Ongoing support after pilot close
 
-**Duration estimate:** 2–4 weeks
-
+**Duration:** 30 days  
+**Client fee:** €15K–€30K  
 **Client readiness requirement:**
 - Passes readiness assessment at LIKELY READY WITH SUPPORT or better
 - Has a technical owner available
 - Can provide synthetic scenarios
 
-**Pricing factors:**
-- Minimal integration work (scenario-only)
-- Short support window
-- Line Axia handles most client interaction
-
 **Conversion path:** Tier 2 Controlled Workflow Pilot or post-pilot production engagement
 
 ---
 
-### Tier 2 — Controlled Workflow Pilot
+### Tier 2 — Controlled Workflow Pilot *(primary revenue model)*
 
 **Who it's for:** The primary first paid pilot model. A client with a real, operating AI workflow who wants to validate CerbaSeal in their actual environment before a production commitment.
 
@@ -87,7 +161,7 @@ Pilot pricing differs from post-pilot production pricing. The pilot is an evalua
 - CerbaSeal-Core deployment with file-backed audit log
 - Agreed scenario set execution and evidence review
 - Operator and admin training (using training kit)
-- Defined support hours (placeholder: [X] hours over [Y] weeks)
+- Defined support hours
 - End-of-pilot review and closeout summary
 - Pilot outcome documentation
 
@@ -99,65 +173,85 @@ Pilot pricing differs from post-pilot production pricing. The pilot is an evalua
 - Infrastructure management (client owns the environment)
 - Indefinite ongoing support
 
-**Duration estimate:** 4–6 weeks
-
+**Duration:** 45–90 days  
+**Client fee:** €35K–€75K  
 **Client readiness requirement:**
 - Passes readiness assessment at READY or LIKELY READY WITH SUPPORT
 - Has a named technical owner available throughout
 - Has a production or staging environment available
 - Can commit internal time: ~4–8 hours across the engagement
 
-**Pricing factors:**
-- Integration complexity (how much mapping work is needed)
-- Client technical maturity (lower maturity = more support hours needed)
-- Deployment mode (Mode B/C — client-controlled vs Line Axia-assisted)
-- Evidence reporting requirements (standard vs custom format)
-- Legal/DPA requirements (if applicable, add-on)
-
 **Conversion path:** Post-pilot production engagement, license, or expanded pilot (Tier 3)
 
 ---
 
-### Tier 3 — Extended Governance Pilot
+### Tier 3 — Regulated Evidence Pilot
 
-**Who it's for:** A client who has completed Tier 2 successfully and wants to extend the pilot scope before a full production commitment. Or a client with a more complex workflow that cannot be reasonably reduced to a single path.
+**Who it's for:** A client in a regulated context (fintech, health, legal, insurance) where the evidence pack must meet a higher documentation standard, stakeholder training is broader, and the audit trail needs to be structured for regulatory or advisory review.
 
 **Scope:**
-- Primary workflow (from Tier 2) plus one adjacent decision path
-- Longer support window
-- Additional training (second role group or deeper operator training)
-- Post-pilot expansion plan document
-- Evidence review with compliance/audit framing (advisory, via Line Axia)
+- One consequential workflow in a regulated context
+- Client-controlled deployment with stronger configuration documentation
+- Evidence pack structured for regulatory or advisory presentation
+- Stakeholder training beyond operational roles (compliance, legal, or executive audience)
+- Advisory evidence pack for investor, auditor, or procurement review
 
 **What is included:**
 - Everything in Tier 2
-- Second decision path mapping and configuration
-- Extended support hours (placeholder: [X] hours over [Y] weeks)
-- Additional training session for second role group
-- Post-pilot expansion plan: what would full production look like?
-- Compliance advisory session (Line Axia advisory layer — not legal certification)
+- Stronger configuration documentation (deployment rationale, boundary documentation)
+- Structured evidence pack (formatted for advisory or regulatory presentation)
+- Additional training session for compliance or executive audience
+- Advisory walkthrough of evidence chain with designated stakeholder
+- Post-pilot closeout with written evidence summary
 
 **What is excluded:**
-- Third workflow
+- Legal certification or regulatory compliance certification
+- Third-party security review
+- Custom feature development
+- Second workflow
+
+**Duration:** 60–90 days  
+**Client fee:** €75K–€150K  
+**Client readiness requirement:**
+- Passes readiness assessment at READY
+- Named sponsor at director or compliance officer level
+- Clear regulatory or advisory driver for the pilot
+
+**Conversion path:** Full production engagement with Line Axia as delivery partner
+
+---
+
+### Tier 4 — Strategic Anchor Pilot
+
+**Who it's for:** A larger client or high-value reference opportunity where the pilot is expected to anchor a broader commercial relationship. Deeper support, stronger reporting, and an explicit expansion plan are included.
+
+**Scope:**
+- Client-controlled deployment with full operational documentation
+- Deeper support commitment (extended hours, defined escalation path)
+- Stronger reporting: structured pilot progress updates and final report
+- Expansion plan document: what a post-pilot production engagement would look like
+
+**What is included:**
+- Everything in Tier 3
+- Extended support hours with defined escalation path
+- Structured pilot progress updates (at agreed intervals)
+- Final pilot report (suitable for board or investor review)
+- Expansion plan: commercial, technical, and operational requirements for full production
+
+**What is excluded:**
 - Production SLA guarantees
 - Legal or regulatory certification
 - Custom feature development beyond agreed scope
+- Multi-workflow production operation
 
-**Duration estimate:** 6–10 weeks
-
+**Duration:** 90+ days  
+**Client fee:** €150K–€250K+  
 **Client readiness requirement:**
-- Completed Tier 2 successfully
-- Client has a documented post-pilot goal (expand, procure, or full deployment)
-- Named sponsor at director level or above
+- Completed Tier 2 or Tier 3, OR has an internal governance mandate and named executive sponsor
+- Clear post-pilot commitment pathway (budget authority identified)
+- Willing to be a reference or case study
 
-**Pricing factors:**
-- All Tier 2 factors, plus:
-- Second decision path complexity
-- Extended support window length
-- Compliance advisory session scope (Line Axia lead)
-- Training audience size and depth
-
-**Conversion path:** Full production engagement with Line Axia as delivery partner
+**Conversion path:** Multi-workflow production engagement, preferred partner relationship
 
 ---
 
@@ -208,23 +302,17 @@ Key open questions to resolve before first paid pilot:
 
 ---
 
-## Market Context Notes (Research In Progress)
+## Market Context — Research Benchmarks
 
-*These are directional observations for pricing research, not final benchmarks.*
+*Confirmed benchmarks informing the pricing tiers above.*
 
-**Adjacent pricing signals to research:**
-- Modular compliance tooling (per-feature, per-workflow pricing): $500–$5,000/month range for specialist tools
-- AI governance platforms (Credo AI, Holistic AI, Arthur): enterprise licensing, typically $30K–$150K/year at scale
-- Vanta, Drata (full compliance suites): $15K–$50K/year — not directly comparable but sets enterprise expectation
-- Consulting implementations of governance tooling: $50K–$500K+ for custom implementations at enterprise scale
-- Developer infrastructure SaaS (enforcement/policy): $1K–$10K/month at team scale (OPA/Styra reference)
+- **AI governance platforms** (Credo AI, Holistic AI, Arthur): ~$50K to several hundred thousand per year for mid-market to enterprise deployments
+- **Compliance automation tools** (Vanta, Drata): $7.5K–$100K+ annually depending on company size and frameworks — not directly comparable but sets enterprise expectation
+- **Enterprise pilots**: commonly priced at 10–30% of expected annual contract value; examples around $25K–$50K for 90-day pilots
+- **Boutique AI implementation work**: $35K–$150K for scoped engagements; larger firms much higher
+- **Consulting implementations of governance tooling**: $50K–$500K+ for custom implementations at enterprise scale
 
-**Pilot pricing hypothesis for research:**
-- Tier 1 Discovery Pilot: €[TBD] — short, low-complexity, learning-oriented
-- Tier 2 Controlled Workflow Pilot: €[TBD] — the primary revenue vehicle
-- Tier 3 Extended Governance Pilot: €[TBD] — larger scope, more advisory time
-
-*All prices TBD pending market research and first client conversations.*
+CerbaSeal's Tier 2 range (€35K–€75K) sits at the lower end of boutique AI implementation, reflecting its early-stage status and the bounded pilot scope. Tier 3 and Tier 4 are consistent with regulated-context governance engagements.
 
 ---
 
@@ -240,4 +328,4 @@ These principles should guide pricing decisions regardless of final numbers:
 
 ---
 
-*This document is an internal planning framework. No prices are committed. Final pricing requires agreement between Line Axia, Lamont Labs, and the client in a signed working agreement.*
+*This document contains working price ranges for commercial planning. No prices are committed. Final pricing requires agreement between Line Axia, Lamont Labs, and the client in a signed working agreement.*
