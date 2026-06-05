@@ -84,7 +84,7 @@ It is not a dashboard, policy system, or domain application.
 Current enforcement state (stable across runs on this commit):
 
 ```
-stableChecksum: a33c892ee4ceb6809feec90fe5f3bab425c25955fba34d51c4fb2ee0b942c587
+stableChecksum: 82fa1380edf2f7540d1c73d89fa314d8f80d169c7d14309716b63bec6c917b61
 ```
 
 - 391 / 391 tests passing (16 test files)
@@ -145,6 +145,44 @@ These artifacts are designed to show how CerbaSeal can be reviewed, demonstrated
 ## Pilot Operations
 
 - Pilot operations model: [docs/pilot-operations-model.md](docs/pilot-operations-model.md) — how a pilot engagement operates: onboarding, issue tracking, support commitment, response times, documentation requirements, founder availability, and exit deliverables
+
+---
+
+## Client Adoption Pack
+
+Materials for Line Axia and pilot clients to qualify, onboard, deploy, and operate CerbaSeal without depending on Jesse for every step.
+
+**Qualification and Planning:**
+- [Client Readiness Assessment](docs/client-adoption/client-readiness-assessment.md) — scoring rubric to determine pilot fit before committing resources
+- [Workflow Mapping Workbook](docs/client-adoption/workflow-mapping-workbook.md) — facilitated session guide: turns a client workflow into CerbaSeal configuration
+- [Pilot Sizing and Pricing Framework](docs/client-adoption/pilot-sizing-and-pricing-framework.md) — three pilot tiers, scope definitions, and pricing factors
+- [Pilot Success Framework](docs/client-adoption/pilot-success-framework.md) — agreed success criteria for client, Lamont Labs, and Line Axia
+
+**Deployment and Operations:**
+- [Quickstart Deployment Guide](docs/client-adoption/quickstart-deployment-guide.md) — 15-min demo / 60-min validation / half-day pilot setup paths
+- [Client Admin Guide](docs/client-adoption/client-admin-guide.md) — admin responsibilities, audit file ownership, escalation path
+- [Troubleshooting Guide](docs/client-adoption/troubleshooting-guide.md) — symptom-indexed issue resolution and support escalation
+
+**Training:**
+- [Getting Started Guide](docs/client-adoption/training/getting-started-guide.md) — what CerbaSeal is, what ALLOW/HOLD/REJECT mean
+- [Operator Guide](docs/client-adoption/training/operator-guide.md) — daily operations and HOLD resolution
+- [Reviewer Guide](docs/client-adoption/training/reviewer-guide.md) — authorizing AI-proposed actions
+- [Admin Guide](docs/client-adoption/training/admin-guide.md) — deployment, audit log, verification commands
+- [FAQ](docs/client-adoption/training/faq.md) — common questions for all audiences
+- [Common Errors and Fixes](docs/client-adoption/training/common-errors-and-fixes.md) — quick-reference error resolution
+- [30-Minute Onboarding Agenda](docs/client-adoption/training/30-minute-onboarding-agenda.md) — facilitator guide for kick-off session
+- [10-Minute Executive Overview](docs/client-adoption/training/10-minute-executive-overview.md) — non-technical briefing
+
+**Governance Templates:**
+- [Fraud Triage Template](docs/client-adoption/templates/fraud-triage-template.md)
+- [Transaction Escalation Template](docs/client-adoption/templates/transaction-escalation-template.md)
+- [Account Hold Recommendation Template](docs/client-adoption/templates/account-hold-recommendation-template.md)
+- [Generic Human Approval Template](docs/client-adoption/templates/generic-human-approval-template.md)
+
+**Partner Materials (Line Axia):**
+- [Line Axia Partner Enablement Pack](docs/client-adoption/line-axia-partner-enablement-pack.md) — 30-sec/2-min explanations, objection handling, when to involve Jesse
+- [EU AI Act / NIS2 Mapping Support](docs/client-adoption/eu-ai-act-nis2-mapping-support.md) — regulatory framing with careful compliance language
+- [Self-Service Configuration Wizard Spec](docs/client-adoption/self-service-configuration-wizard-spec.md) — future 10-step wizard design
 
 ---
 

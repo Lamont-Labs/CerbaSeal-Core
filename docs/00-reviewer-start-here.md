@@ -157,6 +157,25 @@ The support-readiness layer is designed to make the system self-explaining, self
 
 ---
 
+## Client Adoption Materials
+
+For pilot qualification, onboarding, and self-service deployment without requiring Jesse on every step:
+
+- [Client Readiness Assessment](client-adoption/client-readiness-assessment.md) — qualify whether a prospect is ready for a pilot
+- [Workflow Mapping Workbook](client-adoption/workflow-mapping-workbook.md) — turn a client workflow into CerbaSeal configuration
+- [Pilot Success Framework](client-adoption/pilot-success-framework.md) — agreed success criteria for all three parties
+- [Quickstart Deployment Guide](client-adoption/quickstart-deployment-guide.md) — 15-min, 60-min, and half-day deployment paths
+- [Troubleshooting Guide](client-adoption/troubleshooting-guide.md) — symptom-based issue resolution
+- [Client Admin Guide](client-adoption/client-admin-guide.md) — client admin responsibilities and boundaries
+- [Training Kit](client-adoption/training/) — getting started, operator, reviewer, admin, FAQ, common errors
+- [Governance Templates](client-adoption/templates/) — fraud triage, transaction escalation, account hold, generic approval
+- [Line Axia Partner Enablement Pack](client-adoption/line-axia-partner-enablement-pack.md) — objection handling, positioning, when to involve Jesse
+- [EU AI Act / NIS2 Mapping Support](client-adoption/eu-ai-act-nis2-mapping-support.md) — compliance framing and careful language
+- [Pilot Sizing and Pricing Framework](client-adoption/pilot-sizing-and-pricing-framework.md) — tier definitions and pricing factors
+- [Self-Service Configuration Wizard Spec](client-adoption/self-service-configuration-wizard-spec.md) — future wizard design
+
+---
+
 ## Expected Reviewer Conclusion
 
 CerbaSeal is architecturally real, narrowly scoped, enforcement-oriented, and reviewable before client-specific pilot implementation exists.

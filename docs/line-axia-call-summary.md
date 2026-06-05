@@ -38,7 +38,7 @@ This repository is a minimal, fully-reviewable enforcement proof package. It is 
 Run `pnpm verify:proof` at any time to confirm the stableChecksum on this exact state:
 
 ```
-stableChecksum: a33c892ee4ceb6809feec90fe5f3bab425c25955fba34d51c4fb2ee0b942c587
+stableChecksum: 82fa1380edf2f7540d1c73d89fa314d8f80d169c7d14309716b63bec6c917b61
 ```
 
 ---
@@ -120,6 +120,25 @@ These are scoped, not missing. They are the integration work that begins during 
 | Access control design | `docs/security/access-control-and-rate-limiting.md` |
 | Signing roadmap | `docs/security/artifact-signing-roadmap.md` |
 | Proof snapshot | `docs/reports/proof-snapshot.json` |
+
+## Client Adoption Pack
+
+A complete Client Adoption Pack is now available to support Line Axia's pilot sales and client onboarding:
+
+| Document | Purpose |
+|---|---|
+| [Client Readiness Assessment](client-adoption/client-readiness-assessment.md) | Qualify prospects before committing resources |
+| [Workflow Mapping Workbook](client-adoption/workflow-mapping-workbook.md) | Translate client workflow to CerbaSeal configuration |
+| [Pilot Success Framework](client-adoption/pilot-success-framework.md) | Agreed success criteria for all three parties |
+| [Quickstart Deployment Guide](client-adoption/quickstart-deployment-guide.md) | 15-min / 60-min / half-day deployment paths |
+| [Troubleshooting Guide](client-adoption/troubleshooting-guide.md) | Symptom-indexed resolution for client issues |
+| [Client Admin Guide](client-adoption/client-admin-guide.md) | Defines client admin responsibilities and boundaries |
+| [Training Kit](client-adoption/training/) | Role-specific guides: admin, operator, reviewer, exec |
+| [Governance Templates](client-adoption/templates/) | Fraud triage, transaction escalation, account hold, generic |
+| [Line Axia Partner Enablement Pack](client-adoption/line-axia-partner-enablement-pack.md) | Qualify and explain CerbaSeal without Jesse on every call |
+| [EU AI Act / NIS2 Mapping](client-adoption/eu-ai-act-nis2-mapping-support.md) | Regulatory framing with careful compliance language |
+| [Pilot Sizing and Pricing Framework](client-adoption/pilot-sizing-and-pricing-framework.md) | Three pilot tiers, pricing factors, no locked numbers |
+| [Self-Service Configuration Wizard Spec](client-adoption/self-service-configuration-wizard-spec.md) | Future wizard design — 10-step, outputs config package |
 
 ---
 

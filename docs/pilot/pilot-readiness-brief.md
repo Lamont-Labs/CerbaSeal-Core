@@ -123,3 +123,21 @@ Those require a separate working agreement.
 
 This is a review-ready core demo, not a production client deployment.
 No pilot client currently exists. All pilot shapes described here are proposed, not contracted.
+
+---
+
+## Client Adoption Materials
+
+A complete Client Adoption Pack is available to support Line Axia and pilot clients through qualification, onboarding, and self-service operation:
+
+- [Client Readiness Assessment](../client-adoption/client-readiness-assessment.md) — scoring rubric for pilot qualification
+- [Workflow Mapping Workbook](../client-adoption/workflow-mapping-workbook.md) — facilitated session guide and CerbaSeal field map
+- [Pilot Success Framework](../client-adoption/pilot-success-framework.md) — success criteria for client, Lamont Labs, and Line Axia
+- [Quickstart Deployment Guide](../client-adoption/quickstart-deployment-guide.md) — step-by-step deployment with three time-boxed paths
+- [Troubleshooting Guide](../client-adoption/troubleshooting-guide.md) — symptom-indexed issue resolution
+- [Client Admin Guide](../client-adoption/client-admin-guide.md) — client admin role, audit file ownership, escalation path
+- [Training Kit](../client-adoption/training/) — role-specific guides for admins, operators, reviewers, and executives
+- [Governance Templates](../client-adoption/templates/) — four pre-built workflow templates with ALLOW/HOLD/REJECT examples
+- [Line Axia Partner Enablement Pack](../client-adoption/line-axia-partner-enablement-pack.md) — qualification and objection handling without Jesse
+- [EU AI Act / NIS2 Mapping](../client-adoption/eu-ai-act-nis2-mapping-support.md) — regulatory relevance framing
+- [Pilot Sizing and Pricing Framework](../client-adoption/pilot-sizing-and-pricing-framework.md) — three pilot tiers with scope and pricing factors
