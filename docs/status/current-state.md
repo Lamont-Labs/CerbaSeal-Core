@@ -19,10 +19,11 @@ A browser-accessible Review & Pilot Readiness Portal is live at `/review`, `/pil
 | snapshots/enforcement-loop.snapshot.test.ts | 41 | Passing |
 | security/fail-closed.test.ts | 2 | Passing |
 | security/non-forgery.test.ts | 2 | Passing |
-| security/misuse-scenarios.test.ts | 27 | Passing |
+| security/misuse-scenarios.test.ts | 34 | Passing |
 | security/contextual-boundary.test.ts | 25 | Passing |
 | audit-evidence-export.test.ts | 6 | Passing |
 | diagnostic-report-service.test.ts | 5 | Passing |
+| persistent-audit-log.test.ts | 12 | Passing |
 | integration/browser-demo-routes.test.ts | 28 | Passing |
 | integration/review-portal-routes.test.ts | 110 | Passing |
 | integration/support-readiness.test.ts | 23 | Passing |
@@ -49,6 +50,30 @@ Every request receives exactly one of three outcomes:
 Every outcome — including REJECT and HOLD — produces a permanent evidence bundle with a hash-linked audit chain.
 
 ---
+
+## Phase Hardening Applied
+
+### Phase 1 — Persistent Audit Log
+- `audit-hash-utils.ts` — shared deterministic SHA-256 hashing primitives used by all audit log implementations
+- `file-backed-append-only-log-service.ts` — JSONL-backed persistent log; entries survive process restarts; hash chain loaded and verified on construction; same SHA-256 algorithm as in-memory log, cross-verifiable
+- 12 new tests in `persistent-audit-log.test.ts` covering: empty-file start, JSONL writing, chain continuity across restarts, tamper detection (3 forms), immutability of snapshots, full flow integration
+
+### Phase 5 — Actor Authority Class Hardening
+- `assertActorAuthorityClass` added to `execution-gate-service.ts`; validates `actorAuthorityClass` against the 6-member allowed set at runtime (not just TypeScript types)
+- Any unknown class value — regardless of approval state — produces REJECT with MALFORMED_REQUEST before any other check
+
+### Phase 6 — Approval Timestamp Validation
+- `assertApprovalState` extended: `approvedAt` must parse as a valid ISO date and must not predate `request.createdAt`
+- Non-parseable dates produce REJECT with MALFORMED_REQUEST
+- Timestamp predating request produces REJECT with INVALID_APPROVAL_AUTHORITY
+
+### Phase 3 — CI/CD GitHub Actions
+- `.github/workflows/audit.yml` — full pipeline: TypeScript check, 391 tests, import boundary check, invariant coverage, 15/15 audit checks, proof export, proof verify, snapshot upload as artifact with 90-day retention
+- Optional HMAC signing via `CERBASEAL_SIGNING_KEY` GitHub secret
+
+### Phase 4 — HMAC Optional Signing
+- `scripts/export-proof.ts` — HMAC-SHA256 over `stableChecksum` using `CERBASEAL_SIGNING_KEY` env var (32+ char); `hmacSignature` field added to proof snapshot when key is present
+- `scripts/verify-proof.ts` — verifies HMAC signature when key is present; warns when key/signature mismatch; unsigned snapshots accepted without error
 
 ## Security Fixes Applied
 
@@ -88,10 +113,10 @@ The following are documented, intentionally accepted limitations for this proof 
 - Contextual correctness is not evaluated by design.
 
 **Not validated at runtime:**
-- `approvedAt` — expiry check and timestamp format validation now enforced (Phase 6); non-parseable dates and approval predating request both REJECT
+- `approvedAt` — expiry check and timestamp format validation enforced (Phase 6); non-parseable dates and approval predating request both REJECT
 - `immutableSignature` content — any non-empty string passes; no cryptographic verification
 - `approvalId` and `approverId` — present on the type, never read by the gate
-- `actorAuthorityClass` range — now fully validated at runtime (Phase 5); all 6 valid values enforced; unknown values produce REJECT with MALFORMED_REQUEST
+- `actorAuthorityClass` range — fully validated at runtime (Phase 5); all 6 valid values enforced; unknown values produce REJECT with MALFORMED_REQUEST
 - `controlStatus.verificationRunId` and `trustState.trustStateId` — recorded but not validated
 - `proposal.confidence` — not gated; null, negative, or values above 1.0 all pass
 - `createdAt` and `sourceHash` format — non-empty check only
@@ -133,7 +158,7 @@ This system does not include:
 
 - Cryptographic signing of decision artifacts
 - Identity verification or runtime attestation of callers
-- Persistent storage — all state is in-memory per instance
+- File-backed persistent storage is available (`FileBackedAppendOnlyLogService`) but not required; in-memory is the default
 - Network layer or API surface (beyond the demo server)
 - Policy interpretation — `policyPackRef` is a reference only; policy content is not evaluated
 - Client-specific workflow configuration
