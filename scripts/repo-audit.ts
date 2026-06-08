@@ -385,6 +385,76 @@ async function main(): Promise<void> {
     }
   }
 
+  // ── Check 16: cerbaseal.policy.json parses without error (informational) ──
+  {
+    const policyPath = join(ROOT, "cerbaseal.policy.json");
+    if (!existsSync(policyPath)) {
+      pass("16. cerbaseal.policy.json parses without error", "file not present (optional — no policy configured)");
+    } else {
+      try {
+        const raw = readFileSync(policyPath, "utf-8");
+        JSON.parse(raw);
+        // Basic structural check: if actorMappings present, values must be strings.
+        // If approvalChains present, values must be arrays of strings.
+        // If actionPolicies present, values must be objects with valid behaviour strings.
+        const obj = JSON.parse(raw) as Record<string, unknown>;
+        const validBehaviours = new Set(["requires_approval", "auto_allow", "blocked"]);
+        const issues: string[] = [];
+
+        if (obj["actorMappings"] !== undefined) {
+          if (typeof obj["actorMappings"] !== "object" || Array.isArray(obj["actorMappings"])) {
+            issues.push("actorMappings must be an object");
+          } else {
+            for (const [k, v] of Object.entries(obj["actorMappings"] as Record<string, unknown>)) {
+              if (k.startsWith("_")) continue;
+              if (typeof v !== "string") issues.push(`actorMappings["${k}"] must be a string`);
+            }
+          }
+        }
+
+        if (obj["approvalChains"] !== undefined) {
+          if (typeof obj["approvalChains"] !== "object" || Array.isArray(obj["approvalChains"])) {
+            issues.push("approvalChains must be an object");
+          } else {
+            for (const [k, v] of Object.entries(obj["approvalChains"] as Record<string, unknown>)) {
+              if (k.startsWith("_")) continue;
+              if (!Array.isArray(v) || !(v as unknown[]).every((c) => typeof c === "string")) {
+                issues.push(`approvalChains["${k}"] must be an array of strings`);
+              }
+            }
+          }
+        }
+
+        if (obj["actionPolicies"] !== undefined) {
+          if (typeof obj["actionPolicies"] !== "object" || Array.isArray(obj["actionPolicies"])) {
+            issues.push("actionPolicies must be an object");
+          } else {
+            for (const [wf, actions] of Object.entries(obj["actionPolicies"] as Record<string, unknown>)) {
+              if (wf.startsWith("_")) continue;
+              if (typeof actions !== "object" || Array.isArray(actions) || actions === null) {
+                issues.push(`actionPolicies["${wf}"] must be an object`);
+                continue;
+              }
+              for (const [action, behaviour] of Object.entries(actions as Record<string, unknown>)) {
+                if (!validBehaviours.has(behaviour as string)) {
+                  issues.push(`actionPolicies["${wf}"]["${action}"] must be requires_approval | auto_allow | blocked`);
+                }
+              }
+            }
+          }
+        }
+
+        if (issues.length === 0) {
+          pass("16. cerbaseal.policy.json parses without error", "policy file valid");
+        } else {
+          fail("16. cerbaseal.policy.json parses without error", issues.join("; "));
+        }
+      } catch (e: unknown) {
+        fail("16. cerbaseal.policy.json parses without error", getErrorMessage(e));
+      }
+    }
+  }
+
   // ── Summary ───────────────────────────────────────────────────────────────
   console.log("\n" + "=".repeat(52));
   const passed = results.filter((r) => r.pass).length;

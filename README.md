@@ -87,7 +87,7 @@ Current enforcement state (stable across runs on this commit):
 stableChecksum: e6b9765095b9ae4c93722a83b6fc8bd61ca753c16efcaeadc56c0794333695a3
 ```
 
-- 391 / 391 tests passing (16 test files)
+- 415 / 415 tests passing (17 test files)
 - 15 / 15 audit checks passing
 - 12 / 12 invariants covered and linked to tests
 - 229 validator assertions (106 + 13 + 110 across 3 validators)

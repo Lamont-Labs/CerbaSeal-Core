@@ -227,8 +227,8 @@ Deployment: Our own server (Linux, Node.js 18+)
 - [ ] Node.js 18+ installed on target server
 - [ ] pnpm installed
 - [ ] CerbaSeal-Core cloned and dependencies installed
-- [ ] pnpm test — 391/391 passing
-- [ ] pnpm audit:repo — 15/15 passing
+- [ ] pnpm test — 415/415 passing
+- [ ] pnpm audit:repo — 16/16 passing
 - [ ] pnpm export:proof — stableChecksum confirmed
 - [ ] Audit log path configured: /data/cerbaseal/audit/fraud-review.jsonl
 - [ ] Audit log directory exists and is writable

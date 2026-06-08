@@ -194,7 +194,7 @@ Identify inconsistencies in language, terminology, and claims across CerbaSeal d
 | `docs/positioning/external-positioning.md` | (positioning language varies) |
 | Package version | `0.1.0` |
 
-**Canonical:** CerbaSeal v0.1.0 is **pilot-ready**. The enforcement core is production-quality (391 passing tests, adversarial-validated, cryptographically chained audit), but the product is in active pilot delivery, not general availability.
+**Canonical:** CerbaSeal v0.1.0 is **pilot-ready**. The enforcement core is production-quality (415 passing tests, adversarial-validated, cryptographically chained audit), but the product is in active pilot delivery, not general availability.
 
 **Standard language:** "CerbaSeal v0.1.0 is production-grade enforcement infrastructure in active pilot delivery. General availability follows successful pilot completion."
 

@@ -1106,7 +1106,7 @@ function sec7(): void {
     ["Old framing", "Better framing"],
     [
       ["'Here is what CerbaSeal can do.'", "'Here is how a client deploys CerbaSeal and what we deliver during the pilot.'"],
-      ["'391 tests passing, 15 audit checks.'", "'The technical layer is solved. The delivery question is: can your team adopt it without needing Jesse at every step?'"],
+      ["'415 tests passing, 15 audit checks.'", "'The technical layer is solved. The delivery question is: can your team adopt it without needing Jesse at every step?'"],
       ["'We charge €35k–€75k for a pilot.'", "'The pilot fee covers workflow mapping, deployment, training, evidence generation, and support — not just the software.'"],
       ["'After the pilot, you buy a license.'", "'The pilot converts to an annual license for ongoing access to the enforcement layer. The implementation work is already done.'"],
       ["'We're open to a channel relationship.'", "'What you're describing sounds like a channel model — which means we should talk about partner access fees, royalties, and support boundaries separately from the first pilot.'"],

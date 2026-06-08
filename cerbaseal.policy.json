@@ -1,0 +1,35 @@
+{
+  "_schema": "cerbaseal-policy/v1",
+  "_description": "Example policy pack — financial services fraud review deployment. Copy and adapt for each client workflow.",
+
+  "actorMappings": {
+    "Senior Fraud Analyst":      "analyst",
+    "Head of Risk Operations":   "manager",
+    "Chief Compliance Officer":  "compliance_officer",
+    "Fraud Operations Lead":     "analyst",
+    "Risk Manager":              "manager"
+  },
+
+  "approvalChains": {
+    "transaction_fraud_review":  ["analyst", "manager"],
+    "wire_transfer_approval":    ["manager", "compliance_officer"],
+    "fraud_triage":              ["analyst", "reviewer", "manager", "compliance_officer"]
+  },
+
+  "actionPolicies": {
+    "transaction_fraud_review": {
+      "escalate":     "requires_approval",
+      "hold":         "requires_approval",
+      "allow":        "requires_approval",
+      "reject":       "auto_allow",
+      "account_hold": "requires_approval"
+    },
+    "fraud_triage": {
+      "escalate":     "requires_approval",
+      "hold":         "requires_approval",
+      "allow":        "requires_approval",
+      "reject":       "auto_allow",
+      "account_hold": "requires_approval"
+    }
+  }
+}

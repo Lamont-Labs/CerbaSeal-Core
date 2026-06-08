@@ -196,7 +196,7 @@ const tracks: Track[] = [
         topics: [
           "Step 1: Use the Troubleshooter at /troubleshoot — covers 95% of common issues",
           "Step 2: Run pnpm audit:repo — read every check that fails",
-          "Step 3: Run pnpm test — confirm all 391 tests still pass",
+          "Step 3: Run pnpm test — confirm all 415 tests still pass",
           "Step 4: Check the DecisionEnvelope trace.reasonCodes for the specific trigger code",
           "Escalate to jesse@lamontlabs.io with: full DecisionEnvelope, audit:repo output, test output, description",
           "Response within 1 business day during pilot support window",

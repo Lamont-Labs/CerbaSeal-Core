@@ -135,7 +135,7 @@ Cover:
 
 **Confirm next steps:**
 - [ ] Admin: deploy CerbaSeal using quickstart guide (target date: [date])
-- [ ] Admin: verify tests pass (391/391), audit passes (15/15), proof verified
+- [ ] Admin: verify tests pass (415/415), audit passes (16/16), proof verified
 - [ ] Facilitator: schedule first scenario testing session
 - [ ] Facilitator: confirm support contact is saved in team communications
 

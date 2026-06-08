@@ -10,6 +10,7 @@ import { INVARIANTS, type InvariantCode } from "../../domain/constants/invariant
 import { REASON_CODES, type ReasonCode } from "../../domain/constants/reason-codes.js";
 import type {
   ActionClass,
+  AuthorityClass,
   BlockedActionRecord,
   DecisionEnvelope,
   GateResult,
@@ -23,6 +24,7 @@ import {
   buildAllowedAuthorityClasses,
   type GateConfig
 } from "../../config/cerbaseal-config.js";
+import type { CerbaSealPolicy, PolicyActionBehavior } from "../../config/cerbaseal-policy.js";
 
 const ALLOWED_ACTION_CLASSES = new Set<ActionClass>([
   "allow",
@@ -427,22 +429,75 @@ function buildReleaseAuthorization(
 
 export class ExecutionGateService {
   private readonly allowedAuthorityClasses: ReadonlySet<string>;
+  private readonly policy: CerbaSealPolicy | undefined;
 
   /**
-   * @param config — optional configuration. Pass to extend authority classes beyond
-   * the core set (system, ai, analyst, reviewer, manager, compliance_officer).
+   * @param config  — optional configuration. Pass to extend authority classes beyond
+   *                  the core set (system, ai, analyst, reviewer, manager, compliance_officer).
+   * @param policy  — optional policy pack. Controls actor mappings, approval chains, and
+   *                  per-workflow action behaviour. Load with loadCerbaSealPolicy() or
+   *                  supply inline. When undefined the gate operates on core invariants only.
    *
    * Inline usage:
-   *   new ExecutionGateService({ additionalAuthorityClasses: ["risk_officer", "supervisor"] })
+   *   new ExecutionGateService({ additionalAuthorityClasses: ["risk_officer"] }, policy)
    *
-   * From cerbaseal.config.json:
+   * From config + policy files:
    *   import { loadCerbaSealConfig } from "../../config/cerbaseal-config.js";
-   *   new ExecutionGateService(loadCerbaSealConfig())
+   *   import { loadCerbaSealPolicy } from "../../config/cerbaseal-policy.js";
+   *   new ExecutionGateService(loadCerbaSealConfig(), loadCerbaSealPolicy())
    *
-   * Default (no args): uses core authority classes only. All existing tests pass unchanged.
+   * Default (no args): core authority classes only. All existing tests pass unchanged.
    */
-  constructor(config?: GateConfig) {
-    this.allowedAuthorityClasses = buildAllowedAuthorityClasses(config);
+  constructor(config?: GateConfig, policy?: CerbaSealPolicy) {
+    this.policy = policy;
+    // Extend the allowed authority class set to include any actor mapping keys
+    // so that client role name strings pass the initial authority class check before
+    // they are resolved to their canonical counterparts.
+    const base = buildAllowedAuthorityClasses(config);
+    if (policy?.actorMappings && Object.keys(policy.actorMappings).length > 0) {
+      this.allowedAuthorityClasses = new Set([...base, ...Object.keys(policy.actorMappings)]);
+    } else {
+      this.allowedAuthorityClasses = base;
+    }
+  }
+
+  /**
+   * Resolve a client role name to its canonical CerbaSeal authority class via the
+   * actor mappings in the loaded policy. Returns the input unchanged if no mapping
+   * exists for it (i.e. it is already a canonical class or an unknown value).
+   */
+  private resolveActorClass(actorClass: string): string {
+    if (!this.policy?.actorMappings) return actorClass;
+    return this.policy.actorMappings[actorClass] ?? actorClass;
+  }
+
+  /**
+   * Returns true if the loaded policy declares that the given workflow class requires
+   * human approval (via an approvalChains entry). This supplements the hardcoded
+   * WORKFLOWS_REQUIRING_APPROVAL set without requiring TypeScript changes.
+   */
+  private isPolicyApprovalRequired(workflowClass: string): boolean {
+    if (!this.policy?.approvalChains) return false;
+    return workflowClass in this.policy.approvalChains;
+  }
+
+  /**
+   * Returns the policy-defined behaviour for a specific workflow + action combination,
+   * or undefined if no policy entry exists for that pair.
+   */
+  private getActionPolicyBehaviour(
+    workflowClass: string,
+    actionClass: string
+  ): PolicyActionBehavior | undefined {
+    return this.policy?.actionPolicies?.[workflowClass]?.[actionClass];
+  }
+
+  /**
+   * Returns the approval chain for the given workflow class from the loaded policy,
+   * or an empty array if no chain is defined.
+   */
+  getApprovalChains(workflowClass: string): string[] {
+    return this.policy?.approvalChains?.[workflowClass] ?? [];
   }
 
   evaluate(request: GovernedRequest): GateResult {
@@ -450,12 +505,24 @@ export class ExecutionGateService {
 
     try {
       assertRequestShape(request, checkedInvariants);
-      assertActorAuthorityClass(request, checkedInvariants, this.allowedAuthorityClasses);
-      assertKnownActionClass(request.proposedActionClass, checkedInvariants);
-      assertKnownActionClass(request.proposal.requestedActionClass, checkedInvariants);
+
+      // ── Policy stage 1: actor mapping ─────────────────────────────────────
+      // Translate client role names (e.g. "Head of Risk") to canonical
+      // authority classes (e.g. "manager") before any invariant checks run.
+      // The resolved request is used for all downstream assertions so that
+      // the AI non-authoritativeness invariant and approval checks operate on
+      // the canonical class, not the client-specific label.
+      const resolvedClass = this.resolveActorClass(request.actorAuthorityClass);
+      const resolvedRequest: GovernedRequest = resolvedClass !== request.actorAuthorityClass
+        ? { ...request, actorAuthorityClass: resolvedClass as AuthorityClass }
+        : request;
+
+      assertActorAuthorityClass(resolvedRequest, checkedInvariants, this.allowedAuthorityClasses);
+      assertKnownActionClass(resolvedRequest.proposedActionClass, checkedInvariants);
+      assertKnownActionClass(resolvedRequest.proposal.requestedActionClass, checkedInvariants);
 
       checkedInvariants.push(INVARIANTS.PROPOSAL_AND_REQUEST_ACTION_MUST_MATCH);
-      if (request.proposedActionClass !== request.proposal.requestedActionClass) {
+      if (resolvedRequest.proposedActionClass !== resolvedRequest.proposal.requestedActionClass) {
         throw new CerbaSealError({
           message: "Proposal action and request action do not match",
           invariant: INVARIANTS.PROPOSAL_AND_REQUEST_ACTION_MUST_MATCH,
@@ -464,29 +531,64 @@ export class ExecutionGateService {
         });
       }
 
-      assertPolicyPack(request, checkedInvariants);
-      assertProvenance(request, checkedInvariants);
-      assertLoggingReady(request, checkedInvariants);
-      assertProposalBoundary(request, checkedInvariants);
-      assertProhibitedUse(request, checkedInvariants);
-      assertControlStatus(request, checkedInvariants);
-      assertTrustState(request, checkedInvariants);
-      assertApprovalState(request, checkedInvariants);
+      // ── Policy stage 2: action policies ──────────────────────────────────
+      // "blocked" actions are rejected immediately — this runs before all
+      // other invariant checks because a blocked action is always invalid
+      // regardless of provenance, logging state, or approval.
+      const actionBehaviour = this.getActionPolicyBehaviour(
+        resolvedRequest.workflowClass,
+        resolvedRequest.proposedActionClass
+      );
+      if (actionBehaviour === "blocked") {
+        checkedInvariants.push(INVARIANTS.REQUEST_SCHEMA_AND_ACTION_CLASS_VALID);
+        throw new CerbaSealError({
+          message: `Action "${resolvedRequest.proposedActionClass}" is blocked by policy for workflow "${resolvedRequest.workflowClass}"`,
+          invariant: INVARIANTS.REQUEST_SCHEMA_AND_ACTION_CLASS_VALID,
+          reasonCode: REASON_CODES.MALFORMED_REQUEST,
+          finalState: "REJECT"
+        });
+      }
+
+      // ── Policy stage 3: approval chains + action-level approval ──────────
+      // Derive the effective approval requirement. Policy approval chains and
+      // "requires_approval" action policies add to the requirement; they cannot
+      // remove an existing requirement set by the caller or the core invariant.
+      const policyApprovalRequired =
+        this.isPolicyApprovalRequired(resolvedRequest.workflowClass) ||
+        actionBehaviour === "requires_approval";
+      const effectiveRequest: GovernedRequest =
+        policyApprovalRequired && !resolvedRequest.approvalRequired
+          ? { ...resolvedRequest, approvalRequired: true }
+          : resolvedRequest;
+
+      assertPolicyPack(effectiveRequest, checkedInvariants);
+      assertProvenance(effectiveRequest, checkedInvariants);
+      assertLoggingReady(effectiveRequest, checkedInvariants);
+      assertProposalBoundary(effectiveRequest, checkedInvariants);
+      assertProhibitedUse(effectiveRequest, checkedInvariants);
+      assertControlStatus(effectiveRequest, checkedInvariants);
+      assertTrustState(effectiveRequest, checkedInvariants);
+      assertApprovalState(effectiveRequest, checkedInvariants);
 
       checkedInvariants.push(INVARIANTS.IMMUTABLE_DECISION_ENVELOPE);
 
+      // assertKnownActionClass above has validated that proposedActionClass is a
+      // known ActionClass — cast is safe and required because GovernedRequest
+      // types the field as UnknownableActionClass for boundary flexibility.
+      const validatedActionClass = effectiveRequest.proposedActionClass as ActionClass;
+
       const decisionEnvelope = buildDecisionEnvelope({
-        request,
+        request: effectiveRequest,
         finalState: "ALLOW",
         reasonCodes: [REASON_CODES.DECISION_ALLOWED],
         checkedInvariants,
-        permittedActionClass: request.proposedActionClass
+        permittedActionClass: validatedActionClass
       });
 
       const releaseAuthorization = buildReleaseAuthorization(
-        request,
+        effectiveRequest,
         decisionEnvelope,
-        request.proposedActionClass
+        validatedActionClass
       );
 
       const result: GateResult = {

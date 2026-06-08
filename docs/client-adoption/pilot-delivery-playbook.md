@@ -118,7 +118,7 @@ Activities:
 Activities (from quickstart deployment guide):
 1. Clone repository
 2. `pnpm install`
-3. `pnpm test` — confirm 391/391 passing
+3. `pnpm test` — confirm 415/415 passing
 4. `pnpm audit:repo` — confirm 15/15 passing
 5. `pnpm export:proof` + `pnpm verify:proof` — confirm stableChecksum
 6. Configure `.env` with audit log path
@@ -158,7 +158,7 @@ Activities:
 
 **Jesse hours this week:** 0–2 (standby, only if troubleshooting needed)
 
-**Week 2 Gate:** All checks pass (391 tests, 15/15 audit, proof verified). Three test scenarios confirmed. Client technical owner operating independently.
+**Week 2 Gate:** All checks pass (415 tests, 15/15 audit, proof verified). Three test scenarios confirmed. Client technical owner operating independently.
 
 ---
 
