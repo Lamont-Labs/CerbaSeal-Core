@@ -4,6 +4,17 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CerbaSeal Security Summary</title>
+  <meta name="description" content="CerbaSeal security posture: implemented controls, known limitations, bypass resistance, and invariant coverage. Honest assessment for security reviewers." />
+  <link rel="canonical" href="https://cerbaseal.replit.app/security" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://cerbaseal.replit.app/security" />
+  <meta property="og:title" content="CerbaSeal Security Summary" />
+  <meta property="og:description" content="CerbaSeal security posture: implemented controls, known limitations, bypass resistance, and invariant coverage. Honest assessment for security reviewers." />
+  <meta property="og:image" content="https://cerbaseal.replit.app/assets/cerbaseal-logo-primary.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="CerbaSeal Security Summary" />
+  <meta name="twitter:description" content="CerbaSeal security posture: implemented controls, known limitations, bypass resistance, and invariant coverage. Honest assessment for security reviewers." />
+  <meta name="twitter:image" content="https://cerbaseal.replit.app/assets/cerbaseal-logo-primary.png" />
   <link rel="icon" href="/assets/cerbaseal-favicon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -74,6 +85,23 @@
     code { font-family: "JetBrains Mono", "SF Mono", "Fira Code", monospace; font-size: 0.82em;
             background: var(--surface2); border: 1px solid var(--border); padding: 0.1em 0.35em; border-radius: 3px; }
   </style>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "@id": "https://cerbaseal.replit.app/security",
+    "url": "https://cerbaseal.replit.app/security",
+    "name": "CerbaSeal Security Summary",
+    "headline": "CerbaSeal Security Summary",
+    "description": "CerbaSeal security posture: implemented controls, known limitations, bypass resistance, and invariant coverage. Honest assessment for security reviewers.",
+    "image": "https://cerbaseal.replit.app/assets/cerbaseal-logo-primary.png",
+    "publisher": {
+      "@type": "Organization",
+      "name": "CerbaSeal",
+      "logo": "https://cerbaseal.replit.app/assets/cerbaseal-logo-primary.png"
+    }
+  }
+  </script>
 </head>
 <body>
 <div class="page">
@@ -95,7 +123,7 @@
 
   <!-- Posture -->
   <section class="section">
-    <div class="section-title">Security posture summary</div>
+    <h2 class="section-title">Security posture summary</h2>
     <div class="review-status">Not yet third-party reviewed</div>
     <div style="font-family:'JetBrains Mono','SF Mono','Fira Code',monospace;font-size:0.68rem;color:var(--muted);margin-top:0.35rem;margin-bottom:0.75rem;">status: not_yet_third_party_reviewed</div>
     <div class="posture-box">
@@ -109,7 +137,7 @@
 
   <!-- Implemented controls -->
   <section class="section">
-    <div class="section-title">Implemented controls</div>
+    <h2 class="section-title">Implemented controls</h2>
     <table class="control-table">
       <thead>
         <tr>
@@ -143,7 +171,7 @@
 
   <!-- Threats -->
   <section class="section">
-    <div class="section-title">Threats covered</div>
+    <h2 class="section-title">Threats covered</h2>
     <table class="control-table">
       <thead>
         <tr><th>Threat</th><th>Control</th><th>Tested</th></tr>
@@ -167,7 +195,7 @@
 
   <!-- Known limitations -->
   <section class="section">
-    <div class="section-title">Known limitations — clearly stated</div>
+    <h2 class="section-title">Known limitations — clearly stated</h2>
     <ul class="plain-list">
       <li class="limit">Audit log is in-memory — not persisted across process restarts</li>
       <li class="limit">No cryptographic signing — evidence is hash-linked, not key-signed or attested</li>
@@ -183,7 +211,7 @@
 
   <!-- Known Limitations / Not Yet Solved (explicit reviewer-facing list) -->
   <section class="section">
-    <div class="section-title">Known Limitations / Not Yet Solved</div>
+    <h2 class="section-title">Known Limitations / Not Yet Solved</h2>
     <p>Listed without softening. These are real boundaries of the current build.</p>
     <ul class="plain-list">
       <li class="limit">No cryptographic signing of evidence artifacts</li>
@@ -200,7 +228,7 @@
 
   <!-- What Would Need To Change For Production -->
   <section class="section">
-    <div class="section-title">What Would Need To Change For Production</div>
+    <h2 class="section-title">What Would Need To Change For Production</h2>
     <p>These items are required before production deployment with real client data.</p>
     <ul class="plain-list">
       <li class="question">persistent storage layer</li>
@@ -214,7 +242,7 @@
 
   <!-- Claim discipline -->
   <section class="section">
-    <div class="section-title">Claim discipline</div>
+    <h2 class="section-title">Claim discipline</h2>
     <table class="control-table">
       <thead>
         <tr><th>Claim</th><th>Status</th></tr>
@@ -235,7 +263,7 @@
 
   <!-- Invariant Coverage -->
   <section class="section">
-    <div class="section-title">Invariant coverage</div>
+    <h2 class="section-title">Invariant coverage</h2>
     <p>Every structural invariant enforced by the gate is linked to at least one covering test file. Verified by <code>pnpm check:invariants</code>.</p>
     <table class="control-table">
       <thead>
@@ -312,7 +340,7 @@
 
   <!-- Review questions -->
   <section class="section">
-    <div class="section-title">Recommended reviewer questions</div>
+    <h2 class="section-title">Recommended reviewer questions</h2>
     <ul class="plain-list">
       <li class="question">Can any caller obtain ReleaseAuthorization without <code>ExecutionGateService.evaluate()</code>?</li>
       <li class="question">Can evidence be accepted without a gate-issued GateResult?</li>

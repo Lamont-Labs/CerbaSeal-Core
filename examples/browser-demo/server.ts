@@ -58,7 +58,12 @@ const server = createServer((req, res) => {
   res.setHeader("Cache-Control", "no-store");
 
   // Static files
-  if (url === "/" || url === "/index.html") {
+  if (url === "/index.html") {
+    res.writeHead(301, { "Location": "/", "Cache-Control": "no-store" });
+    res.end();
+    return;
+  }
+  if (url === "/") {
     serveFile(res, join(__dirname, "index.html"), "text/html; charset=utf-8");
     return;
   }

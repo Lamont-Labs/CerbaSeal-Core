@@ -4,6 +4,17 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CerbaSeal Review Portal</title>
+  <meta name="description" content="CerbaSeal reviewer portal — structured review surface for technical evaluators and pilot decision-makers. Run live enforcement scenarios and inspect evidence." />
+  <link rel="canonical" href="https://cerbaseal.replit.app/review" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://cerbaseal.replit.app/review" />
+  <meta property="og:title" content="CerbaSeal Review Portal" />
+  <meta property="og:description" content="CerbaSeal reviewer portal — structured review surface for technical evaluators and pilot decision-makers. Run live enforcement scenarios and inspect evidence." />
+  <meta property="og:image" content="https://cerbaseal.replit.app/assets/cerbaseal-logo-primary.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="CerbaSeal Review Portal" />
+  <meta name="twitter:description" content="CerbaSeal reviewer portal — structured review surface for technical evaluators and pilot decision-makers. Run live enforcement scenarios and inspect evidence." />
+  <meta name="twitter:image" content="https://cerbaseal.replit.app/assets/cerbaseal-logo-primary.png" />
   <link rel="icon" href="/assets/cerbaseal-favicon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -52,7 +63,7 @@
       color: var(--dim); margin-bottom: 1rem; padding-bottom: 0.5rem;
       border-bottom: 1px solid var(--border);
     }
-    h2 { font-size: 1.1rem; font-weight: 700; color: #F8FAFC; margin-bottom: 0.5rem; }
+    h3 { font-size: 1.1rem; font-weight: 700; color: #F8FAFC; margin-bottom: 0.5rem; }
     p { font-size: 0.9rem; color: var(--muted); margin-bottom: 0.75rem; max-width: 720px; }
 
     /* Two-col */
@@ -163,6 +174,23 @@
               font-size: 0.78rem; color: var(--dim); line-height: 1.7; }
     footer strong { color: var(--muted); }
   </style>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "@id": "https://cerbaseal.replit.app/review",
+    "url": "https://cerbaseal.replit.app/review",
+    "name": "CerbaSeal Review Portal",
+    "headline": "CerbaSeal Review Portal",
+    "description": "CerbaSeal reviewer portal — structured review surface for technical evaluators and pilot decision-makers. Run live enforcement scenarios and inspect evidence.",
+    "image": "https://cerbaseal.replit.app/assets/cerbaseal-logo-primary.png",
+    "publisher": {
+      "@type": "Organization",
+      "name": "CerbaSeal",
+      "logo": "https://cerbaseal.replit.app/assets/cerbaseal-logo-primary.png"
+    }
+  }
+  </script>
 </head>
 <body>
 <div class="page">
@@ -186,7 +214,7 @@
 
   <!-- 10-Minute Review Path -->
   <section class="section" aria-label="10-Minute Review Path">
-    <div class="section-title">10-Minute Review Path</div>
+    <h2 class="section-title">10-Minute Review Path</h2>
     <p>Validate the system in under ten minutes without reading full docs. Each button calls the real API route and renders the actual result inline.</p>
     <ol class="r10-steps" style="counter-reset:r10;list-style:none;display:flex;flex-direction:column;gap:0.55rem;">
       <li style="display:flex;gap:0.85rem;padding:0.7rem 0.95rem;background:var(--surface);border:1px solid var(--border);border-radius:6px;align-items:center;flex-wrap:wrap;">
@@ -269,8 +297,8 @@
 
   <!-- Section 1: Problem -->
   <section class="section">
-    <div class="section-title">What problem it solves</div>
-    <h2>AI systems can propose consequential actions. They should not be able to authorize them.</h2>
+    <h2 class="section-title">What problem it solves</h2>
+    <h3>AI systems can propose consequential actions. They should not be able to authorize them.</h3>
     <p>
       As AI systems move from generating text to proposing actions — in workflows, transactions, accounts,
       and operations — most governance tools observe and log after the fact. CerbaSeal enforces the
@@ -290,7 +318,7 @@
 
   <!-- Section 2: What it is not -->
   <section class="section">
-    <div class="section-title">What CerbaSeal is not</div>
+    <h2 class="section-title">What CerbaSeal is not</h2>
     <div class="two-col">
       <div class="card">
         <div class="card-title">Not these things</div>
@@ -324,7 +352,7 @@
 
   <!-- Section 3: Maturity -->
   <section class="section">
-    <div class="section-title">Current maturity</div>
+    <h2 class="section-title">Current maturity</h2>
     <div class="status-grid">
       <div class="status-box implemented">
         <div class="status-box-title">Currently implemented</div>
@@ -365,7 +393,7 @@
 
   <!-- Section 4: Demo scenarios -->
   <section class="section">
-    <div class="section-title">Core enforcement scenarios — run live</div>
+    <h2 class="section-title">Core enforcement scenarios — run live</h2>
     <div class="scenario-grid">
 
       <div class="sc-card sc-reject">
@@ -403,7 +431,7 @@
 
   <!-- Section 5: Why it matters -->
   <section class="section">
-    <div class="section-title">Why this matters</div>
+    <h2 class="section-title">Why this matters</h2>
     <div class="two-col">
       <div class="card"><div class="card-title">Decision control</div><p>Every proposed action must pass a complete invariant check before execution. There is no path around the gate.</p></div>
       <div class="card"><div class="card-title">Auditability</div><p>Every outcome — including REJECT and HOLD — produces a hash-linked evidence bundle. Nothing is silently discarded.</p></div>
@@ -416,7 +444,7 @@
 
   <!-- Section 6: Proof -->
   <section class="section">
-    <div class="section-title">Current proof — claims and backing</div>
+    <h2 class="section-title">Current proof — claims and backing</h2>
     <table class="proof-table">
       <thead>
         <tr>
@@ -463,7 +491,7 @@
 
   <!-- Section 7: Reviewer path -->
   <section class="section">
-    <div class="section-title">Reviewer quick path</div>
+    <h2 class="section-title">Reviewer quick path</h2>
     <ol class="review-path">
       <li>Read the one-page system definition: <code>docs/one-page.md</code></li>
       <li>Run the REJECT scenario above — confirm AI self-authorization is blocked</li>
@@ -480,7 +508,7 @@
 
   <!-- Running CerbaSeal Without the Author -->
   <section class="section" aria-label="Handoff instructions">
-    <div class="section-title">Running CerbaSeal Without the Author</div>
+    <h2 class="section-title">Running CerbaSeal Without the Author</h2>
     <p>Everything required to verify CerbaSeal is in this repository. No external services, accounts, or founder involvement needed.</p>
     <div class="two-col">
       <div class="card">
@@ -520,7 +548,7 @@
 
   <!-- CerbaSeal System Identity -->
   <section class="section" aria-label="CerbaSeal System Identity">
-    <div class="section-title">CerbaSeal System Identity</div>
+    <h2 class="section-title">CerbaSeal System Identity</h2>
     <div class="card">
       <div class="card-title">Mark and Name</div>
       <p style="font-size:0.88rem;color:var(--text);line-height:1.65;">
@@ -537,7 +565,7 @@
 
   <!-- Section: Governance Vocabulary -->
   <section class="section" aria-label="Governance Vocabulary">
-    <div class="section-title">Governance vocabulary — invariant → enterprise mapping</div>
+    <h2 class="section-title">Governance vocabulary — invariant → enterprise mapping</h2>
     <p>CerbaSeal's 12 enforcement invariants map directly to enterprise governance control categories. Use this table when mapping CerbaSeal to a regulatory framework, audit program, or governance committee requirement.</p>
 
     <style>

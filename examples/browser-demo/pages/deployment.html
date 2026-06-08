@@ -4,6 +4,17 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CerbaSeal Deployment Posture</title>
+  <meta name="description" content="CerbaSeal deployment posture — current demo status, intended pilot deployment models, and minimum readiness checklist for client deployment." />
+  <link rel="canonical" href="https://cerbaseal.replit.app/deployment" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://cerbaseal.replit.app/deployment" />
+  <meta property="og:title" content="CerbaSeal Deployment Posture" />
+  <meta property="og:description" content="CerbaSeal deployment posture — current demo status, intended pilot deployment models, and minimum readiness checklist for client deployment." />
+  <meta property="og:image" content="https://cerbaseal.replit.app/assets/cerbaseal-logo-primary.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="CerbaSeal Deployment Posture" />
+  <meta name="twitter:description" content="CerbaSeal deployment posture — current demo status, intended pilot deployment models, and minimum readiness checklist for client deployment." />
+  <meta name="twitter:image" content="https://cerbaseal.replit.app/assets/cerbaseal-logo-primary.png" />
   <link rel="icon" href="/assets/cerbaseal-favicon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -75,6 +86,23 @@
     code { font-family: "JetBrains Mono", "SF Mono", "Fira Code", monospace; font-size: 0.82em;
             background: var(--surface2); border: 1px solid var(--border); padding: 0.1em 0.35em; border-radius: 3px; }
   </style>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "@id": "https://cerbaseal.replit.app/deployment",
+    "url": "https://cerbaseal.replit.app/deployment",
+    "name": "CerbaSeal Deployment Posture",
+    "headline": "CerbaSeal Deployment Posture",
+    "description": "CerbaSeal deployment posture — current demo status, intended pilot deployment models, and minimum readiness checklist for client deployment.",
+    "image": "https://cerbaseal.replit.app/assets/cerbaseal-logo-primary.png",
+    "publisher": {
+      "@type": "Organization",
+      "name": "CerbaSeal",
+      "logo": "https://cerbaseal.replit.app/assets/cerbaseal-logo-primary.png"
+    }
+  }
+  </script>
 </head>
 <body>
 <div class="page">
@@ -96,7 +124,7 @@
 
   <!-- Current -->
   <section class="section">
-    <div class="section-title">Current deployment</div>
+    <h2 class="section-title">Current deployment</h2>
     <div class="current-status">
       <strong>Current status: Replit-hosted browser demo only.</strong><br><br>
       This is a demonstration surface. It is not a client deployment. It runs on Replit infrastructure
@@ -121,7 +149,7 @@
 
   <!-- Deployment modes -->
   <section class="section">
-    <div class="section-title">Intended pilot deployment models</div>
+    <h2 class="section-title">Intended pilot deployment models</h2>
     <div class="mode-grid">
       <div class="mode-card">
         <div class="mode-label">Mode A</div>
@@ -167,7 +195,7 @@
 
   <!-- Not acceptable -->
   <section class="section">
-    <div class="section-title">What is not acceptable for a serious pilot</div>
+    <h2 class="section-title">What is not acceptable for a serious pilot</h2>
     <ul class="check-list">
       <li class="block">unmanaged public demo handling real client data</li>
       <li class="block">undefined data movement between systems</li>
@@ -180,7 +208,7 @@
 
   <!-- Minimum readiness -->
   <section class="section">
-    <div class="section-title">Minimum deployment readiness checklist</div>
+    <h2 class="section-title">Minimum deployment readiness checklist</h2>
     <ul class="check-list">
       <li class="needs">deployment environment selected (Mode A, B, or C)</li>
       <li class="needs">data boundaries defined</li>
@@ -197,7 +225,7 @@
 
   <!-- Update process -->
   <section class="section">
-    <div class="section-title">Fix / update process during pilot</div>
+    <h2 class="section-title">Fix / update process during pilot</h2>
     <ol class="update-steps">
       <li>Reproduce the issue locally with a test case</li>
       <li>Apply fix to enforcement core</li>
