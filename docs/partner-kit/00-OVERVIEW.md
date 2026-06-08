@@ -106,7 +106,7 @@ Everything else — deployment, policy authoring, integration, training, and fir
 
 | Tool | Command | What It Does |
 |---|---|---|
-| Full test suite | `pnpm test` | 391 tests across 17 test files; must all pass |
+| Full test suite | `pnpm test` | 432 tests across 17 test files; must all pass |
 | Repo audit | `pnpm audit:repo` | 16 automated checks against governance integrity |
 | Setup wizard | `pnpm setup` | Interactive setup → writes config files |
 | Deployment verification | `tsx deployment-starter/verify.ts` | Live REJECT / HOLD / ALLOW scenarios; 9/9 assertions |
