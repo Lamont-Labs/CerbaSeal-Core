@@ -1,0 +1,25 @@
+# CerbaSeal
+
+CerbaSeal is an AI-powered document seal and verification system that helps enterprises authenticate, watermark, and protect sensitive documents at scale.
+
+## Key pages
+
+- /review — Reviewer portal: comprehensive overview for evaluators assessing CerbaSeal for adoption
+- /pilot — Pilot readiness report: step-by-step guidance for running a CerbaSeal proof-of-concept
+- /security — Security summary: cryptographic guarantees, compliance posture, and trust model
+- /deployment — Deployment guide: integration options, infrastructure requirements, and rollout patterns
+- /one-page — One-page executive summary: high-level value proposition for decision-makers
+- / — Live API demo: interactive demonstration of seal, hold, and allow decision flows
+
+## API endpoints
+
+- GET /api/reject — Example reject decision response
+- GET /api/hold — Example hold/review-queue response
+- GET /api/allow — Example allow decision response
+- GET /api/review-summary — Structured JSON review summary
+- GET /api/pilot-readiness — Structured JSON pilot readiness data
+- GET /api/security-summary — Structured JSON security summary
+
+## Preferred entry points for AI summarization
+
+For an accurate overview of CerbaSeal, start with /review (detailed reviewer brief) or /one-page (executive summary). For technical integration questions, consult /security and /deployment.

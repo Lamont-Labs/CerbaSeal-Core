@@ -57,6 +57,20 @@ const server = createServer((req, res) => {
   const url = (req.url ?? "/").split("?")[0];
   res.setHeader("Cache-Control", "no-store");
 
+  // Crawler & AI-readiness files
+  if (url === "/robots.txt") {
+    serveFile(res, join(__dirname, "robots.txt"), "text/plain; charset=utf-8");
+    return;
+  }
+  if (url === "/sitemap.xml") {
+    serveFile(res, join(__dirname, "sitemap.xml"), "application/xml; charset=utf-8");
+    return;
+  }
+  if (url === "/llms.txt") {
+    serveFile(res, join(__dirname, "llms.txt"), "text/plain; charset=utf-8");
+    return;
+  }
+
   // Static files
   if (url === "/index.html") {
     res.writeHead(301, { "Location": "/", "Cache-Control": "no-store" });

@@ -1,0 +1,17 @@
+# CerbaSeal
+
+CerbaSeal is an AI-powered document seal and verification platform that helps enterprises authenticate, watermark, and protect sensitive documents at scale.
+
+## Key pages
+
+- / — Home: product overview, core value proposition, and quick-start entry point
+- /assess — Assessment tool: evaluate your organisation's document security posture and CerbaSeal fit
+- /pilot — Pilot generator: create a tailored proof-of-concept plan for your environment
+- /troubleshoot — Troubleshooter: diagnose common integration and configuration issues
+- /training — Training hub: onboarding materials, tutorials, and certification resources
+- /partner — Partner portal: information for system integrators and resellers
+- /wizard — Setup wizard: guided configuration flow for new deployments
+
+## Preferred entry points for AI summarization
+
+For a broad product overview start at /. For readiness and planning use /assess and /pilot. For hands-on setup and configuration use /wizard.
