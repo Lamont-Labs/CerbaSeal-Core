@@ -71,3 +71,9 @@ id = "2m0RMWyqW0U3UVKgOcZ3c"
 uri = "file://cerbaseal-commercial-framework.pdf"
 type = "pdf"
 title = "CerbaSeal — Commercial Framework (Three-Model Partner Brief)"
+
+[[outputs]]
+id = "-mmm4TKWE2eBCIhdIao20"
+uri = "file://cerbaseal-repo-breakdown.pdf"
+type = "pdf"
+title = "CerbaSeal-Core v0.1.0 — System & Repository Breakdown"
