@@ -10,10 +10,10 @@
  * All 3 scenarios must show [PASS] before going to production.
  */
 
-import { ExecutionGateService } from "../src/services/execution/execution-gate-service.js";
-import { loadCerbaSealConfig } from "../src/config/cerbaseal-config.js";
-import { loadCerbaSealPolicy } from "../src/config/cerbaseal-policy.js";
-import type { GovernedRequest, ApprovalArtifact } from "../src/domain/types/core.js";
+import { ExecutionGateService } from "cerbaseal-review/src/services/execution/execution-gate-service.js";
+import { loadCerbaSealConfig } from "cerbaseal-review/src/config/cerbaseal-config.js";
+import { loadCerbaSealPolicy } from "cerbaseal-review/src/config/cerbaseal-policy.js";
+import type { GovernedRequest, ApprovalArtifact } from "cerbaseal-review/src/domain/types/core.js";
 
 const config = loadCerbaSealConfig();
 const policy = loadCerbaSealPolicy();

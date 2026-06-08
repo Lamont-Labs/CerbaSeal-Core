@@ -10,6 +10,8 @@ A minimal, self-contained deployment template. Follow the 5 steps below to go fr
 - pnpm installed (`npm install -g pnpm`)
 - CerbaSeal-Core source (this repo)
 
+> **Dependency model:** `deployment-starter/package.json` declares `"cerbaseal-review": "file:../"` — a file reference to the CerbaSeal-Core root package. This is the standard pre-npm-publish package reference. Running `pnpm install` inside `deployment-starter/` creates a `node_modules/cerbaseal-review` symlink pointing to the repo root, which is what the import statements resolve through. When CerbaSeal is published to npm (future), the reference changes from `file:../` to the npm package name — no other code changes required.
+
 ---
 
 ## 5-Step Setup

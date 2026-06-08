@@ -2,13 +2,14 @@
   "name": "cerbaseal-deployment-starter",
   "version": "0.1.0",
   "private": true,
-  "description": "Minimal CerbaSeal deployment template. Copy to your project directory.",
+  "description": "Minimal CerbaSeal deployment template. Run from the CerbaSeal-Core root directory.",
   "type": "module",
   "scripts": {
     "start": "tsx index.ts",
     "verify": "tsx verify.ts"
   },
   "dependencies": {
+    "cerbaseal-review": "file:../",
     "tsx": "^4.21.0"
   }
 }
