@@ -83,3 +83,9 @@ id = "r1YfsOvC3S6g7DyXkExpC"
 uri = "file://cerbaseal-system-reference.pdf"
 type = "pdf"
 title = "CerbaSeal-Core v0.1.0 — System Architecture & Technical Reference (v2)"
+
+[[outputs]]
+id = "-EAenD4NBi9FOZiSGG6Yl"
+uri = "file://docs/reports/cerbaseal-pricing-commercialization-source-data.pdf"
+type = "pdf"
+title = "CerbaSeal — Pricing & Commercialization Source Data"
