@@ -211,6 +211,16 @@ describe("ExecutionGateService — policy approval chains", () => {
     const req = buildValidGovernedRequest();
     req.workflowClass = "transaction_escalation";
     req.approvalRequired = false;  // policy drives the requirement, not the caller flag
+    // Approver must be in the configured chain — use "analyst" which is in ["analyst", "manager"]
+    req.approvalArtifact = {
+      approvalId: "approval_chain_allow",
+      approverId: "analyst_001",
+      forRequestId: req.requestId,
+      approverAuthorityClass: "analyst",
+      privilegedAuthSatisfied: true,
+      immutableSignature: "sig_chain_allow",
+      approvedAt: "2026-04-18T00:01:00.000Z"
+    };
 
     const result = gate.evaluate(req);
     expect(result.decisionEnvelope.finalState).toBe("ALLOW");
@@ -311,6 +321,108 @@ describe("ExecutionGateService — policy action policies", () => {
 
     // fraud_triage with escalate is NOT blocked by this policy
     const req = buildValidGovernedRequest();
+    const result = gate.evaluate(req);
+    expect(result.decisionEnvelope.finalState).toBe("ALLOW");
+  });
+});
+
+// ── ExecutionGateService with policy — approval chain authority enforcement ───
+
+describe("ExecutionGateService — policy approval chain authority enforcement", () => {
+  it("REJECTs when approver is not in the configured chain (chain mismatch)", () => {
+    const policy: CerbaSealPolicy = {
+      approvalChains: {
+        "transaction_escalation": ["manager", "compliance_officer"]
+      }
+    };
+    const gate = new ExecutionGateService({}, policy);
+
+    const req = buildValidGovernedRequest();
+    req.workflowClass = "transaction_escalation";
+    req.approvalRequired = true;
+    // Approver is "reviewer" — not in chain ["manager", "compliance_officer"]
+    req.approvalArtifact = {
+      approvalId: "approval_chain_test",
+      approverId: "reviewer_001",
+      forRequestId: req.requestId,
+      approverAuthorityClass: "reviewer",
+      privilegedAuthSatisfied: true,
+      immutableSignature: "sig_chain_test",
+      approvedAt: "2026-04-18T00:01:00.000Z"
+    };
+
+    const result = gate.evaluate(req);
+    expect(result.decisionEnvelope.finalState).toBe("REJECT");
+    expect(result.decisionEnvelope.trace.reasonCodes).toContain("INVALID_APPROVAL_AUTHORITY");
+  });
+
+  it("ALLOWs when approver is in the configured chain (chain match)", () => {
+    const policy: CerbaSealPolicy = {
+      approvalChains: {
+        "transaction_escalation": ["manager", "compliance_officer"]
+      }
+    };
+    const gate = new ExecutionGateService({}, policy);
+
+    const req = buildValidGovernedRequest();
+    req.workflowClass = "transaction_escalation";
+    req.approvalRequired = true;
+    // Approver is "manager" — in chain ["manager", "compliance_officer"]
+    req.approvalArtifact = {
+      approvalId: "approval_chain_test",
+      approverId: "manager_001",
+      forRequestId: req.requestId,
+      approverAuthorityClass: "manager",
+      privilegedAuthSatisfied: true,
+      immutableSignature: "sig_chain_match",
+      approvedAt: "2026-04-18T00:01:00.000Z"
+    };
+
+    const result = gate.evaluate(req);
+    expect(result.decisionEnvelope.finalState).toBe("ALLOW");
+    expect(result.releaseAuthorization).not.toBeNull();
+  });
+
+  it("policy-forced HOLD sets humanApprovalRequired=true in the decision envelope", () => {
+    const policy: CerbaSealPolicy = {
+      approvalChains: {
+        "transaction_escalation": ["manager"]
+      }
+    };
+    const gate = new ExecutionGateService({}, policy);
+
+    const req = buildValidGovernedRequest();
+    req.workflowClass = "transaction_escalation";
+    req.approvalRequired = false;   // caller did NOT set this — policy drives it
+    req.approvalArtifact = null;    // no artifact → should HOLD
+
+    const result = gate.evaluate(req);
+    expect(result.decisionEnvelope.finalState).toBe("HOLD");
+    // Envelope must reflect the policy-enforced approval requirement
+    expect(result.decisionEnvelope.humanApprovalRequired).toBe(true);
+  });
+
+  it("does not restrict approver class when workflow has no approval chain configured", () => {
+    const policy: CerbaSealPolicy = {
+      approvalChains: {
+        "account_hold_recommendation": ["compliance_officer"]
+      }
+    };
+    const gate = new ExecutionGateService({}, policy);
+
+    const req = buildValidGovernedRequest();
+    req.workflowClass = "transaction_escalation";  // no chain configured for this
+    req.approvalRequired = true;
+    req.approvalArtifact = {
+      approvalId: "approval_no_chain",
+      approverId: "reviewer_001",
+      forRequestId: req.requestId,
+      approverAuthorityClass: "reviewer",  // any valid class passes when no chain
+      privilegedAuthSatisfied: true,
+      immutableSignature: "sig_no_chain",
+      approvedAt: "2026-04-18T00:01:00.000Z"
+    };
+
     const result = gate.evaluate(req);
     expect(result.decisionEnvelope.finalState).toBe("ALLOW");
   });

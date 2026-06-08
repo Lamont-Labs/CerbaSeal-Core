@@ -63,7 +63,7 @@
 
 - [ ] Clone or receive CerbaSeal-Core source
 - [ ] `pnpm install` — install dependencies
-- [ ] `pnpm test` — confirm 415/415 tests pass
+- [ ] `pnpm test` — confirm 419/419 tests pass
 - [ ] `pnpm audit:repo` — confirm 16/16 audit checks pass
 - [ ] Create `cerbaseal.config.json` with client-specific authority classes and workflow classes (from Phase 2)
 - [ ] Configure audit log path: set `CERBASEAL_AUDIT_LOG_PATH` environment variable

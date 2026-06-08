@@ -186,7 +186,7 @@ See [Support Boundaries](client-adoption/support-boundaries.md) for what each ti
 # Install dependencies
 pnpm install
 
-# Run all tests (415 tests, must all pass)
+# Run all tests (419 tests, must all pass)
 pnpm test
 
 # Run repo audit (15 checks)

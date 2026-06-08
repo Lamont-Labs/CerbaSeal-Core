@@ -503,6 +503,10 @@ export class ExecutionGateService {
   evaluate(request: GovernedRequest): GateResult {
     const checkedInvariants: InvariantCode[] = [];
 
+    // Hoisted outside try so the catch block always reflects the most recent
+    // policy-resolved state (accurate humanApprovalRequired in error envelopes).
+    let effectiveRequest: GovernedRequest = request;
+
     try {
       assertRequestShape(request, checkedInvariants);
 
@@ -556,7 +560,7 @@ export class ExecutionGateService {
       const policyApprovalRequired =
         this.isPolicyApprovalRequired(resolvedRequest.workflowClass) ||
         actionBehaviour === "requires_approval";
-      const effectiveRequest: GovernedRequest =
+      effectiveRequest =
         policyApprovalRequired && !resolvedRequest.approvalRequired
           ? { ...resolvedRequest, approvalRequired: true }
           : resolvedRequest;
@@ -569,6 +573,26 @@ export class ExecutionGateService {
       assertControlStatus(effectiveRequest, checkedInvariants);
       assertTrustState(effectiveRequest, checkedInvariants);
       assertApprovalState(effectiveRequest, checkedInvariants);
+
+      // ── Policy stage 4: approval chain authority enforcement ──────────────
+      // When a policy declares a specific approval chain for this workflow, the
+      // approver's authority class must be one of the classes listed in that chain.
+      // This is additive to the core authority class check in assertApprovalState —
+      // it narrows the valid set to only those the policy explicitly authorises.
+      // Only runs when an approval artifact is present (assertApprovalState already
+      // handled the absent-artifact HOLD case above).
+      const approvalChain = this.getApprovalChains(effectiveRequest.workflowClass);
+      if (approvalChain.length > 0 && effectiveRequest.approvalArtifact !== null) {
+        checkedInvariants.push(INVARIANTS.NO_REQUIRED_APPROVAL_NO_RELEASE);
+        if (!approvalChain.includes(effectiveRequest.approvalArtifact.approverAuthorityClass)) {
+          throw new CerbaSealError({
+            message: `Approver class "${effectiveRequest.approvalArtifact.approverAuthorityClass}" is not in the configured approval chain for workflow "${effectiveRequest.workflowClass}" — chain requires: ${approvalChain.join(", ")}`,
+            invariant: INVARIANTS.NO_REQUIRED_APPROVAL_NO_RELEASE,
+            reasonCode: REASON_CODES.INVALID_APPROVAL_AUTHORITY,
+            finalState: "REJECT"
+          });
+        }
+      }
 
       checkedInvariants.push(INVARIANTS.IMMUTABLE_DECISION_ENVELOPE);
 
@@ -613,14 +637,14 @@ export class ExecutionGateService {
             REASON_CODES.DECISION_REJECTED
           ];
           const decisionEnvelope = buildDecisionEnvelope({
-            request,
+            request: effectiveRequest,
             finalState: "REJECT",
             reasonCodes: fallbackReasonCodes,
             checkedInvariants,
             permittedActionClass: null
           });
           const blockedActionRecord = buildBlockedActionRecord({
-            request,
+            request: effectiveRequest,
             finalState: "REJECT",
             reasonCodes: fallbackReasonCodes,
             checkedInvariants
@@ -647,7 +671,7 @@ export class ExecutionGateService {
       ];
 
       const decisionEnvelope = buildDecisionEnvelope({
-        request,
+        request: effectiveRequest,
         finalState: error.finalState,
         reasonCodes,
         checkedInvariants,
@@ -655,7 +679,7 @@ export class ExecutionGateService {
       });
 
       const blockedActionRecord = buildBlockedActionRecord({
-        request,
+        request: effectiveRequest,
         finalState: error.finalState,
         reasonCodes,
         checkedInvariants

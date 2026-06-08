@@ -312,7 +312,7 @@ function cover(): void {
   // Stat boxes
   doc.y = 222;
   statBoxes([
-    { label: "TEST SUITE", value: "415/415", sub: "16 test files · zero regressions", color: C.green },
+    { label: "TEST SUITE", value: "419/419", sub: "16 test files · zero regressions", color: C.green },
     { label: "REPO AUDIT", value: "15/15", sub: "all checks passing", color: C.green },
     { label: "INVARIANTS", value: "INV-01→12", sub: "100% test coverage", color: C.accent },
     { label: "IMPORT BOUNDS", value: "0 violations", sub: "79 files scanned", color: C.green },
@@ -334,7 +334,7 @@ function cover(): void {
     ["6", "Authority Class System & Runtime Config"],
     ["7", "Audit & Evidence Pipeline"],
     ["8", "Supporting Services"],
-    ["9", "Test Suite — 16 Files, 415 Tests"],
+    ["9", "Test Suite — 16 Files, 419 Tests"],
     ["10", "Repo Audit — 15 Checks Explained"],
     ["11", "CLI Scripts & Commands"],
     ["12", "Integration Starter Kits (×4)"],
@@ -417,7 +417,7 @@ function sec1(): void {
     [
       ["Runtime", "Node.js 18+", "ESM module system (\"type\": \"module\" in package.json)"],
       ["Language", "TypeScript 5.6", "Strict mode, target ES2022, module NodeNext"],
-      ["Test runner", "Vitest 2.1", "415 tests, 16 files, avg 7.7s full run"],
+      ["Test runner", "Vitest 2.1", "419 tests, 16 files, avg 7.7s full run"],
       ["Script runner", "tsx 4.21", "Direct TypeScript execution without a compile step"],
       ["PDF generation", "pdfkit 0.18", "devDependency — used only for report generation"],
       ["Package manager", "pnpm workspace", "Monorepo with cerbaseal-demo React/Vite artifact"],
@@ -1093,7 +1093,7 @@ function sec8(): void {
 // SECTION 9 — Test Suite
 // ═══════════════════════════════════════════════════════════════════════════
 function sec9(): void {
-  sectionBar("9", "Test Suite — 16 Files, 415 Tests");
+  sectionBar("9", "Test Suite — 16 Files, 419 Tests");
 
   para(
     "All tests run with Vitest 2.1. Full suite completes in ~7.7 seconds. " +
@@ -1127,7 +1127,7 @@ function sec9(): void {
 
   h2("Test Commands");
   code([
-    "pnpm test              # run all 415 tests once (~7.7s)",
+    "pnpm test              # run all 419 tests once (~7.7s)",
     "pnpm test:watch        # watch mode — re-runs on file changes",
     "pnpm check:invariants  # verify 12/12 invariants have covering tests",
     "pnpm audit:repo        # run all 15 repo audit checks (includes test count verification)",
@@ -1152,14 +1152,14 @@ function sec10(): void {
   table(
     ["#", "Check Name", "What It Verifies"],
     [
-      ["1", "Full test suite passes", "Runs pnpm test — expects all 415 tests to pass with zero failures"],
+      ["1", "Full test suite passes", "Runs pnpm test — expects all 419 tests to pass with zero failures"],
       ["2", "TypeScript compiles without errors", "Runs tsc --noEmit — expects zero type errors across all source files"],
       ["3", "README anchor strings present", "Checks for 4 required anchor strings in README.md"],
       ["4", "All portal routes respond 200", "Starts the browser-demo HTTP server, requests all 9 routes, expects HTTP 200 on each"],
       ["5", "No src/ file unreferenced in tests or examples", "Every .ts file under src/ must appear in at least one test or example file"],
       ["6", "Invariant registry non-empty", "Loads src/domain/constants/invariants.ts — verifies 12 invariants are defined"],
       ["7", "Known-limitations section in README", "README.md must contain a '## Known Limitations' heading"],
-      ["8", "Test count in README matches actual", "The '415 tests' claim in README must match the actual Vitest run count"],
+      ["8", "Test count in README matches actual", "The '419 tests' claim in README must match the actual Vitest run count"],
       ["9", "demo:web:validate passes", "Runs examples/browser-demo/validate-demo.ts — all browser demo assertions pass"],
       ["10", "demo:support:validate passes", "Runs examples/support-readiness/validate-support-readiness.ts — 13 assertions pass"],
       ["11", "review:validate passes", "Runs examples/browser-demo/validate-review-portal.ts — 110 assertions pass"],
@@ -1206,7 +1206,7 @@ function sec11(): void {
   table(
     ["Script", "Entry File", "Purpose"],
     [
-      ["pnpm test", "vitest", "Run all 415 tests"],
+      ["pnpm test", "vitest", "Run all 419 tests"],
       ["pnpm test:watch", "vitest", "Watch mode — re-runs on file changes"],
       ["pnpm typecheck", "tsc --noEmit", "TypeScript type check without emitting JS"],
       ["pnpm demo", "examples/run-demo.ts", "Console demo of all gate scenarios"],
@@ -1517,7 +1517,7 @@ function sec15(): void {
     { type: "file", path: "  cerbaseal.config.json", desc: "Runtime authority/workflow/action class registry with core and extended arrays" },
     { type: "file", path: "  vitest.config.ts", desc: "Vitest configuration — include: test/**/*.test.ts" },
     { type: "file", path: "  .gitignore", desc: "Excludes: wizard-input.json, pilot-config/, evidence-package/, audit/, dist/, .env" },
-    { type: "file", path: "  README.md", desc: "Full public README with system overview, adoption layer section, 415 test count" },
+    { type: "file", path: "  README.md", desc: "Full public README with system overview, adoption layer section, 419 test count" },
     { type: "file", path: "  CERBASEAL_PILOT_READINESS_BINDER.md", desc: "Pilot readiness binder for client delivery" },
     { type: "gap", path: "", desc: "" },
 

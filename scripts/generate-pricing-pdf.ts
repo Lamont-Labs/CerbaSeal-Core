@@ -645,7 +645,7 @@ function sec4(): void {
   table(
     ["Proof Area", "Current Status"],
     [
-      ["Test suite", "415/415 passing tests · 16 test files · zero regressions"],
+      ["Test suite", "419/419 passing tests · 16 test files · zero regressions"],
       ["Repo audit", "15/15 checks passing"],
       ["Invariants", "12 invariants (INV-01→INV-12) · 100% test coverage verified"],
       ["Import boundaries", "0 violations · 79 files scanned"],

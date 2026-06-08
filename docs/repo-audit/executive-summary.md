@@ -15,7 +15,7 @@ The audit does not add features. It measures the gap between what the product ca
 
 ## Overall Assessment
 
-CerbaSeal's enforcement core is production-grade: 415 tests passing, adversarial-validated, cryptographically chained, fully deterministic. The technical product is not the problem.
+CerbaSeal's enforcement core is production-grade: 419 tests passing, adversarial-validated, cryptographically chained, fully deterministic. The technical product is not the problem.
 
 **The problem is operationalization.** The repository contains 100+ documents, but a new client cannot find the one they need. A partner cannot deliver a pilot without Jesse. The founder is the deployment mechanism.
 
@@ -81,7 +81,7 @@ Deployment instructions are split across 8+ documents. A partner in a Mode C dep
 
 ### Risk 2: No integration health check for clients
 
-The enforcement engine validates itself (415 tests). Clients cannot run a "is my policy pack connected correctly?" check without Jesse's involvement.
+The enforcement engine validates itself (419 tests). Clients cannot run a "is my policy pack connected correctly?" check without Jesse's involvement.
 
 ### Risk 3: EU compliance mapping not in evidence bundle
 

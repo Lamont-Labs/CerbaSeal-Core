@@ -116,7 +116,7 @@ Each capability is scored 0–100.
 ### Score: **60 / 100**
 
 **What works:**
-- Test suite passes 415 tests covering all invariants
+- Test suite passes 419 tests covering all invariants
 - `scripts/verify-proof.ts` validates proof bundle integrity
 - `scripts/check-invariant-coverage.ts` verifies invariant test coverage
 - `scripts/export-proof.ts` produces a signed proof bundle

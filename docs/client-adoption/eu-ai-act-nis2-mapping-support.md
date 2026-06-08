@@ -119,7 +119,7 @@ CerbaSeal's enforcement decisions are deterministic and replayable. The reason c
 Providers of high-risk AI systems must put in place a quality management system to ensure compliance with the Regulation.
 
 **Where CerbaSeal contributes:**  
-CerbaSeal's self-auditing infrastructure (16/16 audit checks, 415 tests, proof snapshot with stable checksum) supports quality management documentation by:
+CerbaSeal's self-auditing infrastructure (16/16 audit checks, 419 tests, proof snapshot with stable checksum) supports quality management documentation by:
 - Providing verifiable evidence that the enforcement system is in a known state
 - Enabling testing of enforcement behavior against defined scenarios
 - Supporting version control and change management for the enforcement core

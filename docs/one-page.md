@@ -94,7 +94,7 @@ Current enforcement state (stable across runs on this commit):
 stableChecksum: 7695187faf66906d868c5c4764fd6068e7ddbe0b1f69933e47a85d67c0d08ec0
 ```
 
-- 415 / 415 tests passing (17 test files)
+- 419 / 419 tests passing (17 test files)
 - 15 / 15 audit checks passing
 - 12 / 12 invariants covered and linked to tests
 - Adversarial integrity audit complete

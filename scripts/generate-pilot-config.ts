@@ -179,7 +179,7 @@ function generateChecklist(input: WizardInput): string {
 - [ ] pnpm installed
 - [ ] CerbaSeal-Core source received and extracted
 - [ ] \`pnpm install\` — dependencies installed
-- [ ] \`pnpm test\` — all tests passing (expect 415/415)
+- [ ] \`pnpm test\` — all tests passing (expect 419/419)
 - [ ] \`pnpm audit:repo\` — all audit checks passing (expect 15/15)
 - [ ] \`pnpm export:proof\` — stableChecksum confirmed
 
@@ -488,7 +488,7 @@ Before deployment, all of the following must be true:
 - [ ] Node.js 18+ installed
 - [ ] pnpm installed  
 - [ ] \`pnpm install\` completed
-- [ ] \`pnpm test\` — 415/415 passing
+- [ ] \`pnpm test\` — 419/419 passing
 - [ ] \`pnpm audit:repo\` — 15/15 passing
 - [ ] \`cerbaseal.config.json\` created with workflow and authority class configuration
 - [ ] Audit log directory exists and is writable at: \`${input.evidence.auditLogPath}\`
