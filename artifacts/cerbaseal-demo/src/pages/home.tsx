@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { Shield, ClipboardCheck, Rocket, Wrench, BookOpen, Users, ArrowRight, CheckCircle, Clock, TrendingDown } from "lucide-react";
+import { Shield, ClipboardCheck, Rocket, Wrench, BookOpen, Users, Wand2, ArrowRight, CheckCircle, Clock, TrendingDown } from "lucide-react";
 
 const tools = [
   {
@@ -56,6 +56,17 @@ const tools = [
     desc: "Everything a consulting partner needs to deliver CerbaSeal pilots independently. Includes the channel model, certification path, deployment resources, support boundaries, and pricing structure.",
     cta: "Open partner kit →",
     time: "Reference",
+  },
+  {
+    href: "/wizard",
+    icon: Wand2,
+    color: "text-violet-400",
+    bg: "bg-violet-950",
+    border: "border-violet-800",
+    title: "Workflow Mapping Wizard",
+    desc: "Map your workflow to CerbaSeal in 6 guided steps. Define actions, AI role, human approvers, and deployment mode — then download a ready-to-deploy configuration package. No founder involvement required.",
+    cta: "Start wizard →",
+    time: "30–60 min",
   },
 ];
 

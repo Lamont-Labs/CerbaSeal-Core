@@ -8,6 +8,7 @@ const links = [
   { href: "/troubleshoot", label: "Troubleshooter" },
   { href: "/training", label: "Training" },
   { href: "/partner", label: "Partner Kit" },
+  { href: "/wizard", label: "Wizard" },
 ];
 
 export function Nav() {

@@ -9,6 +9,7 @@ import PilotGenerator from "@/pages/pilot-generator";
 import Troubleshooter from "@/pages/troubleshooter";
 import Training from "@/pages/training";
 import Partner from "@/pages/partner";
+import Wizard from "@/pages/wizard";
 import NotFound from "@/pages/not-found";
 
 const queryClient = new QueryClient();
@@ -24,6 +25,7 @@ function Router() {
         <Route path="/troubleshoot" component={Troubleshooter} />
         <Route path="/training" component={Training} />
         <Route path="/partner" component={Partner} />
+        <Route path="/wizard" component={Wizard} />
         <Route component={NotFound} />
       </Switch>
     </div>
