@@ -4,8 +4,8 @@ const certLevels = [
   {
     level: "L1", title: "Deployment Certified", color: "text-blue-400", bg: "bg-blue-950", border: "border-blue-800",
     desc: "Can deploy CerbaSeal into a client environment independently.",
-    skills: ["Set up Node.js environment and dependencies", "Configure cerbaseal.config.json for client authority classes", "Configure FileBackedAppendOnlyLogService with durable log path", "Run pnpm audit:repo and confirm all 15 checks pass", "Verify all routes and scenarios using validation scripts"],
-    assessment: "Deploy into a clean environment and pass all 15 audit checks independently.",
+    skills: ["Set up Node.js environment and dependencies", "Configure cerbaseal.config.json for client authority classes", "Configure FileBackedAppendOnlyLogService with durable log path", "Run pnpm audit:repo and confirm all 16 checks pass", "Verify all routes and scenarios using validation scripts"],
+    assessment: "Deploy into a clean environment and pass all 16 audit checks independently.",
     time: "4 hours",
   },
   {
@@ -77,6 +77,8 @@ const resources = [
   { title: "Partner Readiness Scorecard (Jun 2026)", path: "docs/repo-audit/partner-readiness-scorecard.md", desc: "Current partner readiness scored 0–100 across 6 categories. Identifies the critical path to independent delivery." },
   { title: "Founder Dependency Audit (Jun 2026)", path: "docs/repo-audit/founder-dependency-audit.md", desc: "Every workflow where Jesse is required today, with AUTOMATE / DOCUMENT / WIZARD recommendations and priority scores." },
   { title: "Repository Audit — Executive Summary", path: "docs/repo-audit/executive-summary.md", desc: "Top risks, quick wins, strategic priorities, and founder-hours reduction roadmap from the June 2026 full audit." },
+  { title: "Deployment Starter", path: "deployment-starter/", desc: "Minimal, self-contained deployment template. 6 files: entry point, config templates, verify.ts. Copy to your project and run in minutes." },
+  { title: "Quickstart Operator Guide", path: "docs/deployment/quickstart-operator-guide.md", desc: "5-step deployment guide: install, run pnpm setup, review config, audit, verify. Includes what a passing result looks like at each step." },
 ];
 
 const agreementItems = [

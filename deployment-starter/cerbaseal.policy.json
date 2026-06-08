@@ -1,0 +1,27 @@
+{
+  "_schema": "cerbaseal-policy/v1",
+  "_comment": "CerbaSeal policy template. All sections are optional — omit any section you do not need. See docs/client-adoption/policy-pack-authoring-guide.md.",
+
+  "actorMappings": {
+    "_comment": "Map your organization's role names to CerbaSeal authority classes. Keys are your role names, values must be a valid authority class.",
+    "Senior Fraud Analyst": "analyst",
+    "Compliance Lead": "compliance_officer",
+    "Operations Manager": "manager"
+  },
+
+  "approvalChains": {
+    "_comment": "Per-workflow list of authority classes that are permitted to approve. Requests from classes not in this list will REJECT.",
+    "your_workflow_class": ["analyst", "compliance_officer"]
+  },
+
+  "actionPolicies": {
+    "_comment": "Per-workflow action behaviour. Values: requires_approval | auto_allow | blocked",
+    "your_workflow_class": {
+      "escalate": "requires_approval",
+      "account_hold": "requires_approval",
+      "allow": "auto_allow",
+      "hold": "auto_allow",
+      "reject": "auto_allow"
+    }
+  }
+}
