@@ -93,8 +93,9 @@ const resources = [
   { title: "Partner Readiness Scorecard (Jun 2026)", path: "docs/repo-audit/partner-readiness-scorecard.md", desc: "Current partner readiness scored 0–100 across 6 categories. Identifies the critical path to independent delivery." },
   { title: "Founder Dependency Audit (Jun 2026)", path: "docs/repo-audit/founder-dependency-audit.md", desc: "Every workflow where Jesse is required today, with AUTOMATE / DOCUMENT / WIZARD recommendations and priority scores." },
   { title: "Repository Audit — Executive Summary", path: "docs/repo-audit/executive-summary.md", desc: "Top risks, quick wins, strategic priorities, and founder-hours reduction roadmap from the June 2026 full audit." },
-  { title: "Deployment Starter", path: "deployment-starter/", desc: "Minimal, self-contained deployment template. 6 files: entry point, config templates, verify.ts. Copy to your project and run in minutes." },
-  { title: "Quickstart Operator Guide", path: "docs/deployment/quickstart-operator-guide.md", desc: "5-step deployment guide: install, run pnpm setup, review config, audit, verify. Includes what a passing result looks like at each step." },
+  { title: "Deployment Starter", path: "deployment-starter/", desc: "Minimal, self-contained deployment template. Dockerfile, docker-compose.yml, .env.template, HTTP server with /evaluate and /health." },
+  { title: "Docker Quickstart", path: "deployment-starter/docker-compose.yml", desc: "One command: docker compose up. Mounts ./data for audit log, exposes port 3000, includes healthcheck. No Node.js tooling required on client machine." },
+  { title: "Quickstart Operator Guide", path: "docs/deployment/quickstart-operator-guide.md", desc: "Deployment guide with two paths: Docker (Option A) and Node.js direct (Option B). Covers audit, verification, and next steps." },
 ];
 
 const agreementItems = [

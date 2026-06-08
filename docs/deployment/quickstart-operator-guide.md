@@ -45,7 +45,36 @@ If either fails, do not proceed. Check Node.js version (`node --version` — mus
 
 ---
 
-## Step 2 — Run `pnpm setup`
+## Step 2 — Configure and start the gate
+
+Two options. Choose one.
+
+### Option A — Docker (no Node.js tooling required)
+
+If the client machine has Docker and Docker Compose but no Node.js toolchain, use Docker Compose:
+
+```bash
+cp deployment-starter/.env.template deployment-starter/.env
+# Edit deployment-starter/.env — set CERBASEAL_ENV=production
+docker compose -f deployment-starter/docker-compose.yml up
+```
+
+Confirm the gate is running:
+
+```bash
+curl http://localhost:3000/health
+# Expected: { "status": "ok", "gateReady": true, "auditChainValid": true, ... }
+```
+
+The Docker path skips Steps 3–5 below. The container handles configuration via `.env` and the baked-in `cerbaseal.policy.json`. Audit logs are persisted at `deployment-starter/data/audit.jsonl` on the host.
+
+For custom policy: edit `deployment-starter/cerbaseal.policy.json` before building, or mount a policy file via the compose volume config.
+
+See `deployment-starter/README.md` for Docker details.
+
+### Option B — Node.js direct (full wizard)
+
+**Prerequisites:** Node.js 18+, pnpm. Then:
 
 ```bash
 pnpm setup
