@@ -16,9 +16,9 @@
   <meta name="twitter:description" content="CerbaSeal is a deterministic execution enforcement spine for AI-assisted systems. It returns ALLOW, HOLD, or REJECT with hash-linked evidence." />
   <meta name="twitter:image" content="https://cerbaseal.replit.app/assets/cerbaseal-logo-primary.png" />
   <link rel="icon" href="/assets/cerbaseal-favicon.png" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="preload" href="/assets/fonts/inter-34.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/assets/fonts/jetbrains-mono-23.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="/assets/fonts/fonts.css" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -97,7 +97,7 @@
     }
     .hero-bg {
       position: absolute; inset: 0; z-index: 0;
-      background-image: url('/assets/hero-system.png');
+      background-image: url('/assets/hero-system.webp');
       background-size: cover; background-position: center;
       opacity: 0.40;
       pointer-events: none;
@@ -568,7 +568,7 @@
   <div class="nav-shell">
     <nav>
       <a href="/" class="brand">
-        <img src="/assets/cerbaseal-logo-mark.png" class="brand-logo-img" alt="CerbaSeal" />
+        <img src="/assets/cerbaseal-logo-mark.webp" class="brand-logo-img" alt="CerbaSeal" />
         <span class="brand-name">CerbaSeal</span>
       </a>
       <div class="nav-links">
@@ -593,10 +593,10 @@
 
       <!-- Logo gate with per-head highlight layers -->
       <div class="logo-gate" id="logo-gate">
-        <img class="logo-base" src="/assets/cerbaseal-logo-primary.png" alt="CerbaSeal three-headed guardian mark" />
-        <img class="logo-layer layer-reject" id="layer-reject" src="/assets/cerbaseal-logo-primary.png" alt="" aria-hidden="true" />
-        <img class="logo-layer layer-hold"   id="layer-hold"   src="/assets/cerbaseal-logo-primary.png" alt="" aria-hidden="true" />
-        <img class="logo-layer layer-allow"  id="layer-allow"  src="/assets/cerbaseal-logo-primary.png" alt="" aria-hidden="true" />
+        <img class="logo-base" src="/assets/cerbaseal-logo-primary-hero.webp" alt="CerbaSeal three-headed guardian mark" />
+        <img class="logo-layer layer-reject" id="layer-reject" src="/assets/cerbaseal-logo-primary-hero.webp" alt="" aria-hidden="true" />
+        <img class="logo-layer layer-hold"   id="layer-hold"   src="/assets/cerbaseal-logo-primary-hero.webp" alt="" aria-hidden="true" />
+        <img class="logo-layer layer-allow"  id="layer-allow"  src="/assets/cerbaseal-logo-primary-hero.webp" alt="" aria-hidden="true" />
       </div>
 
       <h1 class="wordmark">CERBASEAL</h1>
@@ -888,7 +888,7 @@
       <div class="footer-grid">
         <div class="footer-brand">
           <a href="/" class="brand">
-            <img src="/assets/cerbaseal-logo-mark.png" class="brand-logo-img" style="width:22px;height:22px;" alt="CerbaSeal" />
+            <img src="/assets/cerbaseal-logo-mark.webp" class="brand-logo-img" style="width:22px;height:22px;" alt="CerbaSeal" />
             <span class="brand-name">CerbaSeal</span>
           </a>
           <div class="footer-tag">
