@@ -63,14 +63,19 @@ const channelModel = [
 ];
 
 const resources = [
+  { title: "Integration Guide", path: "examples/INTEGRATION-GUIDE.md", desc: "Decision tree: match your architecture to the right starter kit. Covers synchronous API, async queue, webhook, middleware, and audit consumer patterns." },
   { title: "Integration Starter Kit — REST API", path: "examples/rest-api-starter/", desc: "HTTP wrapper exposing the gate as API endpoints. Includes sample-request.json for testing." },
   { title: "Integration Starter Kit — Financial Approval", path: "examples/financial-approval-starter/", desc: "HOLD → human review → ALLOW lifecycle. Demonstrates the full approval loop." },
   { title: "Integration Starter Kit — Fraud Workflow", path: "examples/fraud-workflow-starter/", desc: "Risk-scored triage with FileBackedAppendOnlyLogService. Persistent JSONL audit log." },
   { title: "Integration Starter Kit — Agent Integration", path: "examples/agent-integration-starter/", desc: "Correct AI agent pattern: AI proposes, system actor submits. Includes wrong-pattern demo." },
+  { title: "Integration Starter Kit — Webhook Adapter", path: "examples/webhook-adapter/", desc: "CerbaSeal as a webhook receiver. POST /event → gate → POST to callback URL. Shows async approval loop via webhook." },
+  { title: "Integration Starter Kit — Express Middleware", path: "examples/express-middleware/", desc: "Drop-in cerbaSealGate() middleware for Express.js. ALLOW → next(), REJECT → 403, HOLD → 202 with hold reference." },
+  { title: "Integration Starter Kit — Async Queue", path: "examples/async-queue/", desc: "In-memory JobQueue: AI proposes → gate holds → reviewer approves → job released. Replace internals with any queue backend." },
+  { title: "Integration Starter Kit — Audit Export", path: "examples/audit-export/", desc: "Reads a JSONL audit log from FileBackedAppendOnlyLogService. Verifies chain integrity and exports a formatted evidence summary." },
   { title: "Workflow Config Generator", path: "pnpm generate:pilot-config", desc: "Client fills wizard-input.json → generates 4-file pilot config package." },
   { title: "Evidence Report Generator", path: "pnpm generate:evidence-report", desc: "Reads proof-snapshot.json → produces 3-file compliance evidence package." },
   { title: "Founder Independence Kit", path: "docs/FOUNDER-INDEPENDENCE-KIT.md", desc: "Master index: 7 adoption stages from client qualification to compliance review." },
-  { title: "Deployment Checklist", path: "docs/deployment/pilot-deployment-checklist.md", desc: "Step-by-step deployment verification. Confirmed to pass all 15 audit checks." },
+  { title: "Deployment Checklist", path: "docs/deployment/pilot-deployment-checklist.md", desc: "Step-by-step deployment verification. Confirmed to pass all 16 audit checks." },
   { title: "Troubleshooting Guide", path: "docs/client-adoption/troubleshooting-guide.md", desc: "Self-serve resolution for the most common deployment and integration issues." },
   { title: "Workflow Mapping Workbook", path: "docs/client-adoption/workflow-mapping-workbook.md", desc: "Structured workbook for mapping a client workflow to CerbaSeal enforcement points before pilot begins." },
   { title: "Pilot Delivery Audit (Jun 2026)", path: "docs/repo-audit/pilot-delivery-audit.md", desc: "Full friction analysis of every pilot step. Founder-hours by phase: current 15–29h → target 3–8h." },
