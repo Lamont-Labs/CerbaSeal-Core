@@ -316,3 +316,42 @@ Use this checklist when transferring operation to the client's technical owner:
 ---
 
 *For policy authoring detail, see `docs/client-adoption/policy-pack-authoring-guide.md`. For integration kit selection, see `examples/INTEGRATION-GUIDE.md`.*
+
+---
+
+## Appendix — Deployment and Pilot Checklist
+
+Use this checklist as the single authoritative sign-off for any deployment moving toward pilot operation. Both partner and client should be able to check every item before the pilot run begins.
+
+### Deployment Steps
+
+| Step | Checklist Item | Owner |
+|------|---------------|-------|
+| 1 | Confirm pilot workflow, actor roles, approval path, and deployment mode | Client + partner |
+| 2 | Confirm hosting environment, network controls, persistence path, and operational owner | Client |
+| 3 | Prepare `cerbaseal.config.json` and `cerbaseal.policy.json` | Partner + client review |
+| 4 | Run installation path: Docker Compose or Node.js Direct | Partner engineer |
+| 5 | Run `pnpm test` — all tests must pass | Partner engineer |
+| 6 | Run `pnpm audit:repo` — all 16 checks must pass | Partner engineer |
+| 7 | Run setup wizard or manually verify config/policy files | Partner engineer |
+| 8 | Run ALLOW, HOLD, and REJECT verification scenarios via `tsx deployment-starter/verify.ts` | Partner + client |
+| 9 | Confirm `GET /health` returns `status: "ok"` and `auditChainValid: true` | Partner engineer |
+| 10 | Run representative pilot requests against the mapped workflow | Client + partner |
+| 11 | Run `pnpm export:proof` and `pnpm verify:proof` — checksum must match | Partner |
+| 12 | Review evidence package with operational and compliance stakeholders | Client + partner |
+| 13 | Document issues, support tickets, and next-step recommendation | Partner + Lamont Labs as needed |
+
+### Partner Readiness Checklist
+
+Before leading any client deployment, confirm you can demonstrate each of the following independently:
+
+| Readiness Area | Partner Must Be Able to Demonstrate |
+|---------------|-------------------------------------|
+| Positioning | Explain CerbaSeal as governance enforcement infrastructure, not workflow software or compliance software |
+| Deployment | Stand up deployment starter and validate health without Lamont Labs intervention |
+| Configuration | Author a policy for a new workflow using actor mappings, approval chains, workflow rules, and action policies |
+| Verification | Run ALLOW, HOLD, and REJECT scenarios and interpret output |
+| Evidence | Export and verify proof package; explain evidence artifacts to a client stakeholder |
+| Support | Resolve common deployment and configuration issues using support guide before escalating |
+| Escalation discipline | Know which issues require Lamont Labs Tier 3 involvement |
+| Pilot leadership | Guide a client through discovery, mapping, deployment, verification, pilot run, evidence closeout, and handoff |

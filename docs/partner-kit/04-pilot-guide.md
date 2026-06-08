@@ -6,6 +6,24 @@
 
 ---
 
+## Commercial Framing
+
+**A CerbaSeal pilot is a guided governance validation engagement — not a free trial, not a broad consulting project, and not a production rollout.**
+
+The pilot is successful when the client and partner can show that a defined workflow can be mapped, evaluated, audited, and reviewed through CerbaSeal with clear operational responsibilities and evidence outputs.
+
+| Principle | Meaning |
+|-----------|---------|
+| One workflow first | Begin with a single high-value workflow rather than broad platform adoption |
+| Guided implementation | Partner and Lamont Labs provide structure, templates, and support rather than leaving the client to interpret the system alone |
+| Client-controlled environment | Client retains control of deployment environment, identity systems, network controls, and business operations |
+| Defined support window | Support expectations are explicit, bounded, and aligned to pilot scope |
+| Evidence-first closeout | The pilot ends with evidence package, verification output, support log, and lessons learned |
+
+**Before you run the pilot day:** Confirm the pilot is priced and scoped as a commercial engagement covering discovery, mapping, deployment, validation, evidence review, support window, and closeout. For pricing tiers and commercial model options, see [08-pricing-and-commercial-model.md](08-pricing-and-commercial-model.md).
+
+---
+
 ## Overview
 
 The CerbaSeal Express Pilot is designed to take a client from zero to a live, verified enforcement gate in a single day. By end of day, the client has:
