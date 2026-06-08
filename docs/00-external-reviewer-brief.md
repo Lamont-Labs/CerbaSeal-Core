@@ -45,7 +45,7 @@ All of these are backed by code and passing tests.
 pnpm test
 ```
 
-Expected: 419 / 419 passing, 0 failing (17 test files).
+Expected: 431 / 431 passing, 0 failing (17 test files).
 
 ## How To Run The Demo
 
@@ -101,7 +101,7 @@ The following are out of scope for this review package:
 - operator action guidance
 - system health and integrity verification
 - browser demo (live at https://cerbaseal.replit.app/)
-- 419 passing tests (17 test files)
+- 431 passing tests (17 test files)
 - external reviewer / pilot readiness portal (`/review`, `/pilot`, `/security`, `/deployment`)
 
 **Not yet implemented / requires pilot:**

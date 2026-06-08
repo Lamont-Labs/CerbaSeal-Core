@@ -104,7 +104,7 @@ Standard Docker/Node deployment can be done by a technical partner. Edge cases (
 **Current:** FOUNDER-REQUIRED (for sign-off)
 Partners can run integration tests, but Jesse signs off on results before a pilot goes live.
 
-**Gap:** No formal acceptance test document exists that a partner can administer and sign. The test suite passes 419 tests, but these are internal — no client-facing validation checklist exists.
+**Gap:** No formal acceptance test document exists that a partner can administer and sign. The test suite passes 431 tests, but these are internal — no client-facing validation checklist exists.
 
 **Recommendation:** DOCUMENT + AUTOMATE
 - Create a formal "Pilot Go/No-Go Checklist" that a partner can complete and counter-sign without Jesse. Tie it to the existing audit check results.

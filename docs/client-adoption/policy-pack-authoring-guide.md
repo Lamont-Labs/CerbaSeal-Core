@@ -73,6 +73,26 @@ Most consequential workflows — fraud decisions, financial approvals, account h
 | `account_hold_recommendation` | Yes | manager, compliance_officer |
 | `internal_audit_log` | No | — |
 
+### Option A — Simple approval toggle (`workflowRules`)
+
+Use `workflowRules` when you want a straightforward yes/no approval requirement without specifying which authority class must provide it. Any valid human authority class (analyst, reviewer, manager, compliance_officer) can satisfy the approval.
+
+```json
+"workflowRules": [
+  { "workflowClass": "transaction_fraud_review",  "requiresApproval": true },
+  { "workflowClass": "account_hold_recommendation", "requiresApproval": true },
+  { "workflowClass": "internal_audit_log",        "requiresApproval": false }
+]
+```
+
+When `requiresApproval: true` is set for a workflow, the gate will HOLD any request for that workflow that arrives without a valid approval artifact — even if the caller did not set `approvalRequired: true`. This is additive to the core invariants; it cannot override them.
+
+The `requiresApproval: false` entry is optional but explicit — it documents that a workflow intentionally has no policy-driven approval requirement.
+
+### Option B — Approval chain with authority-class control (`approvalChains`)
+
+Use `approvalChains` when you need to specify which authority classes can provide the approval. Only approvers whose class is listed in the chain will be accepted.
+
 ```json
 "approvalChains": {
   "transaction_fraud_review":       ["analyst", "manager"],
@@ -80,7 +100,11 @@ Most consequential workflows — fraud decisions, financial approvals, account h
 }
 ```
 
-Any workflow listed in `approvalChains` will HOLD (and return a `HOLD` decision) if the request arrives without a valid approval artifact. The client must then supply an approval and resubmit.
+Any workflow listed in `approvalChains` will HOLD if the request arrives without a valid approval artifact. The approver's authority class must be one of the classes in the declared chain.
+
+### Combining both
+
+`workflowRules` and `approvalChains` can be used together for the same workflow. The approval requirement from `workflowRules: true` is equivalent to listing the workflow in `approvalChains` — the most restrictive applies. Use both when you want an explicit toggle in `workflowRules` and specific authority-class control in `approvalChains`.
 
 ---
 
@@ -204,6 +228,30 @@ Check the `trace.reasonCodes` on the `decisionEnvelope`. A blocked action policy
 
 ---
 
+## Adding a New Workflow That Requires Approval
+
+If you are onboarding a new workflow and need it to require human approval, you do not need to change any TypeScript. Add an entry to `workflowRules` in `cerbaseal.policy.json`:
+
+```json
+"workflowRules": [
+  { "workflowClass": "your_new_workflow", "requiresApproval": true }
+]
+```
+
+Then restart the gate service. The new workflow will immediately require approval for every request — no code changes, no redeployment of the core.
+
+**Security floor:** The `fraud_triage` workflow is always enforced as requiring approval regardless of what `workflowRules` contains. This is a hardcoded baseline in the enforcement core that policy cannot remove or relax. Policy can add workflows to the approval-required set, but it cannot remove `fraud_triage` from it.
+
+**Practical checklist for a new workflow:**
+
+1. Add `{ "workflowClass": "your_new_workflow", "requiresApproval": true }` to `workflowRules`
+2. Optionally, add an `approvalChains` entry if you want to restrict which authority classes can approve
+3. Optionally, add an `actionPolicies` entry if you want to block or auto-allow specific actions
+4. Run `pnpm audit:repo` — check 16 should still pass
+5. Run a HOLD scenario test: submit a request for the new workflow without an approval artifact and verify the gate returns HOLD
+
+---
+
 ## Reference: Policy File Schema
 
 ```json
@@ -214,6 +262,10 @@ Check the `trace.reasonCodes` on the `decisionEnvelope`. A blocked action policy
   "actorMappings": {
     "<your role name string>": "<canonical authority class>"
   },
+
+  "workflowRules": [
+    { "workflowClass": "<workflow class>", "requiresApproval": true }
+  ],
 
   "approvalChains": {
     "<workflow class>": ["<authority class>", ...]
@@ -229,3 +281,5 @@ Check the `trace.reasonCodes` on the `decisionEnvelope`. A blocked action policy
 
 Fields prefixed with `_` are documentation-only and ignored by the loader.  
 All other top-level fields are optional — include only what your deployment needs.
+
+`workflowRules` entries require two fields: `workflowClass` (string, the workflow identifier) and `requiresApproval` (boolean). Setting `requiresApproval: true` for a workflow is equivalent to listing it in `approvalChains` — both trigger approval enforcement.

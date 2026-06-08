@@ -10,6 +10,12 @@
     "Risk Manager":              "manager"
   },
 
+  "workflowRules": [
+    { "workflowClass": "transaction_fraud_review", "requiresApproval": true },
+    { "workflowClass": "wire_transfer_approval",   "requiresApproval": true },
+    { "workflowClass": "internal_audit_log",       "requiresApproval": false }
+  ],
+
   "approvalChains": {
     "transaction_fraud_review":  ["analyst", "manager"],
     "wire_transfer_approval":    ["manager", "compliance_officer"],

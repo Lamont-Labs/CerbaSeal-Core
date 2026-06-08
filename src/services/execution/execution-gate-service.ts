@@ -473,10 +473,19 @@ export class ExecutionGateService {
 
   /**
    * Returns true if the loaded policy declares that the given workflow class requires
-   * human approval (via an approvalChains entry). This supplements the hardcoded
+   * human approval — either via an explicit workflowRules entry (requiresApproval: true)
+   * or via an approvalChains entry. Both mechanisms supplement the hardcoded
    * WORKFLOWS_REQUIRING_APPROVAL set without requiring TypeScript changes.
+   *
+   * workflowRules is checked first: a { workflowClass, requiresApproval: true } entry
+   * triggers enforcement. approvalChains presence also triggers enforcement because any
+   * workflow that declares an approval chain implicitly requires an approval artifact.
    */
   private isPolicyApprovalRequired(workflowClass: string): boolean {
+    if (this.policy?.workflowRules) {
+      const rule = this.policy.workflowRules.find((r) => r.workflowClass === workflowClass);
+      if (rule !== undefined) return rule.requiresApproval;
+    }
     if (!this.policy?.approvalChains) return false;
     return workflowClass in this.policy.approvalChains;
   }

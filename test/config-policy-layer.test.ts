@@ -428,6 +428,209 @@ describe("ExecutionGateService — policy approval chain authority enforcement",
   });
 });
 
+// ── workflowRules — loadCerbaSealPolicy parsing ───────────────────────────────
+
+describe("loadCerbaSealPolicy — workflowRules parsing", () => {
+  it("parses workflowRules array with requiresApproval true and false", () => {
+    const path = writeTmpPolicy(JSON.stringify({
+      workflowRules: [
+        { workflowClass: "kyc_verification",  requiresApproval: true },
+        { workflowClass: "internal_audit_log", requiresApproval: false }
+      ]
+    }));
+    try {
+      const policy = loadCerbaSealPolicy(path);
+      expect(policy).toBeDefined();
+      expect(policy!.workflowRules).toHaveLength(2);
+      expect(policy!.workflowRules![0]).toEqual({ workflowClass: "kyc_verification",  requiresApproval: true });
+      expect(policy!.workflowRules![1]).toEqual({ workflowClass: "internal_audit_log", requiresApproval: false });
+    } finally {
+      cleanup(path);
+    }
+  });
+
+  it("accepts a policy with no workflowRules field (backward compat)", () => {
+    const path = writeTmpPolicy(JSON.stringify({
+      actorMappings: { "Risk Lead": "manager" }
+    }));
+    try {
+      const policy = loadCerbaSealPolicy(path);
+      expect(policy!.workflowRules).toBeUndefined();
+    } finally {
+      cleanup(path);
+    }
+  });
+
+  it("throws when workflowRules is not an array", () => {
+    const path = writeTmpPolicy(JSON.stringify({
+      workflowRules: { kyc_verification: true }
+    }));
+    try {
+      expect(() => loadCerbaSealPolicy(path)).toThrow(/workflowRules.*array/i);
+    } finally {
+      cleanup(path);
+    }
+  });
+
+  it("throws when a workflowRules entry has a non-boolean requiresApproval", () => {
+    const path = writeTmpPolicy(JSON.stringify({
+      workflowRules: [{ workflowClass: "kyc_verification", requiresApproval: "yes" }]
+    }));
+    try {
+      expect(() => loadCerbaSealPolicy(path)).toThrow(/requiresApproval.*boolean/i);
+    } finally {
+      cleanup(path);
+    }
+  });
+
+  it("throws when a workflowRules entry is missing workflowClass", () => {
+    const path = writeTmpPolicy(JSON.stringify({
+      workflowRules: [{ requiresApproval: true }]
+    }));
+    try {
+      expect(() => loadCerbaSealPolicy(path)).toThrow(/workflowClass/i);
+    } finally {
+      cleanup(path);
+    }
+  });
+});
+
+// ── workflowRules — ExecutionGateService enforcement ─────────────────────────
+
+describe("ExecutionGateService — workflowRules enforcement", () => {
+  it("HOLDs a request when workflowRules declares requiresApproval: true and no artifact is present", () => {
+    const policy: CerbaSealPolicy = {
+      workflowRules: [{ workflowClass: "kyc_verification", requiresApproval: true }]
+    };
+    const gate = new ExecutionGateService({}, policy);
+
+    const req = buildValidGovernedRequest();
+    (req as unknown as Record<string, unknown>)["workflowClass"] = "kyc_verification";
+    req.approvalRequired = false;  // caller did not set it — policy should drive it
+    req.approvalArtifact = null;
+
+    const result = gate.evaluate(req);
+    expect(result.decisionEnvelope.finalState).toBe("HOLD");
+    expect(result.decisionEnvelope.trace.reasonCodes).toContain("REQUIRED_APPROVAL_MISSING");
+  });
+
+  it("ALLOWs when workflowRules requiresApproval: true and a valid approval artifact is present", () => {
+    const policy: CerbaSealPolicy = {
+      workflowRules: [{ workflowClass: "kyc_verification", requiresApproval: true }]
+    };
+    const gate = new ExecutionGateService({}, policy);
+
+    const req = buildValidGovernedRequest();
+    (req as unknown as Record<string, unknown>)["workflowClass"] = "kyc_verification";
+    req.approvalRequired = false;
+    req.approvalArtifact = {
+      approvalId: "approval_wfr_allow",
+      approverId: "analyst_001",
+      forRequestId: req.requestId,
+      approverAuthorityClass: "analyst",
+      privilegedAuthSatisfied: true,
+      immutableSignature: "sig_wfr_allow",
+      approvedAt: "2026-06-08T00:01:00.000Z"
+    };
+
+    const result = gate.evaluate(req);
+    expect(result.decisionEnvelope.finalState).toBe("ALLOW");
+    expect(result.releaseAuthorization).not.toBeNull();
+  });
+
+  it("does NOT hold when workflowRules declares requiresApproval: false", () => {
+    const policy: CerbaSealPolicy = {
+      workflowRules: [{ workflowClass: "transaction_escalation", requiresApproval: false }]
+    };
+    const gate = new ExecutionGateService({}, policy);
+
+    const req = buildValidGovernedRequest();
+    req.workflowClass = "transaction_escalation";
+    req.approvalRequired = false;
+    req.approvalArtifact = null;
+
+    const result = gate.evaluate(req);
+    expect(result.decisionEnvelope.finalState).toBe("ALLOW");
+  });
+
+  it("hardcoded fraud_triage baseline is enforced even when NOT in workflowRules", () => {
+    const policy: CerbaSealPolicy = {
+      workflowRules: [{ workflowClass: "kyc_verification", requiresApproval: true }]
+    };
+    const gate = new ExecutionGateService({}, policy);
+
+    const req = buildValidGovernedRequest();
+    // fraud_triage is in WORKFLOWS_REQUIRING_APPROVAL — should still HOLD
+    req.workflowClass = "fraud_triage";
+    req.approvalRequired = false;
+    req.approvalArtifact = null;
+
+    const result = gate.evaluate(req);
+    expect(result.decisionEnvelope.finalState).toBe("HOLD");
+  });
+
+  it("policy-forced HOLD via workflowRules sets humanApprovalRequired: true in envelope", () => {
+    const policy: CerbaSealPolicy = {
+      workflowRules: [{ workflowClass: "kyc_verification", requiresApproval: true }]
+    };
+    const gate = new ExecutionGateService({}, policy);
+
+    const req = buildValidGovernedRequest();
+    (req as unknown as Record<string, unknown>)["workflowClass"] = "kyc_verification";
+    req.approvalRequired = false;
+    req.approvalArtifact = null;
+
+    const result = gate.evaluate(req);
+    expect(result.decisionEnvelope.finalState).toBe("HOLD");
+    expect(result.decisionEnvelope.humanApprovalRequired).toBe(true);
+  });
+
+  it("workflowRules with requiresApproval: true does not affect unrelated workflows", () => {
+    const policy: CerbaSealPolicy = {
+      workflowRules: [{ workflowClass: "kyc_verification", requiresApproval: true }]
+    };
+    const gate = new ExecutionGateService({}, policy);
+
+    const req = buildValidGovernedRequest();
+    req.workflowClass = "transaction_escalation";
+    req.approvalRequired = false;
+    req.approvalArtifact = null;
+
+    const result = gate.evaluate(req);
+    expect(result.decisionEnvelope.finalState).toBe("ALLOW");
+  });
+
+  it("wizard-emitted workflowRules policy parses correctly and enforces approval", () => {
+    const wizardOutput = JSON.stringify({
+      _schema: "cerbaseal-policy/v1",
+      _generated: new Date().toISOString(),
+      _workflowName: "KYC Verification",
+      actorMappings: { "KYC Analyst": "analyst" },
+      workflowRules: [{ workflowClass: "kyc_verification", requiresApproval: true }],
+      approvalChains: { kyc_verification: ["analyst"] },
+      actionPolicies: { kyc_verification: { allow: "requires_approval" } }
+    });
+    const path = writeTmpPolicy(wizardOutput);
+    try {
+      const policy = loadCerbaSealPolicy(path);
+      expect(policy).toBeDefined();
+      expect(policy!.workflowRules).toBeDefined();
+      expect(policy!.workflowRules![0]!.requiresApproval).toBe(true);
+      expect(policy!.workflowRules![0]!.workflowClass).toBe("kyc_verification");
+
+      const gate = new ExecutionGateService({}, policy);
+      const req = buildValidGovernedRequest();
+      (req as unknown as Record<string, unknown>)["workflowClass"] = "kyc_verification";
+      req.approvalRequired = false;
+      req.approvalArtifact = null;
+      const result = gate.evaluate(req);
+      expect(result.decisionEnvelope.finalState).toBe("HOLD");
+    } finally {
+      cleanup(path);
+    }
+  });
+});
+
 // ── Backward compatibility ────────────────────────────────────────────────────
 
 describe("ExecutionGateService — backward compatibility without policy", () => {

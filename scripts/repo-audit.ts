@@ -444,6 +444,26 @@ async function main(): Promise<void> {
           }
         }
 
+        if (obj["workflowRules"] !== undefined) {
+          if (!Array.isArray(obj["workflowRules"])) {
+            issues.push("workflowRules must be an array");
+          } else {
+            for (const item of obj["workflowRules"] as unknown[]) {
+              if (typeof item !== "object" || item === null || Array.isArray(item)) {
+                issues.push("workflowRules entries must be objects");
+                continue;
+              }
+              const entry = item as Record<string, unknown>;
+              if (typeof entry["workflowClass"] !== "string" || (entry["workflowClass"] as string).trim().length === 0) {
+                issues.push('workflowRules entry missing or invalid "workflowClass" string');
+              }
+              if (typeof entry["requiresApproval"] !== "boolean") {
+                issues.push(`workflowRules["${entry["workflowClass"] ?? "?"}"].requiresApproval must be a boolean`);
+              }
+            }
+          }
+        }
+
         if (issues.length === 0) {
           pass("16. cerbaseal.policy.json parses without error", "policy file valid");
         } else {

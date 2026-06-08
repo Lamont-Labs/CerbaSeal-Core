@@ -93,7 +93,7 @@ Generated: 2026-06-05
 
 ## CORE — Test Suite
 
-### test/ (16 files, ~5,582 lines, 419 tests)
+### test/ (16 files, ~5,582 lines, 431 tests)
 
 | File | Purpose | Lines | Classification |
 |---|---|---|---|

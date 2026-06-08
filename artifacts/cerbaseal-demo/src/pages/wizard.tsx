@@ -121,6 +121,9 @@ function generatePolicyJson(s: WizardState): string {
   }
 
   if (approverClasses.length > 0) {
+    policy["workflowRules"] = [
+      { workflowClass, requiresApproval: true }
+    ];
     policy["approvalChains"] = {
       [workflowClass]: [...new Set(approverClasses)],
     };
@@ -152,7 +155,7 @@ _Workflow class: \`${workflowClass}\`_
 - [ ] Node.js 18+ installed on target server
 - [ ] pnpm installed
 - [ ] CerbaSeal-Core cloned and dependencies installed (\`pnpm install\`)
-- [ ] pnpm test — 419/419 passing
+- [ ] pnpm test — 431/431 passing
 - [ ] pnpm audit:repo — 16/16 passing
 - [ ] pnpm export:proof — stableChecksum confirmed
 - [ ] \`cerbaseal.policy.json\` placed at repository root
@@ -434,7 +437,7 @@ ${s.deploymentMode === "mode_a"
 
 ## What to Verify Before Go-Live
 
-1. **Run \`pnpm test\`** — all 419 tests must pass
+1. **Run \`pnpm test\`** — all 431 tests must pass
 2. **Run \`pnpm audit:repo\`** — all 16 checks must pass, including check 16 (policy file validation)
 3. **Run the three scenario tests** — REJECT, HOLD, and ALLOW must all produce expected outcomes
 4. **Review evidence bundles** — each scenario should produce a timestamped, signed evidence record

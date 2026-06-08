@@ -31,6 +31,22 @@ import type { AuthorityClass } from "../domain/types/core.js";
 
 export type PolicyActionBehavior = "requires_approval" | "auto_allow" | "blocked";
 
+/**
+ * Declares whether a specific workflow class requires human approval.
+ * Use this for a simple yes/no approval toggle without specifying an approval
+ * chain. Can be combined with approvalChains for full authority-class control.
+ */
+export interface WorkflowRule {
+  /** The workflow class identifier this rule applies to. */
+  workflowClass: string;
+  /**
+   * When true, the gate enforces approval presence for this workflow even if
+   * the caller did not set approvalRequired: true. When false, no policy-side
+   * approval requirement is added (natural gate behaviour applies).
+   */
+  requiresApproval: boolean;
+}
+
 export interface CerbaSealPolicy {
   /**
    * Maps client-specific role name strings to canonical CerbaSeal authority classes.
@@ -59,6 +75,29 @@ export interface CerbaSealPolicy {
    * Example: { "fraud_triage": { "account_hold": "requires_approval", "reject": "auto_allow" } }
    */
   actionPolicies?: Record<string, Record<string, PolicyActionBehavior>>;
+
+  /**
+   * Per-workflow approval requirement rules. Each entry declares whether a specific
+   * workflow class requires human approval. This is the simplest way to add a new
+   * workflow to the approval-required set without touching TypeScript.
+   *
+   * The hardcoded baseline (fraud_triage) is always enforced regardless of what
+   * this array contains — policy can ADD workflows to the approval set but cannot
+   * remove fraud_triage from it.
+   *
+   * Use requiresApproval: true to require approval; requiresApproval: false to
+   * explicitly opt out of policy-driven approval for a workflow (the hardcoded
+   * baseline still applies unconditionally).
+   *
+   * Can be combined with approvalChains for authority-class-level control. When
+   * both are present for the same workflow, the most restrictive wins.
+   *
+   * Example: [
+   *   { "workflowClass": "kyc_verification", "requiresApproval": true },
+   *   { "workflowClass": "internal_audit_log", "requiresApproval": false }
+   * ]
+   */
+  workflowRules?: WorkflowRule[];
 }
 
 /**
@@ -153,6 +192,35 @@ export function loadCerbaSealPolicy(policyPath?: string): CerbaSealPolicy | unde
         }
         policy.actionPolicies[wf]![action] = behaviour as PolicyActionBehavior;
       }
+    }
+  }
+
+  if (obj["workflowRules"] !== undefined) {
+    if (!Array.isArray(obj["workflowRules"])) {
+      throw new Error(`CerbaSeal: policy "workflowRules" must be an array`);
+    }
+    policy.workflowRules = [];
+    for (const item of obj["workflowRules"] as unknown[]) {
+      if (typeof item !== "object" || item === null || Array.isArray(item)) {
+        throw new Error(
+          `CerbaSeal: policy workflowRules entries must be objects with "workflowClass" (string) and "requiresApproval" (boolean)`
+        );
+      }
+      const entry = item as Record<string, unknown>;
+      if (typeof entry["workflowClass"] !== "string" || (entry["workflowClass"] as string).trim().length === 0) {
+        throw new Error(
+          `CerbaSeal: policy workflowRules entry missing or invalid "workflowClass" — must be a non-empty string`
+        );
+      }
+      if (typeof entry["requiresApproval"] !== "boolean") {
+        throw new Error(
+          `CerbaSeal: policy workflowRules["${entry["workflowClass"]}"].requiresApproval must be a boolean`
+        );
+      }
+      policy.workflowRules.push({
+        workflowClass: entry["workflowClass"] as string,
+        requiresApproval: entry["requiresApproval"] as boolean
+      });
     }
   }
 

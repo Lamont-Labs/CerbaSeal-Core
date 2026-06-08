@@ -129,7 +129,7 @@ This guide goes deeper than the quick objection table in the partner enablement 
 
 **Response:**
 
-> "That's completely understandable, and it's something we're transparent about. A formal third-party security review hasn't been completed. The enforcement core has gone through rigorous internal adversarial testing — 419 tests including bypass attempts, forgery scenarios, and boundary probes — but that's not the same as an independent external review.
+> "That's completely understandable, and it's something we're transparent about. A formal third-party security review hasn't been completed. The enforcement core has gone through rigorous internal adversarial testing — 431 tests including bypass attempts, forgery scenarios, and boundary probes — but that's not the same as an independent external review.
 
 > A third-party security review is on the roadmap as a pre-commercial milestone. For a pilot engagement in a controlled environment, most organizations treat this as a bounded risk — you're evaluating a scoped system in your own environment, not deploying it as a production-critical service.
 
