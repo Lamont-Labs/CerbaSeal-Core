@@ -472,22 +472,28 @@ export class ExecutionGateService {
   }
 
   /**
-   * Returns true if the loaded policy declares that the given workflow class requires
-   * human approval — either via an explicit workflowRules entry (requiresApproval: true)
-   * or via an approvalChains entry. Both mechanisms supplement the hardcoded
-   * WORKFLOWS_REQUIRING_APPROVAL set without requiring TypeScript changes.
+   * Returns true if the loaded policy requires human approval for the given workflow.
+   * This is ADDITIVE: the result is true if ANY of the following hold —
+   *   1. A workflowRules entry exists with requiresApproval: true, OR
+   *   2. The workflow appears in approvalChains.
    *
-   * workflowRules is checked first: a { workflowClass, requiresApproval: true } entry
-   * triggers enforcement. approvalChains presence also triggers enforcement because any
-   * workflow that declares an approval chain implicitly requires an approval artifact.
+   * requiresApproval: false in workflowRules documents an explicit intent but does NOT
+   * suppress an approval requirement that originates from approvalChains. The most
+   * restrictive policy source always wins.
+   *
+   * Both mechanisms supplement the hardcoded WORKFLOWS_REQUIRING_APPROVAL set (fraud_triage)
+   * without requiring TypeScript changes.
    */
   private isPolicyApprovalRequired(workflowClass: string): boolean {
+    let workflowRuleRequires = false;
     if (this.policy?.workflowRules) {
       const rule = this.policy.workflowRules.find((r) => r.workflowClass === workflowClass);
-      if (rule !== undefined) return rule.requiresApproval;
+      if (rule?.requiresApproval === true) workflowRuleRequires = true;
     }
-    if (!this.policy?.approvalChains) return false;
-    return workflowClass in this.policy.approvalChains;
+    const chainRequires = this.policy?.approvalChains
+      ? workflowClass in this.policy.approvalChains
+      : false;
+    return workflowRuleRequires || chainRequires;
   }
 
   /**

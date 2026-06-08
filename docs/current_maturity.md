@@ -23,7 +23,7 @@ The following are fully implemented and tested in this proof slice:
 
 Current governance state:
 
-- 431 passing tests across 16 test files, including adversarial and hostile boundary probes
+- 432 passing tests across 16 test files, including adversarial and hostile boundary probes
 - 15 / 15 repo audit checks passing
 - 12 / 12 invariants covered and linked to tests
 - 229 validator assertions (106 + 13 + 110 across 3 validators)

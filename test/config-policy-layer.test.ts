@@ -585,6 +585,24 @@ describe("ExecutionGateService — workflowRules enforcement", () => {
     expect(result.decisionEnvelope.humanApprovalRequired).toBe(true);
   });
 
+  it("requiresApproval: false does NOT suppress an approvalChains requirement for the same workflow", () => {
+    const policy: CerbaSealPolicy = {
+      workflowRules: [{ workflowClass: "transaction_escalation", requiresApproval: false }],
+      approvalChains: { transaction_escalation: ["analyst", "manager"] }
+    };
+    const gate = new ExecutionGateService({}, policy);
+
+    const req = buildValidGovernedRequest();
+    req.workflowClass = "transaction_escalation";
+    req.approvalRequired = false;
+    req.approvalArtifact = null;
+
+    // approvalChains still requires approval despite workflowRules: false
+    const result = gate.evaluate(req);
+    expect(result.decisionEnvelope.finalState).toBe("HOLD");
+    expect(result.decisionEnvelope.trace.reasonCodes).toContain("REQUIRED_APPROVAL_MISSING");
+  });
+
   it("workflowRules with requiresApproval: true does not affect unrelated workflows", () => {
     const policy: CerbaSealPolicy = {
       workflowRules: [{ workflowClass: "kyc_verification", requiresApproval: true }]

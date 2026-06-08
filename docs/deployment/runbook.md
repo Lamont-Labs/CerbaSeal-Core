@@ -81,7 +81,7 @@ const evidence = new EvidenceBundleService(log);
 Run before any production traffic:
 
 ```bash
-pnpm test                 # 431 tests must pass
+pnpm test                 # 432 tests must pass
 pnpm check:invariants     # 12/12 invariants covered
 pnpm audit:repo           # 15/15 checks passed
 pnpm verify:proof         # stableChecksum verified

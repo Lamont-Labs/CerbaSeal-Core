@@ -25,7 +25,7 @@ pnpm test
 Expected output (last 3 lines):
 ```
 Test Files  17 passed (17)
-     Tests  431 passed (431)
+     Tests  432 passed (432)
   Duration  ~7s
 ```
 
@@ -149,7 +149,7 @@ pnpm audit:repo
 ```
 CerbaSeal Repo Audit
 ====================================================
-  ✓ PASS  1. Full test suite passes — 431 tests passed
+  ✓ PASS  1. Full test suite passes — 432 tests passed
   ✓ PASS  2. TypeScript compiles without errors — tsc --noEmit clean
   ✓ PASS  3. README anchor strings present — all 4 anchors found
   ✓ PASS  4. All portal routes respond 200 — 9 routes checked

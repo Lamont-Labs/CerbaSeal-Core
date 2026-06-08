@@ -70,7 +70,7 @@ pnpm test
 
 Expected output:
 ```
-431 passed | 0 failed | 17 test files
+432 passed | 0 failed | 17 test files
 ```
 
 If any tests fail, stop. Do not proceed to deployment. Contact Lamont Labs with the full test output. A failing test suite means the enforcement core is not in a verified state.

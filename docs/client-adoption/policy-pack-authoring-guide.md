@@ -87,7 +87,7 @@ Use `workflowRules` when you want a straightforward yes/no approval requirement 
 
 When `requiresApproval: true` is set for a workflow, the gate will HOLD any request for that workflow that arrives without a valid approval artifact — even if the caller did not set `approvalRequired: true`. This is additive to the core invariants; it cannot override them.
 
-The `requiresApproval: false` entry is optional but explicit — it documents that a workflow intentionally has no policy-driven approval requirement.
+The `requiresApproval: false` entry is optional and documents that a workflow intentionally has no `workflowRules`-driven approval requirement. Note: if the same workflow also appears in `approvalChains`, the chain requirement still applies — the most restrictive policy source always wins.
 
 ### Option B — Approval chain with authority-class control (`approvalChains`)
 
@@ -104,7 +104,7 @@ Any workflow listed in `approvalChains` will HOLD if the request arrives without
 
 ### Combining both
 
-`workflowRules` and `approvalChains` can be used together for the same workflow. The approval requirement from `workflowRules: true` is equivalent to listing the workflow in `approvalChains` — the most restrictive applies. Use both when you want an explicit toggle in `workflowRules` and specific authority-class control in `approvalChains`.
+`workflowRules` and `approvalChains` can be used together for the same workflow. Enforcement is additive: the gate requires approval if **either** `workflowRules` has `requiresApproval: true` **or** the workflow appears in `approvalChains`. A `requiresApproval: false` entry does NOT suppress a chain requirement — the most restrictive source wins. Use both when you want an explicit toggle in `workflowRules` and authority-class enforcement in `approvalChains`.
 
 ---
 

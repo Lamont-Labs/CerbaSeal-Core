@@ -31,7 +31,7 @@ A browser-accessible Review & Pilot Readiness Portal is live at `/review`, `/pil
 | integration/full-flow.test.ts | 1 | Passing |
 | integration/system-integration.test.ts | 1 | Passing |
 
-**Total: 431 passing. 0 failing. 17 test files.**
+**Total: 432 passing. 0 failing. 17 test files.**
 
 All tests pass. No invariant violations. No incorrect execution outcomes.
 
@@ -68,7 +68,7 @@ Every outcome — including REJECT and HOLD — produces a permanent evidence bu
 - Timestamp predating request produces REJECT with INVALID_APPROVAL_AUTHORITY
 
 ### Phase 3 — CI/CD GitHub Actions
-- `.github/workflows/audit.yml` — full pipeline: TypeScript check, 431 tests, import boundary check, invariant coverage, 16/16 audit checks, proof export, proof verify, snapshot upload as artifact with 90-day retention
+- `.github/workflows/audit.yml` — full pipeline: TypeScript check, 432 tests, import boundary check, invariant coverage, 16/16 audit checks, proof export, proof verify, snapshot upload as artifact with 90-day retention
 - Optional HMAC signing via `CERBASEAL_SIGNING_KEY` GitHub secret
 
 ### Phase 4 — HMAC Optional Signing

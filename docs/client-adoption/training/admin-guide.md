@@ -57,7 +57,7 @@ Never commit the `.env` file to version control. Add it to `.gitignore`.
 Run these commands after every deployment or restart:
 
 ```bash
-# 1. Test suite (must be 431/431)
+# 1. Test suite (must be 432/432)
 pnpm test
 
 # 2. Repo audit (must be 15/15)

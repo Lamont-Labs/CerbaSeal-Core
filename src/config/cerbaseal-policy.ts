@@ -85,12 +85,13 @@ export interface CerbaSealPolicy {
    * this array contains — policy can ADD workflows to the approval set but cannot
    * remove fraud_triage from it.
    *
-   * Use requiresApproval: true to require approval; requiresApproval: false to
-   * explicitly opt out of policy-driven approval for a workflow (the hardcoded
-   * baseline still applies unconditionally).
+   * Enforcement is ADDITIVE. The gate requires approval if EITHER:
+   *   - a workflowRules entry has requiresApproval: true, OR
+   *   - the workflow appears in approvalChains.
+   * A requiresApproval: false entry does NOT suppress an approvalChains requirement
+   * for the same workflow — the most restrictive source always wins.
    *
-   * Can be combined with approvalChains for authority-class-level control. When
-   * both are present for the same workflow, the most restrictive wins.
+   * Can be combined with approvalChains for authority-class-level control.
    *
    * Example: [
    *   { "workflowClass": "kyc_verification", "requiresApproval": true },

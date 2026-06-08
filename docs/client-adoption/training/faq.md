@@ -87,7 +87,7 @@ No. CerbaSeal governs the authorization process for AI actions. It does not mana
 No. CerbaSeal is a specific enforcement primitive — it enforces human authorization over AI-proposed actions and produces verifiable evidence. It is one component of a compliance posture, not a full compliance platform.
 
 **Q: Has CerbaSeal had a third-party security review?**  
-Not yet. The enforcement core has been through rigorous internal adversarial testing (431 tests including bypass and forgery scenarios). A third-party security review is planned as a future milestone.
+Not yet. The enforcement core has been through rigorous internal adversarial testing (432 tests including bypass and forgery scenarios). A third-party security review is planned as a future milestone.
 
 ---
 

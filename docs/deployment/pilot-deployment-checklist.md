@@ -11,7 +11,7 @@
 - [ ] Export proof snapshot: `pnpm export:proof`
 - [ ] Verify proof snapshot: `pnpm verify:proof` — must output `Status: VERIFIED`
 - [ ] Record `stableChecksum` from `docs/reports/proof-snapshot.json`
-- [ ] Confirm all 431 tests pass: `pnpm test`
+- [ ] Confirm all 432 tests pass: `pnpm test`
 - [ ] Confirm 15/15 audit checks pass: `pnpm audit:repo`
 - [ ] Confirm 12/12 invariants covered: `pnpm check:invariants`
 - [ ] Tag release in git with version matching `package.json`
