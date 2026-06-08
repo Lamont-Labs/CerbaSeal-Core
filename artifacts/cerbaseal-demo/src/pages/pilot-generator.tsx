@@ -3,6 +3,7 @@ import { Rocket, Download, RotateCcw, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { PageMeta } from "@/components/page-meta";
 
 interface PilotForm {
   company: string;
@@ -185,6 +186,11 @@ export default function PilotGenerator() {
 
   return (
     <main className="max-w-2xl mx-auto px-6 py-10">
+      <PageMeta
+        title="Pilot Generator"
+        description="Generate a complete CerbaSeal pilot plan in 5 minutes. Enter your company, workflow, actors, approvals, and timeline. Get scope, success criteria, deployment checklist, and evidence requirements — ready to share."
+        path="/pilot"
+      />
       <div className="flex items-center gap-3 mb-2">
         <Rocket className="w-6 h-6 text-emerald-400" />
         <h1 className="text-2xl font-bold text-white">Pilot Generator</h1>

@@ -1,0 +1,3 @@
+- [Wouter v3 SSR routing](wouter-v3-ssr.md) — use ssrPath prop on Router (not hook) for correct server-side rendering
+- [Vite SSR + react-helmet-async v3](vite-ssr-helmet.md) — helmet context extraction is empty in Vite SSR; use a metadata lookup table instead
+- [Prerender template freshness](prerender-template.md) — save pristine template before writing route files; Vite 7 preserves HTML comments but prerender overwrites the template

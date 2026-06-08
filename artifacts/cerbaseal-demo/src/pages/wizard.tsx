@@ -11,6 +11,7 @@ import {
   Wand2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { PageMeta } from "@/components/page-meta";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -1219,6 +1220,11 @@ export default function Wizard() {
 
   return (
     <main className="max-w-2xl mx-auto px-6 py-12">
+      <PageMeta
+        title="Workflow Mapping Wizard"
+        description="Map your workflow to CerbaSeal in 6 guided steps. Define actions, AI role, human approvers, and deployment mode — then download a ready-to-deploy configuration package."
+        path="/wizard"
+      />
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { CheckCircle, XCircle, AlertCircle, ChevronRight, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { PageMeta } from "@/components/page-meta";
 
 type Choice = { label: string; score: number; note?: string };
 type Question = { id: string; text: string; category: string; choices: Choice[] };
@@ -218,6 +219,11 @@ export default function Assess() {
   if (step === 0) {
     return (
       <main className="max-w-2xl mx-auto px-6 py-12">
+        <PageMeta
+          title="Readiness Assessment"
+          description="16 questions across 4 categories. Get an instant READY / READY WITH SUPPORT / NOT READY verdict, an onboarding hour estimate, and your recommended pilot tier. Takes ~8 minutes."
+          path="/assess"
+        />
         <h1 className="text-2xl font-bold text-white mb-2">Readiness Assessment</h1>
         <p className="text-slate-400 mb-8">16 questions · 4 categories · ~8 minutes · instant verdict</p>
         <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 mb-6">

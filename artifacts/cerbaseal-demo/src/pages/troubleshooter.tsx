@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Wrench, ChevronRight, RotateCcw, CheckCircle, AlertCircle, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { PageMeta } from "@/components/page-meta";
 
 type Node =
   | { type: "question"; text: string; options: { label: string; next: string }[] }
@@ -444,6 +445,11 @@ export default function Troubleshooter() {
 
   return (
     <main className="max-w-2xl mx-auto px-6 py-12">
+      <PageMeta
+        title="Troubleshooter"
+        description="Guided diagnostic for CerbaSeal deployment and runtime issues. Walk through a decision tree to identify the probable cause and resolution path — before contacting support."
+        path="/troubleshoot"
+      />
       <div className="flex items-center gap-3 mb-2">
         <Wrench className="w-6 h-6 text-amber-400" />
         <h1 className="text-2xl font-bold text-white">Troubleshooter</h1>

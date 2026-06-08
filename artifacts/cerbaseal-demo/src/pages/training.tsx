@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { BookOpen, CheckCircle, Clock, Users, Code, Settings, Play } from "lucide-react";
+import { PageMeta } from "@/components/page-meta";
 
 type Module = { id: string; title: string; duration: string; objectives: string[]; topics: string[]; badge?: string };
 type Track = { id: string; title: string; audience: string; icon: typeof BookOpen; color: string; bg: string; border: string; totalTime: string; modules: Module[] };
@@ -292,6 +293,11 @@ export default function Training() {
 
   return (
     <main className="max-w-5xl mx-auto px-6 py-10">
+      <PageMeta
+        title="Training Center"
+        description="Four CerbaSeal training tracks: Executive (10 min), Operator (30 min), Admin (30 min), Developer (self-paced). Clear objectives and structured topics for every role."
+        path="/training"
+      />
       <div className="flex items-center gap-3 mb-2">
         <BookOpen className="w-6 h-6 text-purple-400" />
         <h1 className="text-2xl font-bold text-white">Training Center</h1>

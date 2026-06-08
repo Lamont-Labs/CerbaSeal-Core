@@ -1,4 +1,5 @@
 import { Users, CheckCircle, ChevronRight, Star, Shield, Zap, Globe } from "lucide-react";
+import { PageMeta } from "@/components/page-meta";
 
 const certLevels = [
   {
@@ -112,6 +113,11 @@ const agreementItems = [
 export default function Partner() {
   return (
     <main className="max-w-5xl mx-auto px-6 py-10">
+      <PageMeta
+        title="Partner Enablement Kit"
+        description="Everything a consulting partner needs to deliver CerbaSeal pilots independently. Four-level certification path, channel pricing structure, delivery kit, and resource library."
+        path="/partner"
+      />
       <div className="flex items-center gap-3 mb-2">
         <Users className="w-6 h-6 text-rose-400" />
         <h1 className="text-2xl font-bold text-white">Partner Enablement Kit</h1>

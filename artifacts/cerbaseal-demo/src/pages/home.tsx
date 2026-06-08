@@ -1,5 +1,6 @@
 import { Link } from "wouter";
 import { Shield, ClipboardCheck, Rocket, Wrench, BookOpen, Users, Wand2, ArrowRight, CheckCircle, Clock, TrendingDown } from "lucide-react";
+import { PageMeta } from "@/components/page-meta";
 
 const tools = [
   {
@@ -79,6 +80,11 @@ const metrics = [
 export default function Home() {
   return (
     <main className="max-w-6xl mx-auto px-6 py-12">
+      <PageMeta
+        title="Client Success Center"
+        description="Everything you need to deploy, operate, and scale CerbaSeal. Readiness assessment, pilot generator, training center, troubleshooter, and partner enablement kit."
+        path="/"
+      />
       {/* Header */}
       <div className="mb-12">
         <div className="flex items-center gap-3 mb-4">
