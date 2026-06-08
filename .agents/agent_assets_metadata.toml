@@ -77,3 +77,9 @@ id = "-mmm4TKWE2eBCIhdIao20"
 uri = "file://cerbaseal-repo-breakdown.pdf"
 type = "pdf"
 title = "CerbaSeal-Core v0.1.0 — System & Repository Breakdown"
+
+[[outputs]]
+id = "r1YfsOvC3S6g7DyXkExpC"
+uri = "file://cerbaseal-system-reference.pdf"
+type = "pdf"
+title = "CerbaSeal-Core v0.1.0 — System Architecture & Technical Reference"
