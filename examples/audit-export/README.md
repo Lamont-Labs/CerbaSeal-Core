@@ -2,118 +2,115 @@
 
 ## Pattern
 
-Read a CerbaSeal decision log and export a formatted evidence report grouped by workflow class, actor authority, actor ID, and decision outcome. Verifies hash chain integrity on the raw audit log alongside the reporting output.
+Read a persisted CerbaSeal evidence bundle log and export a formatted evidence report grouped by decision outcome, workflow class, actor authority, and actor ID. Shows clients how to integrate CerbaSeal's canonical decision output into their existing log aggregation and compliance tooling.
 
 ## When to use this kit
 
-- A compliance reviewer needs an evidence summary showing decisions by workflow, actor, and outcome
+- A compliance reviewer needs decision counts grouped by workflow, actor, and outcome
 - You need to feed CerbaSeal decision data into a SIEM, log aggregator, or compliance dashboard
-- You want to verify audit chain integrity on the raw JSONL log after the fact
-- You need a structured JSON summary for downstream tooling
+- You want a structured JSON summary suitable for downstream reporting systems
 
-## Two-file approach
+## The input file: evidence bundle JSONL
 
-CerbaSeal produces two JSONL files per deployment. Both are needed for a complete evidence picture:
+CerbaSeal's canonical decision artifact is the **EvidenceBundle** — produced by `evidenceService.createBundle()` after each gate evaluation. It contains:
 
-| File | Produced by | Contains | Use for |
-|---|---|---|---|
-| `audit.jsonl` | `FileBackedAppendOnlyLogService` | Hash-chain AuditLogEntry records | Tamper detection, immutability proof |
-| `decisions.jsonl` | `writeDecisionRecord()` in this kit | AuditDecisionRecord with workflowClass, actorId, finalState | Grouping, reporting, dashboards |
+- `decisionEnvelope.finalState` — ALLOW / HOLD / REJECT
+- `decisionEnvelope.workflowClass` — the workflow that was governed
+- `request.actorId` — who submitted the request
+- `request.actorAuthorityClass` — their authority class (system, analyst, reviewer, etc.)
+- `request.approvalArtifact` — the approver identity (if applicable)
+- `eventChain` — the hash-linked audit event chain
 
-The `decisions.jsonl` file is the reporting layer. It is NOT a replacement for the immutable audit chain — it is a companion that makes the data human-readable and groupable.
+Persist one bundle per evaluation to a JSONL file using `writeEvidenceBundle()`:
+
+```typescript
+import { ExecutionGateService } from "cerbaseal-review/src/services/execution/execution-gate-service.js";
+import { AppendOnlyLogService } from "cerbaseal-review/src/services/audit/append-only-log-service.js";
+import { EvidenceBundleService } from "cerbaseal-review/src/services/evidence/evidence-bundle-service.js";
+import { writeEvidenceBundle } from "./examples/audit-export/index.js";
+
+const gate = new ExecutionGateService();
+const logService = new AppendOnlyLogService();          // or FileBackedAppendOnlyLogService
+const evidenceService = new EvidenceBundleService(logService);
+
+// After each evaluation:
+const result = gate.evaluate(request);
+const bundle = evidenceService.createBundle({ request, gateResult: result });
+writeEvidenceBundle("./evidence-log.jsonl", bundle);
+```
+
+See `examples/fraud-workflow-starter/` for a complete working deployment. Add the `writeEvidenceBundle()` call alongside the existing `evidenceService.createBundle()` call in that starter.
 
 ## Prerequisites
 
 - Node.js 18+
-- `pnpm tsx` available
-- A running CerbaSeal deployment that calls `writeDecisionRecord()` after each evaluation (see Setup)
+- `pnpm tsx` available (already set up in this repo)
+- An evidence-log.jsonl file produced by your deployment (see above)
 
 ## Setup
 
-1. **Add `writeDecisionRecord()` to your deployment** — call it after each gate evaluation:
-   ```typescript
-   import { ExecutionGateService } from "cerbaseal-review/src/services/execution/execution-gate-service.js";
-   import { FileBackedAppendOnlyLogService } from "cerbaseal-review/src/services/audit/file-backed-append-only-log-service.js";
-   import { EvidenceBundleService } from "cerbaseal-review/src/services/evidence/evidence-bundle-service.js";
-   import { writeDecisionRecord } from "./examples/audit-export/index.js";
+1. **Add `writeEvidenceBundle()` to your deployment** (see above)
 
-   const gate = new ExecutionGateService();
-   const logService = new FileBackedAppendOnlyLogService("./audit.jsonl");
-   const evidenceService = new EvidenceBundleService(logService);
-
-   // After each evaluation:
-   const result = gate.evaluate(request);
-   evidenceService.createBundle({ request, gateResult: result });
-   writeDecisionRecord("./decisions.jsonl", request, result);
-   ```
-   See `examples/fraud-workflow-starter/` for a complete working deployment example.
-
-2. **Run the audit export**
+2. **Run the export**
    ```sh
-   # Both files (report + chain verification):
-   pnpm tsx examples/audit-export/index.ts ./decisions.jsonl ./audit.jsonl
-
-   # Decisions report only (no chain check):
-   pnpm tsx examples/audit-export/index.ts ./decisions.jsonl
-
-   # Chain integrity check only:
-   pnpm tsx examples/audit-export/index.ts "" ./audit.jsonl
+   pnpm tsx examples/audit-export/index.ts ./evidence-log.jsonl
    ```
 
-3. **Review the output** — text summary prints to stdout, JSON summary follows for piping
+3. **Review the output**
+   - Text summary prints to stdout, grouped by outcome / workflow / actor authority / actor ID
+   - JSON summary follows for piping into downstream systems
 
 ## What a correct run looks like
 
 ```
-Read 12 decision records from ./decisions.jsonl
-Read 48 audit chain entries from ./audit.jsonl
+Reading evidence bundle log: ./evidence-log.jsonl
+
+Parsed 12 evidence bundles
 
 ═══════════════════════════════════════════════════════════
   CerbaSeal Audit Evidence Summary
 ═══════════════════════════════════════════════════════════
-  Decisions file   : ./decisions.jsonl
-  Chain log file   : ./audit.jsonl
-  Chain valid      : YES ✓
-  Raw log entries  : 48
+  Source file      : ./evidence-log.jsonl
   Total decisions  : 12
+  ALLOW            : 8
+  HOLD             : 3
+  REJECT           : 1
 
   By Decision Outcome:
-    ALLOW       8  ████████
-    HOLD        3  ███
-    REJECT      1  █
+    ALLOW        8  ████████
+    HOLD         3  ███
+    REJECT       1  █
 
   By Workflow Class:
-    transaction_escalation           8
-    fraud_triage                     4
+    transaction_escalation               8
+    fraud_triage                         4
 
   By Actor Authority Class:
-    system                           9
-    analyst                          3
+    system                               9
+    analyst                              3
 
   By Actor ID:
-    governance-system                7
-    risk-orchestrator                2
-    analyst-jane-001                 3
+    governance-system                    7
+    risk-orchestrator                    2
+    analyst-jane-001                     3
 ═══════════════════════════════════════════════════════════
 ```
 
-If the chain integrity check fails, the export exits with code 1.
-
-## Integrating with a SIEM or compliance dashboard
-
-The JSON output from `buildAuditSummary()` is structured for downstream consumption:
+## Using the output programmatically
 
 ```typescript
-import { parseDecisionLog, parseAuditChainLog, buildAuditSummary } from "./examples/audit-export/index.js";
+import { parseEvidenceBundleLog, buildAuditSummary } from "./examples/audit-export/index.js";
 
-const decisions = parseDecisionLog("/var/log/cerbaseal/decisions.jsonl");
-const chain = parseAuditChainLog("/var/log/cerbaseal/audit.jsonl");
-const summary = buildAuditSummary(decisions, chain);
+const bundles = parseEvidenceBundleLog("/var/log/cerbaseal/evidence-log.jsonl");
+const summary = buildAuditSummary(bundles);
 
-// summary.byFinalState      — feed into outcome metrics
-// summary.byWorkflowClass   — feed into per-workflow dashboards
-// summary.byActorAuthorityClass — track authority class distribution
-// summary.chainVerified     — alert if false (possible tampering)
+// summary.byFinalState          — outcome counts for metrics
+// summary.byWorkflowClass       — per-workflow breakdown
+// summary.byActorAuthorityClass — authority class distribution
+// summary.byActorId             — per-actor decision counts
+// summary.allowCount            — convenience count for ALLOW
+// summary.holdCount             — convenience count for HOLD
+// summary.rejectCount           — convenience count for REJECT
 ```
 
 ## Validate

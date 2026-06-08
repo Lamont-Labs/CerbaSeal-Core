@@ -1,92 +1,68 @@
 /**
  * CerbaSeal Audit Export
  *
- * Pattern: Read a JSONL decision log produced by CerbaSeal gate evaluations
- * and export a formatted evidence report grouped by workflow, actor, and outcome.
+ * Pattern: Read a persisted CerbaSeal evidence bundle log and export a
+ * formatted evidence report grouped by workflow class, actor authority,
+ * actor ID, and decision outcome.
  *
  * Use when:
- *   - A compliance reviewer needs an evidence summary grouped by workflow class,
- *     actor authority, and decision outcome
- *   - You need to feed CerbaSeal decision data into a SIEM, log aggregator, or
- *     compliance reporting tool
- *   - You want to verify audit chain integrity on a raw AuditLogEntry JSONL file
+ *   - A compliance reviewer needs an evidence summary showing decisions by
+ *     workflow, actor, and outcome
+ *   - You need to feed CerbaSeal decision data into a SIEM, log aggregator,
+ *     or compliance dashboard
+ *   - You want structured JSON output for downstream reporting tooling
  *
- * TWO LOG FILES:
+ * HOW TO PRODUCE THE INPUT FILE:
  *
- * CerbaSeal produces two JSONL files per deployment:
+ * After each gate evaluation, call writeEvidenceBundle() to persist the
+ * EvidenceBundle to a JSONL file. Each line is one JSON-serialized bundle:
  *
- *   1. audit.jsonl — raw AuditLogEntry chain (from FileBackedAppendOnlyLogService).
- *      Contains: eventId, requestId, eventType, payloadHash, hash chain fields.
- *      Use for: tamper detection (verifyChain), compliance immutability proof.
+ *   const result = gate.evaluate(request);
+ *   const bundle = evidenceService.createBundle({ request, gateResult: result });
+ *   writeEvidenceBundle("./evidence-log.jsonl", bundle);
  *
- *   2. decisions.jsonl — enriched AuditDecisionRecord entries written after each
- *      gate evaluation. Contains: workflowClass, actorId, actorAuthorityClass,
- *      finalState, reasonCodes. Use for: grouping, reporting, dashboards.
- *
- * This script reads and reports on BOTH files. Pass either one or both as args.
+ * The EvidenceBundle is CerbaSeal's canonical decision artifact — it contains
+ * the full GovernedRequest (workflowClass, actorId, actorAuthorityClass),
+ * the DecisionEnvelope (finalState, envelopeId), and the hash-verified event
+ * chain. This is the single file the audit export consumes.
  *
  * Usage:
- *   pnpm tsx examples/audit-export/index.ts [decisions.jsonl] [audit.jsonl]
- *   pnpm tsx examples/audit-export/index.ts decisions.jsonl          # report only
- *   pnpm tsx examples/audit-export/index.ts "" audit.jsonl           # chain check only
+ *   pnpm tsx examples/audit-export/index.ts [evidence-log.jsonl]
  *
  * To validate: pnpm tsx examples/audit-export/validate-audit-export.ts
  */
 
 import { readFileSync, existsSync, appendFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
-import type { AuditLogEntry } from "../../src/domain/types/audit.js";
-import type { GateResult, GovernedRequest } from "../../src/domain/types/core.js";
+import type { EvidenceBundle } from "../../src/domain/types/audit.js";
+
+export { type EvidenceBundle };
 
 /**
- * Enriched decision record written after each gate evaluation.
- * This is the reporting layer — separate from the immutable hash-chain audit log.
- * Write one record per gate.evaluate() call using writeDecisionRecord().
+ * Append one EvidenceBundle to a JSONL evidence log file.
+ * Call this after every evidenceService.createBundle() call in your deployment.
  */
-export interface AuditDecisionRecord {
-  requestId: string;
-  workflowClass: string;
-  actorId: string;
-  actorAuthorityClass: string;
-  proposedActionClass: string;
-  finalState: "ALLOW" | "HOLD" | "REJECT";
-  reasonCodes: string[];
-  humanApprovalRequired: boolean;
-  approverId: string | null;
-  evidenceBundleId: string;
-  envelopeId: string;
-  decidedAt: string;
+export function writeEvidenceBundle(filePath: string, bundle: EvidenceBundle): void {
+  appendFileSync(filePath, JSON.stringify(bundle) + "\n", "utf-8");
 }
 
 /**
- * Write an AuditDecisionRecord to a JSONL decisions file after each gate evaluation.
- * Call this alongside evidenceService.createBundle() in your deployment.
- *
- * Example:
- *   const result = gate.evaluate(request);
- *   const bundle = evidenceService.createBundle({ request, gateResult: result });
- *   writeDecisionRecord("./decisions.jsonl", request, result);
+ * Read and parse a JSONL evidence log file.
+ * Each line must be a JSON-serialized EvidenceBundle.
  */
-export function writeDecisionRecord(
-  filePath: string,
-  request: GovernedRequest,
-  gateResult: GateResult
-): void {
-  const record: AuditDecisionRecord = {
-    requestId: request.requestId,
-    workflowClass: request.workflowClass,
-    actorId: request.actorId,
-    actorAuthorityClass: request.actorAuthorityClass,
-    proposedActionClass: request.proposedActionClass,
-    finalState: gateResult.decisionEnvelope.finalState,
-    reasonCodes: gateResult.blockedActionRecord?.reasonCodes ?? gateResult.decisionEnvelope.trace.reasonCodes,
-    humanApprovalRequired: gateResult.decisionEnvelope.humanApprovalRequired,
-    approverId: request.approvalArtifact?.approverId ?? null,
-    evidenceBundleId: gateResult.decisionEnvelope.evidenceBundleId,
-    envelopeId: gateResult.decisionEnvelope.envelopeId,
-    decidedAt: gateResult.decisionEnvelope.issuedAt
-  };
-  appendFileSync(filePath, JSON.stringify(record) + "\n", "utf-8");
+export function parseEvidenceBundleLog(filePath: string): EvidenceBundle[] {
+  if (!existsSync(filePath)) {
+    throw new Error(`Evidence bundle log file not found: ${filePath}`);
+  }
+  const raw = readFileSync(filePath, "utf-8");
+  const lines = raw.split("\n").filter(line => line.trim().length > 0);
+  return lines.map((line, i) => {
+    try {
+      return JSON.parse(line) as EvidenceBundle;
+    } catch {
+      throw new Error(`Invalid JSON on line ${i + 1} of ${filePath}`);
+    }
+  });
 }
 
 export interface AuditSummary {
@@ -95,98 +71,56 @@ export interface AuditSummary {
   byWorkflowClass: Record<string, number>;
   byActorAuthorityClass: Record<string, number>;
   byActorId: Record<string, number>;
-  chainVerified: boolean | null;
-  rawEntries: number | null;
+  allowCount: number;
+  holdCount: number;
+  rejectCount: number;
 }
 
-export function parseDecisionLog(filePath: string): AuditDecisionRecord[] {
-  if (!existsSync(filePath)) {
-    throw new Error(`Decision log file not found: ${filePath}`);
-  }
-  const raw = readFileSync(filePath, "utf-8");
-  const lines = raw.split("\n").filter(line => line.trim().length > 0);
-  return lines.map((line, i) => {
-    try {
-      return JSON.parse(line) as AuditDecisionRecord;
-    } catch {
-      throw new Error(`Invalid JSON on line ${i + 1} of ${filePath}`);
-    }
-  });
-}
-
-export function parseAuditChainLog(filePath: string): AuditLogEntry[] {
-  if (!existsSync(filePath)) {
-    throw new Error(`Audit chain log file not found: ${filePath}`);
-  }
-  const raw = readFileSync(filePath, "utf-8");
-  const lines = raw.split("\n").filter(line => line.trim().length > 0);
-  return lines.map((line, i) => {
-    try {
-      return JSON.parse(line) as AuditLogEntry;
-    } catch {
-      throw new Error(`Invalid JSON on line ${i + 1} of ${filePath}`);
-    }
-  });
-}
-
-export function verifyAuditChain(entries: AuditLogEntry[]): boolean {
-  for (let i = 0; i < entries.length; i++) {
-    const entry = entries[i]!;
-    if (i === 0) {
-      if (entry.previousHash !== null) return false;
-    } else {
-      const prev = entries[i - 1]!;
-      if (entry.previousHash !== prev.entryHash) return false;
-    }
-  }
-  return true;
-}
-
-export function buildAuditSummary(
-  decisions: AuditDecisionRecord[],
-  chainEntries: AuditLogEntry[] | null
-): AuditSummary {
+/**
+ * Build a grouped summary from a list of EvidenceBundles.
+ * Groups by: decision outcome (finalState), workflow class, actor authority
+ * class, and actor ID.
+ */
+export function buildAuditSummary(bundles: EvidenceBundle[]): AuditSummary {
   const byFinalState: Record<string, number> = {};
   const byWorkflowClass: Record<string, number> = {};
   const byActorAuthorityClass: Record<string, number> = {};
   const byActorId: Record<string, number> = {};
 
-  for (const d of decisions) {
-    byFinalState[d.finalState] = (byFinalState[d.finalState] ?? 0) + 1;
-    byWorkflowClass[d.workflowClass] = (byWorkflowClass[d.workflowClass] ?? 0) + 1;
-    byActorAuthorityClass[d.actorAuthorityClass] = (byActorAuthorityClass[d.actorAuthorityClass] ?? 0) + 1;
-    byActorId[d.actorId] = (byActorId[d.actorId] ?? 0) + 1;
+  for (const bundle of bundles) {
+    const finalState = bundle.decisionEnvelope.finalState;
+    const workflowClass = bundle.decisionEnvelope.workflowClass;
+    const actorAuthorityClass = bundle.request.actorAuthorityClass;
+    const actorId = bundle.request.actorId;
+
+    byFinalState[finalState] = (byFinalState[finalState] ?? 0) + 1;
+    byWorkflowClass[workflowClass] = (byWorkflowClass[workflowClass] ?? 0) + 1;
+    byActorAuthorityClass[actorAuthorityClass] = (byActorAuthorityClass[actorAuthorityClass] ?? 0) + 1;
+    byActorId[actorId] = (byActorId[actorId] ?? 0) + 1;
   }
 
-  const chainVerified = chainEntries !== null ? verifyAuditChain(chainEntries) : null;
-
   return {
-    totalDecisions: decisions.length,
+    totalDecisions: bundles.length,
     byFinalState,
     byWorkflowClass,
     byActorAuthorityClass,
     byActorId,
-    chainVerified,
-    rawEntries: chainEntries?.length ?? null
+    allowCount: byFinalState["ALLOW"] ?? 0,
+    holdCount: byFinalState["HOLD"] ?? 0,
+    rejectCount: byFinalState["REJECT"] ?? 0
   };
 }
 
-export function formatTextReport(
-  summary: AuditSummary,
-  decisionsPath: string,
-  chainPath: string | null
-): string {
+export function formatTextReport(summary: AuditSummary, filePath: string): string {
   const lines: string[] = [];
   lines.push("═══════════════════════════════════════════════════════════");
   lines.push("  CerbaSeal Audit Evidence Summary");
   lines.push("═══════════════════════════════════════════════════════════");
-  lines.push(`  Decisions file   : ${decisionsPath}`);
-  if (chainPath) {
-    lines.push(`  Chain log file   : ${chainPath}`);
-    lines.push(`  Chain valid      : ${summary.chainVerified === true ? "YES ✓" : summary.chainVerified === false ? "NO — INTEGRITY FAILURE" : "not checked"}`);
-    lines.push(`  Raw log entries  : ${summary.rawEntries ?? "—"}`);
-  }
+  lines.push(`  Source file      : ${filePath}`);
   lines.push(`  Total decisions  : ${summary.totalDecisions}`);
+  lines.push(`  ALLOW            : ${summary.allowCount}`);
+  lines.push(`  HOLD             : ${summary.holdCount}`);
+  lines.push(`  REJECT           : ${summary.rejectCount}`);
   lines.push("");
 
   lines.push("  By Decision Outcome:");
@@ -198,19 +132,19 @@ export function formatTextReport(
 
   lines.push("  By Workflow Class:");
   for (const [wf, count] of Object.entries(summary.byWorkflowClass)) {
-    lines.push(`    ${wf.padEnd(32)} ${count}`);
+    lines.push(`    ${wf.padEnd(36)} ${count}`);
   }
   lines.push("");
 
   lines.push("  By Actor Authority Class:");
   for (const [cls, count] of Object.entries(summary.byActorAuthorityClass)) {
-    lines.push(`    ${cls.padEnd(32)} ${count}`);
+    lines.push(`    ${cls.padEnd(36)} ${count}`);
   }
   lines.push("");
 
   lines.push("  By Actor ID:");
   for (const [actor, count] of Object.entries(summary.byActorId)) {
-    lines.push(`    ${actor.padEnd(32)} ${count}`);
+    lines.push(`    ${actor.padEnd(36)} ${count}`);
   }
   lines.push("═══════════════════════════════════════════════════════════");
   return lines.join("\n");
@@ -219,40 +153,21 @@ export function formatTextReport(
 const isMain = process.argv[1] === fileURLToPath(import.meta.url);
 
 if (isMain) {
-  const decisionsPath = process.argv[2]?.trim() || "./decisions.jsonl";
-  const chainPath = process.argv[3]?.trim() || null;
+  const filePath = process.argv[2]?.trim() || "./evidence-log.jsonl";
 
-  let decisions: AuditDecisionRecord[] = [];
-  let chainEntries: AuditLogEntry[] | null = null;
-
-  if (decisionsPath) {
-    try {
-      decisions = parseDecisionLog(decisionsPath);
-      console.log(`\nRead ${decisions.length} decision records from ${decisionsPath}`);
-    } catch (err) {
-      console.error(`\nFailed to read decisions file: ${err instanceof Error ? err.message : err}`);
-      process.exit(1);
-    }
-  }
-
-  if (chainPath) {
-    try {
-      chainEntries = parseAuditChainLog(chainPath);
-      console.log(`Read ${chainEntries.length} audit chain entries from ${chainPath}`);
-    } catch (err) {
-      console.error(`\nFailed to read chain log file: ${err instanceof Error ? err.message : err}`);
-      process.exit(1);
-    }
-  }
-
-  const summary = buildAuditSummary(decisions, chainEntries);
-
-  console.log("\n" + formatTextReport(summary, decisionsPath, chainPath));
-  console.log("\nJSON Summary:");
-  console.log(JSON.stringify(summary, null, 2));
-
-  if (summary.chainVerified === false) {
-    console.error("\nERROR: Audit chain integrity check failed. Log may have been tampered with.");
+  let bundles: EvidenceBundle[];
+  try {
+    console.log(`\nReading evidence bundle log: ${filePath}\n`);
+    bundles = parseEvidenceBundleLog(filePath);
+    console.log(`Parsed ${bundles.length} evidence bundle${bundles.length === 1 ? "" : "s"}\n`);
+  } catch (err) {
+    console.error(`\nFailed: ${err instanceof Error ? err.message : err}`);
     process.exit(1);
   }
+
+  const summary = buildAuditSummary(bundles);
+
+  console.log(formatTextReport(summary, filePath));
+  console.log("\nJSON Summary:");
+  console.log(JSON.stringify(summary, null, 2));
 }
