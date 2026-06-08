@@ -1,9 +1,10 @@
 /**
  * Validation script for the CerbaSeal Audit Export starter kit.
- * Generates evidence bundles using live gate evaluations, persists them to
- * a temp JSONL file using writeEvidenceBundle(), then parses and verifies
- * all required reporting dimensions (outcome, actor authority, actor ID,
- * workflow class).
+ * Uses FileBackedAppendOnlyLogService + EvidenceBundleService to generate
+ * a real audit JSONL file, then verifies:
+ *   - Chain integrity from the raw AuditLogEntry JSONL
+ *   - Outcome inference from event types (RELEASE_AUTHORIZED / ACTION_BLOCKED)
+ *   - Optional: workflow/actor grouping from evidence bundle JSONL
  *
  * Run: pnpm tsx examples/audit-export/validate-audit-export.ts
  * Expected output: all checks PASS, exit code 0
@@ -14,11 +15,12 @@ import { unlinkSync, existsSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
-  writeEvidenceBundle, parseEvidenceBundleLog,
-  buildAuditSummary, formatTextReport
+  parseAuditLog, parseEvidenceBundleLog,
+  buildAuditSummary, formatTextReport,
+  writeEvidenceBundle, verifyAuditChain
 } from "./index.js";
 import { ExecutionGateService } from "../../src/services/execution/execution-gate-service.js";
-import { AppendOnlyLogService } from "../../src/services/audit/append-only-log-service.js";
+import { FileBackedAppendOnlyLogService } from "../../src/services/audit/file-backed-append-only-log-service.js";
 import { EvidenceBundleService } from "../../src/services/evidence/evidence-bundle-service.js";
 import { loadCerbaSealConfig } from "../../src/config/cerbaseal-config.js";
 import type { GovernedRequest, ApprovalArtifact } from "../../src/domain/types/core.js";
@@ -39,17 +41,21 @@ function check(label: string, ok: boolean, detail?: string): void {
   }
 }
 
-const LOG_PATH = join(tmpdir(), `cerbaseal-evidence-${Date.now()}.jsonl`);
+const stamp = Date.now();
+const AUDIT_PATH = join(tmpdir(), `cerbaseal-audit-${stamp}.jsonl`);
+const BUNDLE_PATH = join(tmpdir(), `cerbaseal-bundles-${stamp}.jsonl`);
 
 function cleanup(): void {
-  if (existsSync(LOG_PATH)) { try { unlinkSync(LOG_PATH); } catch { /* ignore */ } }
+  for (const p of [AUDIT_PATH, BUNDLE_PATH]) {
+    if (existsSync(p)) { try { unlinkSync(p); } catch { /* ignore */ } }
+  }
 }
 process.on("exit", cleanup);
 process.on("SIGINT", () => { cleanup(); process.exit(1); });
 
 const config = loadCerbaSealConfig();
 const gate = new ExecutionGateService(config);
-const logService = new AppendOnlyLogService();
+const logService = new FileBackedAppendOnlyLogService(AUDIT_PATH);
 const evidenceService = new EvidenceBundleService(logService);
 
 const nowIso = () => new Date().toISOString();
@@ -89,90 +95,125 @@ function buildRequest(
 }
 
 console.log("\nCerbaSeal Audit Export — Validation\n");
-console.log(`  Evidence log: ${LOG_PATH}\n`);
+console.log(`  Audit JSONL    : ${AUDIT_PATH}`);
+console.log(`  Bundle JSONL   : ${BUNDLE_PATH}\n`);
 
-// Generate 5 gate evaluations across different actors and workflows
+// Generate 5 gate evaluations — different actors and workflows
+// 3 ALLOW: system, transaction_escalation
+// 1 ALLOW: analyst, transaction_escalation (with approval)
+// 1 HOLD:  system, fraud_triage (always requires approval → HOLD without it)
 const scenarios = [
-  // 3 ALLOW decisions: system actor, transaction_escalation (no approval needed)
   buildRequest("ae-001", "transaction_escalation", "governance-system", "system", false),
   buildRequest("ae-002", "transaction_escalation", "governance-system", "system", false),
   buildRequest("ae-003", "transaction_escalation", "risk-orchestrator", "system", false),
-  // 1 ALLOW via analyst + approval
   buildRequest("ae-004", "transaction_escalation", "analyst-jane-001", "analyst", true),
-  // 1 HOLD: fraud_triage always requires approval, none provided → HOLD
-  buildRequest("ae-005", "fraud_triage", "governance-system", "system", false),
+  buildRequest("ae-005", "fraud_triage",           "governance-system", "system", false),
 ];
 
 for (const req of scenarios) {
   const result = gate.evaluate(req);
   const bundle = evidenceService.createBundle({ request: req, gateResult: result });
-  writeEvidenceBundle(LOG_PATH, bundle);
+  // Also persist the bundle for the enriched reporting path
+  writeEvidenceBundle(BUNDLE_PATH, bundle);
 }
 
-// Parse the log
-let bundles;
+// ── Part 1: Raw AuditLogEntry JSONL (FileBackedAppendOnlyLogService output) ──
+
+let entries;
 try {
-  bundles = parseEvidenceBundleLog(LOG_PATH);
+  entries = parseAuditLog(AUDIT_PATH);
 } catch (err) {
   console.error(`Fatal: ${err instanceof Error ? err.message : err}`);
   process.exit(1);
 }
 
-check("Evidence log parsed: 5 bundles", bundles.length === 5);
-check("Each bundle has an evidenceBundleId", bundles.every(b => typeof b.evidenceBundleId === "string"));
-check("Each bundle has a decisionEnvelope.finalState", bundles.every(b => ["ALLOW", "HOLD", "REJECT"].includes(b.decisionEnvelope.finalState)));
-check("Each bundle has request.workflowClass", bundles.every(b => typeof b.decisionEnvelope.workflowClass === "string"));
-check("Each bundle has request.actorId", bundles.every(b => typeof b.request.actorId === "string"));
-check("Each bundle has request.actorAuthorityClass", bundles.every(b => typeof b.request.actorAuthorityClass === "string"));
+// Each scenario generates 3–4 entries:
+// ALLOW: REQUEST_EVALUATED + RELEASE_AUTHORIZED + EVIDENCE_BUNDLE_CREATED = 3
+// HOLD:  REQUEST_EVALUATED + ACTION_BLOCKED     + EVIDENCE_BUNDLE_CREATED = 3
+// (Total: 5 × 3 = 15)
+check("Audit JSONL parsed: at least 15 entries (3 per request)", entries.length >= 15);
+check("Each entry has eventId", entries.every(e => typeof e.eventId === "string"));
+check("Each entry has requestId", entries.every(e => typeof e.requestId === "string"));
+check("Each entry has eventType", entries.every(e => typeof e.eventType === "string"));
+check("Each entry has timestamp", entries.every(e => typeof e.timestamp === "string"));
+check("Each entry has payloadHash", entries.every(e => typeof e.payloadHash === "string"));
+check("Each entry has entryHash", entries.every(e => typeof e.entryHash === "string"));
 
-// Build summary
-const summary = buildAuditSummary(bundles);
+// Chain integrity (using core verifyChain algorithm — same as FileBackedAppendOnlyLogService)
+check("verifyAuditChain passes on fresh log", verifyAuditChain(entries));
 
-// Outcome grouping
-// ae-001/002/003/004 → ALLOW, ae-005 → HOLD
-check("byFinalState: 4 ALLOW decisions", summary.byFinalState["ALLOW"] === 4);
-check("byFinalState: 1 HOLD decision", summary.byFinalState["HOLD"] === 1);
-check("allowCount convenience field correct", summary.allowCount === 4);
-check("holdCount convenience field correct", summary.holdCount === 1);
-check("rejectCount is 0 for these scenarios", summary.rejectCount === 0);
+// Build summary from raw entries only (no bundles)
+const rawSummary = buildAuditSummary(entries, null);
 
-// Workflow class grouping
-check("byWorkflowClass: transaction_escalation has 4", summary.byWorkflowClass["transaction_escalation"] === 4);
-check("byWorkflowClass: fraud_triage has 1", summary.byWorkflowClass["fraud_triage"] === 1);
+check("rawSummary.chainValid is true", rawSummary.chainValid);
+check("rawSummary.totalEntries matches parsed count", rawSummary.totalEntries === entries.length);
+check("rawSummary.uniqueRequests is 5", rawSummary.uniqueRequests === 5);
+
+// Outcome inference from eventType:
+// 4 ALLOW decisions → 4 × RELEASE_AUTHORIZED
+// 1 HOLD decision  → 1 × ACTION_BLOCKED
+check("Inferred ALLOW count (RELEASE_AUTHORIZED) is 4", rawSummary.inferredOutcomes.allow === 4);
+check("Inferred BLOCKED count (ACTION_BLOCKED) is 1", rawSummary.inferredOutcomes.blocked === 1);
+
+// Event type presence
+check("byEventType has REQUEST_EVALUATED", (rawSummary.byEventType["REQUEST_EVALUATED"] ?? 0) >= 5);
+check("byEventType has RELEASE_AUTHORIZED (ALLOW signal)", (rawSummary.byEventType["RELEASE_AUTHORIZED"] ?? 0) === 4);
+check("byEventType has ACTION_BLOCKED (HOLD/REJECT signal)", (rawSummary.byEventType["ACTION_BLOCKED"] ?? 0) === 1);
+check("byEventType has EVIDENCE_BUNDLE_CREATED", (rawSummary.byEventType["EVIDENCE_BUNDLE_CREATED"] ?? 0) >= 5);
+
+// Without bundles, workflow/actor grouping is not available
+check("rawSummary.byWorkflowClass is null (not in AuditLogEntry)", rawSummary.byWorkflowClass === null);
+check("rawSummary.byActorAuthorityClass is null (not in AuditLogEntry)", rawSummary.byActorAuthorityClass === null);
+check("rawSummary.byActorId is null (not in AuditLogEntry)", rawSummary.byActorId === null);
+
+// ── Part 2: Enriched summary (raw JSONL + EvidenceBundle enrichment) ──
+
+let bundles;
+try {
+  bundles = parseEvidenceBundleLog(BUNDLE_PATH);
+} catch (err) {
+  console.error(`Fatal: ${err instanceof Error ? err.message : err}`);
+  process.exit(1);
+}
+
+check("Evidence bundle JSONL parsed: 5 bundles", bundles.length === 5);
+
+const enrichedSummary = buildAuditSummary(entries, bundles);
+
+check("enrichedSummary.chainValid is true", enrichedSummary.chainValid);
+check("enrichedSummary.evidenceBundlesAvailable is true", enrichedSummary.evidenceBundlesAvailable);
+
+// Workflow class grouping (from bundles)
+check("byWorkflowClass: transaction_escalation has 4", enrichedSummary.byWorkflowClass?.["transaction_escalation"] === 4);
+check("byWorkflowClass: fraud_triage has 1", enrichedSummary.byWorkflowClass?.["fraud_triage"] === 1);
 
 // Actor authority class grouping
-check("byActorAuthorityClass: system has 4 decisions", summary.byActorAuthorityClass["system"] === 4);
-check("byActorAuthorityClass: analyst has 1 decision", summary.byActorAuthorityClass["analyst"] === 1);
+check("byActorAuthorityClass: system has 4", enrichedSummary.byActorAuthorityClass?.["system"] === 4);
+check("byActorAuthorityClass: analyst has 1", enrichedSummary.byActorAuthorityClass?.["analyst"] === 1);
 
 // Actor ID grouping
-check("byActorId: governance-system present", "governance-system" in summary.byActorId);
-check("byActorId: risk-orchestrator present", "risk-orchestrator" in summary.byActorId);
-check("byActorId: analyst-jane-001 present", "analyst-jane-001" in summary.byActorId);
-check("byActorId: governance-system has 3 decisions", summary.byActorId["governance-system"] === 3);
+check("byActorId: governance-system present", "governance-system" in (enrichedSummary.byActorId ?? {}));
+check("byActorId: analyst-jane-001 present", "analyst-jane-001" in (enrichedSummary.byActorId ?? {}));
+check("byActorId: risk-orchestrator present", "risk-orchestrator" in (enrichedSummary.byActorId ?? {}));
 
-// Total
-check("totalDecisions is 5", summary.totalDecisions === 5);
+// Text reports
+const rawReport = formatTextReport(rawSummary, AUDIT_PATH, null);
+check("Raw report has Inferred Decision Outcomes", rawReport.includes("Inferred Decision Outcomes"));
+check("Raw report has Chain valid YES", rawReport.includes("YES"));
+check("Raw report has note about enrichment", rawReport.includes("workflowClass"));
 
-// Text report content
-const report = formatTextReport(summary, LOG_PATH);
-check("Report has By Decision Outcome section", report.includes("By Decision Outcome"));
-check("Report has By Workflow Class section", report.includes("By Workflow Class"));
-check("Report has By Actor Authority Class section", report.includes("By Actor Authority Class"));
-check("Report has By Actor ID section", report.includes("By Actor ID"));
-check("Report shows ALLOW", report.includes("ALLOW"));
-check("Report shows HOLD", report.includes("HOLD"));
-check("Report shows transaction_escalation", report.includes("transaction_escalation"));
-check("Report shows fraud_triage", report.includes("fraud_triage"));
-check("Report shows system authority class", report.includes("system"));
-check("Report shows analyst authority class", report.includes("analyst"));
-check("Report shows governance-system actor", report.includes("governance-system"));
+const enrichedReport = formatTextReport(enrichedSummary, AUDIT_PATH, BUNDLE_PATH);
+check("Enriched report has By Workflow Class", enrichedReport.includes("By Workflow Class"));
+check("Enriched report has By Actor Authority Class", enrichedReport.includes("By Actor Authority Class"));
+check("Enriched report shows transaction_escalation", enrichedReport.includes("transaction_escalation"));
+check("Enriched report shows fraud_triage", enrichedReport.includes("fraud_triage"));
 
 // Error handling
 let missingErr = "";
-try { parseEvidenceBundleLog("/tmp/__cerbaseal_nonexistent_xyz.jsonl"); } catch (err) {
+try { parseAuditLog("/tmp/__cerbaseal_nonexistent_xyz.jsonl"); } catch (err) {
   missingErr = err instanceof Error ? err.message : "error";
 }
-check("parseEvidenceBundleLog throws on missing file", missingErr.includes("not found"));
+check("parseAuditLog throws on missing file", missingErr.includes("not found"));
 
 console.log(`\nValidation complete: ${passed} passed, ${failed} failed\n`);
 cleanup();
