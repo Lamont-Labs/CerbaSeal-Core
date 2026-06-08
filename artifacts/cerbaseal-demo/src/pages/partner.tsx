@@ -62,6 +62,17 @@ const channelModel = [
   },
 ];
 
+const partnerKitDocs = [
+  { title: "Partner Kit — Overview", path: "docs/partner-kit/00-OVERVIEW.md", desc: "Kit index, how to use it, the three certification levels, supporting tools, and what requires Jesse vs. what is self-service." },
+  { title: "Sales Brief", path: "docs/partner-kit/01-sales-brief.md", desc: "2-page narrative for live sales conversations: positioning, 3 qualification questions, and objection handling for the 5 most common responses." },
+  { title: "Technical Brief", path: "docs/partner-kit/02-technical-brief.md", desc: "Architecture overview: the 7 layers, 12 invariants in plain English, 3 decision outcomes, and a whiteboard diagram description." },
+  { title: "Deployment Guide", path: "docs/partner-kit/03-deployment-guide.md", desc: "Step-by-step guide for a partner technical lead: prerequisites, setup, policy authoring, integration kit selection, verification, and handoff checklist." },
+  { title: "1-Day Pilot Guide", path: "docs/partner-kit/04-pilot-guide.md", desc: "The CerbaSeal Express Pilot: 5-session day agenda from workflow mapping to evidence package. Includes the client-facing agenda template." },
+  { title: "Support Guide", path: "docs/partner-kit/05-support-guide.md", desc: "10 most common partner issues with symptoms, diagnosis steps, and resolution. Covers gate outcomes, chain verification, and artifact failures." },
+  { title: "Objection Handling", path: "docs/partner-kit/06-objection-handling.md", desc: "8 enterprise objections with 2–3 response paths per objection, calibrated for security, compliance, and technical buyer personas." },
+  { title: "Certification Framework", path: "docs/partner-kit/07-certification-framework.md", desc: "Three certification levels with explicit competencies, practical exercises, and pass/fail checklists. Level 1: Deploy. Level 2: Configure. Level 3: Lead Pilots." },
+];
+
 const resources = [
   { title: "Integration Guide", path: "examples/INTEGRATION-GUIDE.md", desc: "Decision tree: match your architecture to the right starter kit. Covers synchronous API, async queue, webhook, middleware, and audit consumer patterns." },
   { title: "Integration Starter Kit — REST API", path: "examples/rest-api-starter/", desc: "HTTP wrapper exposing the gate as API endpoints. Includes sample-request.json for testing." },
@@ -174,6 +185,41 @@ export default function Partner() {
                   <p className="text-slate-200 text-xs">{cert.assessment}</p>
                 </div>
               </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Partner Kit */}
+      <h2 className="text-white font-bold text-xl mb-2">Partner Delivery Kit</h2>
+      <p className="text-slate-400 text-sm mb-4">
+        Everything a partner needs to sell, deploy, configure, and support a CerbaSeal pilot — without founder involvement.
+        Located in <code className="text-blue-400">docs/partner-kit/</code>.
+      </p>
+      <div className="bg-slate-950 border border-slate-700 rounded-xl p-4 mb-4">
+        <div className="text-slate-400 text-xs font-bold mb-3 tracking-wide">KIT CERTIFICATION LEVELS</div>
+        <div className="grid grid-cols-3 gap-3 mb-3">
+          {[
+            { level: "L1", name: "Deploy", color: "text-blue-400", border: "border-blue-800", bg: "bg-blue-950", desc: "Can stand up CerbaSeal and verify it works. Required before any client deployment." },
+            { level: "L2", name: "Configure", color: "text-emerald-400", border: "border-emerald-800", bg: "bg-emerald-950", desc: "Can author a policy pack for a new client without assistance. Required before unsupervised pilot delivery." },
+            { level: "L3", name: "Lead Pilots", color: "text-amber-400", border: "border-amber-800", bg: "bg-amber-950", desc: "Can run a full pilot engagement independently from kickoff to evidence package." },
+          ].map((c) => (
+            <div key={c.level} className={`${c.bg} border ${c.border} rounded-lg p-3`}>
+              <div className={`font-bold text-lg ${c.color} mb-1`}>{c.level} — {c.name}</div>
+              <p className="text-slate-300 text-xs">{c.desc}</p>
+            </div>
+          ))}
+        </div>
+        <p className="text-slate-500 text-xs">Full competencies, practical exercises, and pass/fail checklists in <code className="text-blue-400">docs/partner-kit/07-certification-framework.md</code></p>
+      </div>
+      <div className="grid grid-cols-1 gap-2 mb-10">
+        {partnerKitDocs.map((r) => (
+          <div key={r.title} className="bg-slate-900 border border-slate-800 rounded-lg p-3.5 flex items-start gap-4">
+            <ChevronRight className="w-4 h-4 text-rose-400 flex-shrink-0 mt-0.5" />
+            <div>
+              <div className="text-white font-medium text-sm">{r.title}</div>
+              <code className="text-blue-400 text-xs">{r.path}</code>
+              <p className="text-slate-400 text-xs mt-0.5">{r.desc}</p>
             </div>
           </div>
         ))}
